@@ -14,21 +14,58 @@ use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
 our $VERSION     = 0.001;
-our @EXPORT_OK   = qw/branches/;
+our @EXPORT_OK   = qw/branches tags alphanum_sort /;
 our %EXPORT_TAGS = ();
 
-sub branches {
-    my ($type) = @_;
-    $type
-        = !defined $type    ? ''
-        : $type eq 'local'  ? ''
-        : $type eq 'remote' ? '-r'
-        : $type eq 'both'   ? '-b'
-        :                     confess "Unknown type '$type'!\n";
+sub alphanum_sort {
+    my $A = $a;
+    $A =~ s/(\d+)/sprintf "%014i", $1/egxms;
+    my $B = $b;
+    $B =~ s/(\d+)/sprintf "%014i", $1/egxms;
 
-    return grep {/^(\w+_)?$jira/}
-        map {/^[*]?\s+(.*?)\n/}
-        `git branch $type`;
+    return $A cmp $B;
+}
+
+{
+    my %results;
+    sub branches {
+        my ($type, $contains) = @_;
+        $type
+            = !defined $type    ? ''
+            : $type eq 'local'  ? ''
+            : $type eq 'remote' ? '-r'
+            : $type eq 'both'   ? '-b'
+            :                     confess "Unknown type '$type'!\n";
+
+        if ($contains) {
+            $type &&= "$type ";
+            $type .= "--contains $contains";
+        }
+
+        # assign to or cache
+        $results{$type} ||= [
+            sort alphanum_sort
+            map { /^[*]?\s+(.*?)\s*$/xms }
+            grep {!/HEAD/}
+            `git branch $type`
+        ];
+
+        return @{ $results{$type} };
+    }
+}
+
+{
+    my $result;
+    sub tags {
+        # assign to or cache
+        $result ||= [
+            sort alphanum_sort
+            map { /^(.*?)\s*$/xms }
+            `git tag`
+        ];
+
+        return @{ $result };
+    }
 }
 
 1;
@@ -45,7 +82,7 @@ This documentation refers to Git::Workflow version 0.0.1
 
 =head1 SYNOPSIS
 
-   use Git::Workflow qw/branches/;
+   use Git::Workflow qw/branches tags/;
 
    # Get all local branches
    my @branches = branches();
@@ -58,6 +95,9 @@ This documentation refers to Git::Workflow version 0.0.1
    # both remote and local branches
    @branches = branches('both');
 
+   # similarly for tags
+   my @tags = tags();
+
 =head1 DESCRIPTION
 
 This module contains helper functions for the command line scripts.
@@ -68,7 +108,17 @@ This module contains helper functions for the command line scripts.
 
 Param: C<$type> - one of local, remote or both
 
-Returns a list of all branches the the specified type. (Default type is local)
+Returns a list of all branches of the specified type. (Default type is local)
+
+=head2 C<tags ()>
+
+Returns a list of all tags.
+
+=head2 C<alphanum_sort ()>
+
+Does sorting (for the building C<sort>) in a aplha numerical fashion.
+Specifically all numbers are converted for the comparison to 14 digit strings
+with leading zeros.
 
 =head1 DIAGNOSTICS
 
