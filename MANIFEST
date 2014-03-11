@@ -6,9 +6,12 @@ MANIFEST.SKIP
 META.yml
 Makefile.PL
 README
-lib/git-workflow-tools.pm
+bin/git-cows
+bin/git-feature
+bin/git-jira
+bin/git-up-to-date
+t/manifest.t
 t/00-load.t
-t/boilerplate.t
 t/critic.t
 t/kwalitee.t
 t/pod-coverage.t

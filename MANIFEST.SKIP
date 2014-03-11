@@ -61,3 +61,8 @@ Debian_CPANTS.txt
 
 # Avoid archives of this distribution
 \bgit-workflow-tools-[\d\.\_]+
+
+##
+tags
+errors.err
+git.conf
