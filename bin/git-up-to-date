@@ -1,0 +1,445 @@
+#!/usr/bin/perl
+
+# Created on: 2014-01-16 04:14:31
+# Create by:  Ivan Wills
+# $Id$
+# $Revision$, $HeadURL$, $Date$
+# $Revision$, $Source$, $Date$
+
+use strict;
+use warnings;
+use v5.10;
+use Getopt::Long;
+use Pod::Usage;
+use Data::Dumper qw/Dumper/;
+use English qw/ -no_match_vars /;
+use FindBin qw/$Bin/;
+use Time::Piece;
+
+our $VERSION = 0.001;
+my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
+
+my %option = (
+    format      => 'test',
+    max_history => 1,
+    verbose     => 0,
+    man         => 0,
+    help        => 0,
+    VERSION     => 0,
+);
+
+main();
+exit 0;
+
+sub main {
+    Getopt::Long::Configure('bundling');
+    GetOptions(
+        \%option,
+        'tag|t=s',
+        'branch|b=s',
+        'format|f=s',
+        'quick|q!',
+        'cgit|c=s',
+        'include|i=s',
+        'exclude|e=s',
+        'all',
+        'max_history|max-history|h=i',
+        'fetch|F',
+        'branch_status|branch-status|s',
+        'age_limit|age-limit|a=s',
+        'verbose|v+',
+        'man',
+        'help',
+        'VERSION!',
+    ) or pod2usage(2);
+    my $format = 'format_' . $option{format};
+
+    if ( $option{'VERSION'} ) {
+        print "$name Version = $VERSION\n";
+        exit 1;
+    }
+    elsif ( $option{'man'} ) {
+        pod2usage( -verbose => 2 );
+    }
+    elsif ( $option{'help'} ) {
+        pod2usage( -verbose => 1 );
+    }
+    elsif ( !main->can($format) ) {
+        warn "Unknown format '$option{format}'!\n";
+        pod2usage( -verbose => 1 );
+    }
+
+    qx/git fetch/ if $option{fetch};
+
+    # do stuff here
+    if ($option{branch_age}) {
+        return branch_age();
+    }
+
+    my @releases = $option{tag} || ( !$option{branch} && $ENV{UP_TO_DATE_TAG} ) ? tag_commit() : branch_commit();
+
+    warn "Branch : $releases[-1]{name}\nSHA    : $releases[-1]{sha}\nTime   : $releases[-1]{time}\n\n" if $option{verbose};
+
+    $option{all} = 1 if $option{format} eq 'test';
+
+    my $csv = branches_contain(@releases);
+    if ($option{verbose}) {
+        warn @$csv . " branches found\n";
+    }
+
+    main->$format($csv, @releases);
+
+    return;
+}
+
+sub alphanum_sort {
+    my $A = $a;
+    $A =~ s/(\d+)/sprintf "%06i", $1/egxms;
+    my $B = $b;
+    $B =~ s/(\d+)/sprintf "%06i", $1/egxms;
+
+    return $A cmp $B;
+}
+
+sub branches_contain {
+    my @releases = @_;
+    my @branches = git_branches();
+    my $format = q/--format=format:'%H %at <%an>%ae'/;
+    my @csv;
+
+    BRANCH:
+    for my $branch (@branches) {
+        next BRANCH if $option{include} && $branch !~ /$option{include}/;
+        next BRANCH if $option{exclude} && $branch =~ /$option{exclude}/;
+
+        open my $pipe, '-|', "git log $format -n 1 '$branch'";
+        my ($first, $author, $found, $release);
+
+        LOG:
+        while (my $log = <$pipe>) {
+            chomp $log;
+            my ($sha, $time, $user) = split /\s+/, $log, 3;
+
+            $first  = $time;
+            $author = $user;
+            if ( $time < $releases[-1]{time} ) {
+                warn "skipping $branch\n" if $option{verbose} > 1;
+                next BRANCH;
+            }
+        }
+
+        my $age = time - $releases[0]{time} + 10 * 60 * 60 * 24;
+        RELEASE:
+        for my $released (reverse @releases) {
+            next RELEASE if !$released->{branches}{$branch};
+
+            $release = $released->{name};
+            $age = $released == $releases[-1] ? 0 : time - $released->{time};
+            last RELEASE;
+        }
+
+        next BRANCH if !$option{all} && !$option{verbose} && $found;
+
+        push @csv, [ $release || "Out of date", $branch, $author, int $age / 60 / 60 / 24];
+        warn +( $found ? 'up to date' : "missing $releases[-1]{name}" ) . "\t$branch\t$author\n" if $option{quick};
+    }
+
+    return \@csv;
+}
+
+sub tag_commit {
+    $option{tag} ||= $ENV{UP_TO_DATE_TAG} || 'master';
+    my @tags = sort alphanum_sort
+        grep {/$option{tag}/}
+        map {chomp; $_}
+        `git tag`;
+
+    my $oldest = @tags > $option{max_history} ? -$option{max_history} : -scalar @tags;
+    return map { sha_from_show($_) } @tags[ $oldest .. -1 ];
+}
+
+sub git_branches {
+    my ($contains) = @_;
+    state @branches;
+
+    if ($contains) {
+        return (
+            sort alphanum_sort
+            map {/^\s+(.*?)\s*$/xms}
+            grep {!/HEAD/}
+            `git branch -r --contains $contains`
+        );
+    }
+    elsif (!@branches) {
+        @branches = sort alphanum_sort
+            map {/^\s+(.*?)\s*$/xms}
+            grep {!/HEAD/}
+            `git branch -r`;
+    }
+
+    return @branches;
+}
+
+sub branch_commit {
+    $option{branch} ||= $ENV{UP_TO_DATE_BRANCH} || 'master';
+    my @branches = grep {/$option{branch}/} git_branches();
+
+    my $oldest = @branches > $option{max_history} ? -$option{max_history} : -scalar @branches;
+    return map { sha_from_show($_) } @branches[ $oldest .. -1 ];
+}
+
+sub sha_from_show {
+    my ($name) = @_;
+    my ($log) = `git rev-list -1 --timestamp $name`;
+    chomp $log;
+    my ($time, $sha) = split /\s+/, $log;
+    return {
+        name     => $name,
+        sha      => $sha,
+        time     => $time,
+        branches => { map { $_ => 1 } git_branches($sha) },
+    };
+}
+
+sub format_text {
+    my (undef, $csv, @releases) = @_;
+
+    my @max = (0,0);
+    for my $row (@$csv) {
+        $max[0] = length $row->[0] if $max[0] < length $row->[0];
+        $max[1] = length $row->[1] if $max[1] < length $row->[1];
+    }
+    for my $row (@$csv) {
+        printf "%$max[0]s %$max[1]s %s (%.0f days old)\n", @$row;
+    }
+
+    return;
+}
+
+sub format_csv {
+    my (undef, $csv, @releases) = @_;
+
+    my $sepperator = $option{format} eq 'tab' ? "\t" : ',';
+    for my $row (@$csv) {
+        print +(join $sepperator, @$row), "\n";
+    }
+
+    return;
+}
+{
+    no warnings qw/once/;
+    *format_tab = *format_csv;
+}
+
+sub format_json {
+    my (undef, $csv, @releases) = @_;
+
+    require JSON::XS;
+    my $repo = `git config remote.origin.url`;
+    chomp $repo;
+    my ($name) = $repo =~ m{[/:](.*?)(?:[.]git)?$}xms;
+
+    print JSON::XS::encode_json({
+        repository   => $repo,
+        name         => $name,
+        release      => $releases[-1]{name},
+        release_date => '' . localtime($releases[-1]{time}),
+        branches     => [
+            map {{ status => $_->[0], name => $_->[1], last_author => $_->[2], release_age => $_->[3] }}
+            @$csv
+        ]
+    });
+
+    return;
+}
+
+sub format_html {
+    my (undef, $csv, @releases) = @_;
+
+    my $sepperator = "</td><td>";
+    my $date       = localtime;
+    my $repo       = `git config remote.origin.url`;
+    chomp $repo;
+    print <<"HTML";
+<doctype>
+<html>
+<head>
+<title>Branch status for $repo</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+<script type="text/javascript" href="script.js"></script>
+</head>
+<body>
+<h1>Branch statuses for <i>$repo</i> ($date)</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Production Branch/Tag Status</th>
+            <th>Branch Name</th>
+            <th>Last commit owner</th>
+            <th>Included release age (days)</th>
+        </tr>
+    </thead>
+HTML
+
+    for my $row (@$csv) {
+        my ($name, $email) = $row->[2] =~ /^<([^>]+)>(.*)$/;
+        $row->[0] = $row->[0] eq $releases[-1]{name} ? $row->[0] : qq{<span class="old">$row->[0]</span>};
+        $row->[2] = $row->[0] eq $releases[-1]{name} ? $name : qq{<a href="mailto:$email?subject=$row->[1]%20is%20out%20of%20date">$name</a>};
+        if ($option{cgit}) {
+            my ($branch) = $row->[1] =~ m{^[^/]+/(.+)$}xms;
+            $row->[1] = qq[<a href="$option{cgit}/log/?h=$branch" title="cgit log">$branch</a>];
+        }
+        print "<tr><td>" . (join $sepperator, @$row), "</td></tr>\n";
+    }
+
+    print <<"HTML";
+</table>
+</body>
+</html>
+HTML
+
+    return;
+}
+
+sub format_test {
+    my (undef, $csv, @releases) = @_;
+
+    require Test::More;
+    Test::More->import( tests => scalar @$csv );
+    for my $row (@$csv) {
+        is( $row->[0], $releases[-1]{name}, $row->[1] . ' is upto date')
+            or note("Release is $row->[3] days old");
+    }
+    Test::More::done_testing();
+
+    return;
+}
+
+sub branch_status {
+    my @branches = git_branches();
+    my $format = q/--format=format:'%H %at <%an>%ae'/;
+    my $before = $option{age_limit} || Time::Piece->new->ymd;
+    my %bin;
+
+    BRANCH:
+    for my $branch (@branches) {
+        open my $pipe, '-|', "git log $format -n 1 '$branch'";
+        my ($first, $author, $found);
+
+        my $log = <$pipe>;
+        chomp $log;
+        my ($sha, $time, $user) = split /\s+/, $log, 3;
+        $time = Time::Piece->new($time)->ymd;
+
+        # skip branches that have been modified after before
+        next BRANCH if $time gt $before;
+        printf "%-70s %-99s %s\n", $branch, $user, $time, $time gt $before;
+        $bin{$time}++;
+    }
+    #print join "\n", map {"$_\t$bin{$_}"} sort keys %bin;
+    #print "\n";
+
+    return;
+}
+
+__DATA__
+
+=head1 NAME
+
+git-up-to-date - Check that git branches include latest production branch/tag
+
+=head1 VERSION
+
+This documentation refers to git-up-to-date version 0.0.1
+
+=head1 SYNOPSIS
+
+   git-up-to-date [option]
+
+ OPTIONS:
+  -t --tab[=]str    Specify a tag that any branch with newer commits must contain
+  -b --branch[=]str Similarly a branch that other branches with newer commits must
+                    contain (Default origin/master)
+  -f --format[=](test|text|html|csv|tab)
+                    Set the out put format
+                      * test - TAP test formatted output (default)
+                      * text - Simple formatted text
+                      * html - A basic HTML page
+                      * csv  - Comma seperated values formatted output
+                      * tab  - Tab seperated values formatted output
+  -q --quick        Print to STDERR the statuses as they are found (no formatting)
+  -c --cgit[=]url   When using --format=html this creates a link to the cgit
+                    log page for the branch
+  -i --include[=]regexp
+                    Include only "neweer" branches that match this regexp
+  -e --exclude[=]regexp
+                    Exclude any "neweer" branches that match this regexp
+     --all          Show the status of all branches not just current ones.
+  -m --max-history[=]int
+                    Set the maximum number of release branches/tags to go back
+                    (if more than one) to find where a branch was created from.
+                    (Default 1)
+
+  -s --branch-status
+                    Shows the status (name, last commiter, last commit date) of
+                    all branches.
+  -a --age-limit[=]date
+                    With --branch-status limit to only branches created after
+                    date (a YYYY-MM-DD formatted date)
+  -F --fetch        Do a fetch before anything else.
+
+  -v --verbose      Shows changed branches that are upto date.
+     --VERSION      Prints the version information
+     --help         Prints this help information
+     --man          Prints the full documentation for git-up-to-date
+
+=head1 DESCRIPTION
+
+The C<git up-to-date> command can tell you the status of "active" branches as
+compared to a release tag or branch. It does this by finding all tags or
+branches that match the regular expression passed to C<--tag> or C<--branch>,
+sorts them alphanumerically assuming that the largest is the most recent.
+
+ eg release_1, release_1_1
+
+The branch release_1_1 would be considered the most recent. With the found
+tag/branch the date/time it was created is used to find all branches that
+have newer commits (unless C<--all> is used). These branches are then searched
+to see if they contain the found release tag or branch (and if C<--max-history>
+is secified and the branch doesn't contain the relase branch or tag the older
+releases are searched for).
+
+=head1 SUBROUTINES/METHODS
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 DEPENDENCIES
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+There are no known bugs in this module.
+
+Please report problems to Ivan Wills (ivan.wills@gmail.com).
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Ivan Wills - (ivan.wills@gmail.com)
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2014 Ivan Wills (14 Mullion Close, Hornsby Heights, NSW Australia 2077).
+All rights reserved.
+
+This module is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself. See L<perlartistic>.  This program is
+distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.
+
+=cut
