@@ -12,7 +12,6 @@ use Getopt::Long;
 use Pod::Usage;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use FindBin qw/$Bin/;
 use Git::Workflow qw/branches/;
 
 our $VERSION = 0.001;
