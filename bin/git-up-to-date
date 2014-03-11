@@ -8,13 +8,11 @@
 
 use strict;
 use warnings;
-use v5.10;
 use Getopt::Long;
 use Pod::Usage;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
-use Time::Piece;
 
 our $VERSION = 0.001;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -158,26 +156,28 @@ sub tag_commit {
     return map { sha_from_show($_) } @tags[ $oldest .. -1 ];
 }
 
-sub git_branches {
-    my ($contains) = @_;
-    state @branches;
+{
+    my @branches;
+    sub git_branches {
+        my ($contains) = @_;
 
-    if ($contains) {
-        return (
-            sort alphanum_sort
-            map {/^\s+(.*?)\s*$/xms}
-            grep {!/HEAD/}
-            `git branch -r --contains $contains`
-        );
-    }
-    elsif (!@branches) {
-        @branches = sort alphanum_sort
-            map {/^\s+(.*?)\s*$/xms}
-            grep {!/HEAD/}
-            `git branch -r`;
-    }
+        if ($contains) {
+            return (
+                sort alphanum_sort
+                map {/^\s+(.*?)\s*$/xms}
+                grep {!/HEAD/}
+                `git branch -r --contains $contains`
+            );
+        }
+        elsif (!@branches) {
+            @branches = sort alphanum_sort
+                map {/^\s+(.*?)\s*$/xms}
+                grep {!/HEAD/}
+                `git branch -r`;
+        }
 
-    return @branches;
+        return @branches;
+    }
 }
 
 sub branch_commit {
@@ -318,7 +318,7 @@ sub format_test {
 sub branch_status {
     my @branches = git_branches();
     my $format = q/--format=format:'%H %at <%an>%ae'/;
-    my $before = $option{age_limit} || Time::Piece->new->ymd;
+    my $before = $option{age_limit} || ymd();
     my %bin;
 
     BRANCH:
@@ -329,7 +329,7 @@ sub branch_status {
         my $log = <$pipe>;
         chomp $log;
         my ($sha, $time, $user) = split /\s+/, $log, 3;
-        $time = Time::Piece->new($time)->ymd;
+        $time = ymd($time);
 
         # skip branches that have been modified after before
         next BRANCH if $time gt $before;
@@ -340,6 +340,16 @@ sub branch_status {
     #print "\n";
 
     return;
+}
+
+sub ymb {
+    my ($time) = @_;
+    $time ||= time;
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime $time;
+    $year += 1900;
+    $mon++;
+
+    return sprintf "%04d-%02d-%02d", $year, $mon, $mday;
 }
 
 __DATA__
