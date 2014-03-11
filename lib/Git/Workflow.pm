@@ -68,6 +68,15 @@ sub alphanum_sort {
     }
 }
 
+sub config {
+    my ($name, $default) = @_;
+    local $SIG{__WARN__} = sub {};
+    my $value = `git config $name`;
+    chomp $value;
+
+    return $value || $default;
+}
+
 1;
 
 __END__
