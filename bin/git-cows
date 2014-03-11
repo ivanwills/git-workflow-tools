@@ -52,7 +52,7 @@ sub main {
     }
 
     # do stuff here
-    my @files = map { /^#\s+modified:\s+(.*)\n?/ }
+    my @files = map { /^#\s+modified:\s+(.*)\n/ }
         grep { /^#\s+modified:\s+/ }
         `git status`;
 
