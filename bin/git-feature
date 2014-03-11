@@ -12,13 +12,13 @@ use Getopt::Long;
 use Pod::Usage;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow qw/tags config/;
+use Git::Workflow qw/branches tags config/;
 
 our $VERSION = 0.001;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
-    out     => undef,
+    fetch   => 1,
     verbose => 0,
     man     => 0,
     help    => 0,
@@ -37,7 +37,10 @@ sub main {
     Getopt::Long::Configure('bundling');
     GetOptions(
         \%option,
-        'out|o=s',
+        'prod|p=s',
+        'local|l!',
+        'fetch|f!',
+        'test|t',
         'verbose|v+',
         'man',
         'help',
@@ -57,12 +60,15 @@ sub main {
 
     # do stuff here
     my ($feature_branch) = shift @ARGV;
+    my $prod = $option{prod} || config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
+    my ($type, $regex) = split /\s*=\s*/, $prod;
 
-    my $release_tag = `git tag | grep -P '^prod/' | sort -n | tail -n 1`;
-    chomp $release_tag;
+    system qw/git fetch/ if $option{fetch} && !$option{local};
+    my ($release) = grep {/$regex/} $type eq 'branch' ? branches($option{local} ? 'local' : 'remote') : tags();
+    chomp $release;
 
-    print join ' ', qw/git checkout -b/, $feature_branch, $release_tag, "\n" if $option{verbose};
-    system qw/git checkout -b/, $feature_branch, $release_tag;
+    print join ' ', qw/git checkout -b/, $feature_branch, $release, "\n" if $option{verbose} || $option{test};
+    system qw/git checkout -b/, $feature_branch, $release if !$option{test};
 
     return;
 }
@@ -84,7 +90,9 @@ This documentation refers to git-feature version 0.0.1
  OPTIONS:
   branch-name       The name of the new branch to create from the current release branch/tag
 
-  -v --verbose      Show more detailed option
+     --no-fetch     Don't fetch before trying to find the remote branch
+  -t --test         Test don't actually run
+  -v --verbose      Show more details
      --version      Prints the version information
      --help         Prints this help information
      --man          Prints the full documentation for git-feature
