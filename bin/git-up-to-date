@@ -13,6 +13,7 @@ use Pod::Usage;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
+use Git::Workflow qw/branches tags/;
 
 our $VERSION = 0.001;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -90,18 +91,9 @@ sub main {
     return;
 }
 
-sub alphanum_sort {
-    my $A = $a;
-    $A =~ s/(\d+)/sprintf "%06i", $1/egxms;
-    my $B = $b;
-    $B =~ s/(\d+)/sprintf "%06i", $1/egxms;
-
-    return $A cmp $B;
-}
-
 sub branches_contain {
     my @releases = @_;
-    my @branches = git_branches();
+    my @branches = branches();
     my $format = q/--format=format:'%H %at <%an>%ae'/;
     my @csv;
 
@@ -147,42 +139,15 @@ sub branches_contain {
 
 sub tag_commit {
     $option{tag} ||= $ENV{UP_TO_DATE_TAG} || 'master';
-    my @tags = sort alphanum_sort
-        grep {/$option{tag}/}
-        map {chomp; $_}
-        `git tag`;
+    my @tags = grep {/$option{tag}/} tags();
 
     my $oldest = @tags > $option{max_history} ? -$option{max_history} : -scalar @tags;
     return map { sha_from_show($_) } @tags[ $oldest .. -1 ];
 }
 
-{
-    my @branches;
-    sub git_branches {
-        my ($contains) = @_;
-
-        if ($contains) {
-            return (
-                sort alphanum_sort
-                map {/^\s+(.*?)\s*$/xms}
-                grep {!/HEAD/}
-                `git branch -r --contains $contains`
-            );
-        }
-        elsif (!@branches) {
-            @branches = sort alphanum_sort
-                map {/^\s+(.*?)\s*$/xms}
-                grep {!/HEAD/}
-                `git branch -r`;
-        }
-
-        return @branches;
-    }
-}
-
 sub branch_commit {
     $option{branch} ||= $ENV{UP_TO_DATE_BRANCH} || 'master';
-    my @branches = grep {/$option{branch}/} git_branches();
+    my @branches = grep {/$option{branch}/} branches();
 
     my $oldest = @branches > $option{max_history} ? -$option{max_history} : -scalar @branches;
     return map { sha_from_show($_) } @branches[ $oldest .. -1 ];
@@ -197,7 +162,7 @@ sub sha_from_show {
         name     => $name,
         sha      => $sha,
         time     => $time,
-        branches => { map { $_ => 1 } git_branches($sha) },
+        branches => { map { $_ => 1 } branches('local', $sha) },
     };
 }
 
@@ -316,7 +281,7 @@ sub format_test {
 }
 
 sub branch_status {
-    my @branches = git_branches();
+    my @branches = branches();
     my $format = q/--format=format:'%H %at <%an>%ae'/;
     my $before = $option{age_limit} || ymd();
     my %bin;

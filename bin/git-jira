@@ -13,6 +13,7 @@ use Pod::Usage;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
+use Git::Workflow qw/branches/;
 
 our $VERSION = 0.001;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -63,7 +64,7 @@ sub main {
     $jira = lc $jira;
 
     # check local branches first
-    my ($branch) = grep {/^(\w+_)?$jira/} map {/^[*]?\s+(.*?)\n/} `git branch`;
+    my ($branch) = grep {/^(\w+_)?$jira/} branches();
 
     if ($branch) {
         chomp $branch;
@@ -71,7 +72,7 @@ sub main {
     }
     else {
         # check if there is a remote branch
-        my ($remote_branch) = grep {/^origin\/(\w+_)?$jira/} map {/^\s+(.*?)\n/} `git branch -r`;
+        my ($remote_branch) = grep {/^origin\/(\w+_)?$jira/} branches('remote');
         if ($remote_branch) {
             chomp $remote_branch;
             $branch = $remote_branch;
