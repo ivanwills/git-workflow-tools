@@ -14,7 +14,7 @@ use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
 our $VERSION     = 0.001;
-our @EXPORT_OK   = qw/branches tags alphanum_sort /;
+our @EXPORT_OK   = qw/branches tags alphanum_sort config /;
 our %EXPORT_TAGS = ();
 
 sub alphanum_sort {
