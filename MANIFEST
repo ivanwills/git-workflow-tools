@@ -1,0 +1,17 @@
+Build.PL
+Changes
+LICENSE
+MANIFEST
+MANIFEST.SKIP
+META.yml
+Makefile.PL
+README
+lib/git-workflow-tools.pm
+t/00-load.t
+t/boilerplate.t
+t/critic.t
+t/kwalitee.t
+t/pod-coverage.t
+t/pod.t
+t/perlcriticrc
+t/spelling.t
