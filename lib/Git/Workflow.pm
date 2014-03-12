@@ -34,7 +34,7 @@ sub alphanum_sort {
             = !defined $type    ? ''
             : $type eq 'local'  ? ''
             : $type eq 'remote' ? '-r'
-            : $type eq 'both'   ? '-b'
+            : $type eq 'both'   ? '-a'
             :                     confess "Unknown type '$type'!\n";
 
         if ($contains) {
@@ -45,7 +45,7 @@ sub alphanum_sort {
         # assign to or cache
         $results{$type} ||= [
             sort alphanum_sort
-            map { /^[*]?\s+(.*?)\s*$/xms }
+            map { /^[*]?\s+(?:remotes\/)?(.*?)\s*$/xms }
             grep {!/HEAD/}
             `git branch $type`
         ];
@@ -79,7 +79,7 @@ sub config {
 
 sub match_commits {
     my ($type, $regex, $max) = @_;
-    my @commits = grep {/$regex/} $type eq 'tag' ? tags() : branches();
+    my @commits = grep {/$regex/} $type eq 'tag' ? tags() : branches('both');
 
     my $oldest = @commits > $max ? -$max : -scalar @commits;
     return map { sha_from_show($_) } @commits[ $oldest .. -1 ];

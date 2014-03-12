@@ -98,6 +98,7 @@ sub main {
     }
 
     my @releases = match_commits($type, $regex, $option{max_history});
+    die "Could not find any historic releases for $type /$regex/!\n" if !@releases;
 
     warn "Branch : $releases[-1]{name}\nSHA    : $releases[-1]{sha}\nTime   : $releases[-1]{time}\n\n" if $option{verbose};
 
@@ -118,6 +119,7 @@ sub main {
         my $bad = 0;
         for my $release (reverse @releases) {
             my ($ans) = `git log $format | grep $release->{sha}`;
+            chomp $ans if $ans;
             next if $ans;
             $bad++;
             warn "Missing release $release->{name}!\n";
