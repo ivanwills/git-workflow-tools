@@ -12,7 +12,7 @@ use Getopt::Long;
 use Pod::Usage;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow qw/branches tags/;
+use Git::Workflow qw/branches tags match_commits config/;
 
 our $VERSION = 0.001;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -24,6 +24,10 @@ my %option = (
     man         => 0,
     help        => 0,
     VERSION     => 0,
+);
+my %known_actions = (
+    ami  => 1,
+    show => 1,
 );
 
 main();
@@ -41,7 +45,7 @@ sub main {
         'include|i=s',
         'exclude|e=s',
         'all',
-        'max_history|max-history|h=i',
+        'max_history|max-history|m=i',
         'fetch|F',
         'branch_status|branch-status|s',
         'age_limit|age-limit|a=s',
@@ -50,6 +54,7 @@ sub main {
         'help',
         'VERSION!',
     ) or pod2usage(2);
+    my $action = shift @ARGV || 'ami';
     my $format = 'format_' . $option{format};
 
     if ( $option{'VERSION'} ) {
@@ -62,7 +67,11 @@ sub main {
     elsif ( $option{'help'} ) {
         pod2usage( -verbose => 1 );
     }
-    elsif ( !main->can($format) ) {
+    elsif ( !$known_actions{$action} ) {
+        warn "Unknown action '$action'!\n";
+        pod2usage( -verbose => 1 );
+    }
+    elsif ( $action eq 'show' && !main->can($format) ) {
         warn "Unknown format '$option{format}'!\n";
         pod2usage( -verbose => 1 );
     }
@@ -74,18 +83,49 @@ sub main {
         return branch_age();
     }
 
-    my @releases = $option{tag} || ( !$option{branch} && $ENV{UP_TO_DATE_TAG} ) ? tag_commit() : branch_commit();
+    my ($type, $regex);
+    if ($option{tag}) {
+        $type = 'tag';
+        $regex = $option{tag};
+    }
+    elsif ($option{branch}) {
+        $type = 'branch';
+        $regex = $option{branch};
+    }
+    elsif ( !$option{tag} && !$option{branch} ) {
+        my $prod = config('workflow.prod') || 'branch=^origin/master$';
+        ($type, $regex) = split /\s*=\s*/, $prod;
+    }
+
+    my @releases = match_commits($type, $regex, $option{max_history});
 
     warn "Branch : $releases[-1]{name}\nSHA    : $releases[-1]{sha}\nTime   : $releases[-1]{time}\n\n" if $option{verbose};
 
     $option{all} = 1 if $option{format} eq 'test';
 
-    my $csv = branches_contain(@releases);
-    if ($option{verbose}) {
-        warn @$csv . " branches found\n";
-    }
+    if ( $action eq 'show' ) {
+        my $csv = branches_contain(@releases);
+        if ($option{verbose}) {
+            warn @$csv . " branches found\n";
+        }
 
-    main->$format($csv, @releases);
+        main->$format($csv, @releases);
+    }
+    elsif ( $action eq 'ami' ) {
+        # work out current branch, check that it contains a release branch
+        my $format = q/--format=format:'%H %at <%an>%ae'/;
+
+        my $bad = 0;
+        for my $release (reverse @releases) {
+            my ($ans) = `git log $format | grep $release->{sha}`;
+            next if $ans;
+            $bad++;
+            warn "Missing release $release->{name}!\n";
+        }
+
+        print "Up to date\n" unless $bad;
+        exit $bad;
+    }
 
     return;
 }
@@ -136,35 +176,6 @@ sub branches_contain {
     return \@csv;
 }
 
-sub tag_commit {
-    $option{tag} ||= $ENV{UP_TO_DATE_TAG} || 'master';
-    my @tags = grep {/$option{tag}/} tags();
-
-    my $oldest = @tags > $option{max_history} ? -$option{max_history} : -scalar @tags;
-    return map { sha_from_show($_) } @tags[ $oldest .. -1 ];
-}
-
-sub branch_commit {
-    $option{branch} ||= $ENV{UP_TO_DATE_BRANCH} || 'master';
-    my @branches = grep {/$option{branch}/} branches();
-
-    my $oldest = @branches > $option{max_history} ? -$option{max_history} : -scalar @branches;
-    return map { sha_from_show($_) } @branches[ $oldest .. -1 ];
-}
-
-sub sha_from_show {
-    my ($name) = @_;
-    my ($log) = `git rev-list -1 --timestamp $name`;
-    chomp $log;
-    my ($time, $sha) = split /\s+/, $log;
-    return {
-        name     => $name,
-        sha      => $sha,
-        time     => $time,
-        branches => { map { $_ => 1 } branches('local', $sha) },
-    };
-}
-
 sub format_text {
     my (undef, $csv, @releases) = @_;
 
@@ -199,8 +210,7 @@ sub format_json {
     my (undef, $csv, @releases) = @_;
 
     require JSON::XS;
-    my $repo = `git config remote.origin.url`;
-    chomp $repo;
+    my $repo   = config('remote.origin.url');
     my ($name) = $repo =~ m{[/:](.*?)(?:[.]git)?$}xms;
 
     print JSON::XS::encode_json({
@@ -222,8 +232,7 @@ sub format_html {
 
     my $sepperator = "</td><td>";
     my $date       = localtime;
-    my $repo       = `git config remote.origin.url`;
-    chomp $repo;
+    my $repo       = config('remote.origin.url');
     print <<"HTML";
 <doctype>
 <html>
@@ -331,6 +340,10 @@ This documentation refers to git-up-to-date version 0.0.1
    git-up-to-date [option]
 
  OPTIONS:
+  ami               (default) determine if the current branch is up-to-date
+  show              Show's the status of all active branches (ie branches with
+                    commits since last release)
+
   -t --tab[=]str    Specify a tag that any branch with newer commits must contain
   -b --branch[=]str Similarly a branch that other branches with newer commits must
                     contain (Default origin/master)
