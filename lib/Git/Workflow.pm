@@ -14,7 +14,7 @@ use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
 our $VERSION     = 0.001;
-our @EXPORT_OK   = qw/branches tags alphanum_sort config /;
+our @EXPORT_OK   = qw/branches tags alphanum_sort config match_commits /;
 our %EXPORT_TAGS = ();
 
 sub alphanum_sort {
@@ -75,6 +75,27 @@ sub config {
     chomp $value;
 
     return $value || $default;
+}
+
+sub match_commits {
+    my ($type, $regex, $max) = @_;
+    my @commits = grep {/$regex/} $type eq 'tag' ? tags() : branches();
+
+    my $oldest = @commits > $max ? -$max : -scalar @commits;
+    return map { sha_from_show($_) } @commits[ $oldest .. -1 ];
+}
+
+sub sha_from_show {
+    my ($name) = @_;
+    my ($log) = `git rev-list -1 --timestamp $name`;
+    chomp $log;
+    my ($time, $sha) = split /\s+/, $log;
+    return {
+        name     => $name,
+        sha      => $sha,
+        time     => $time,
+        branches => { map { $_ => 1 } branches('local', $sha) },
+    };
 }
 
 1;
