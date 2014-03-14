@@ -3,34 +3,13 @@
 use strict;
 use warnings;
 use Test::More;
-use Path::Class;
+use FindBin qw/$Bin/;
 
-my $base = file($0)->parent->parent;
-my $lib  = $base->subdir('lib');
-#my @files = $lib->children;
-#
-#while ( my $file = shift @files ) {
-#    if ( -d $file ) {
-#        push @files, $file->children;
-#    }
-#    elsif ( $file =~ /[.]pm$/ ) {
-#        require_ok $file;
-#    }
-#}
-
-my $bin = $base->subdir('bin');
-my @files = $bin->children;
-
-while ( my $file = shift @files ) {
-    if ( -d $file ) {
-        push @files, $file->children;
-    }
-    elsif ( $file !~ /[.]sw[ponx]$/ ) {
-        my ($bang) = $file->slurp;
-        next if $bang !~ /perl/;
-        ok !(system qw/perl -Ilib -c /, $file), "$file compiles";
-    }
-}
+require_ok('Git::Workflow');
+ok( !(system 'perl', "-I $Bin/../lib", '-c', "$Bin/../bin/git-cows"      ), "bin/git-cows compiles"      );
+ok( !(system 'perl', "-I $Bin/../lib", '-c', "$Bin/../bin/git-feature"   ), "bin/git-feature compiles"   );
+ok( !(system 'perl', "-I $Bin/../lib", '-c', "$Bin/../bin/git-jira"      ), "bin/git-jira compiles"      );
+ok( !(system 'perl', "-I $Bin/../lib", '-c', "$Bin/../bin/git-up-to-date"), "bin/git-up-to-date compiles");
 
 diag( "Testing git-workflow-tools, Perl $], $^X" );
 done_testing();
