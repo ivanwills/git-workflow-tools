@@ -39,6 +39,7 @@ sub main {
         \%option,
         'tag|t=s',
         'branch|b=s',
+        'local|l!',
         'format|f=s',
         'quick|q!',
         'cgit|c=s',
@@ -93,7 +94,7 @@ sub main {
         $regex = $option{branch};
     }
     elsif ( !$option{tag} && !$option{branch} ) {
-        my $prod = config('workflow.prod') || 'branch=^origin/master$';
+        my $prod = config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
         ($type, $regex) = split /\s*=\s*/, $prod;
     }
 
@@ -350,6 +351,7 @@ This documentation refers to git-up-to-date version 0.0.1
   -t --tab[=]str    Specify a tag that any branch with newer commits must contain
   -b --branch[=]str Similarly a branch that other branches with newer commits must
                     contain (Default origin/master)
+  -l --local        Shorthand for --branch '^master$'
   -f --format[=](test|text|html|csv|tab)
                     Set the out put format
                       * test - TAP test formatted output (default)

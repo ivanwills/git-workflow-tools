@@ -37,7 +37,8 @@ sub main {
     Getopt::Long::Configure('bundling');
     GetOptions(
         \%option,
-        'prod|p=s',
+        'tag|t=s',
+        'branch|b=s',
         'local|l!',
         'fetch|f!',
         'test|t',
@@ -60,8 +61,19 @@ sub main {
 
     # do stuff here
     my ($feature_branch) = shift @ARGV;
-    my $prod = $option{prod} || config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
-    my ($type, $regex) = split /\s*=\s*/, $prod;
+    my ($type, $regex);
+    if ($option{tag}) {
+        $type = 'tag';
+        $regex = $option{tag};
+    }
+    elsif ($option{branch}) {
+        $type = 'branch';
+        $regex = $option{branch};
+    }
+    elsif ( !$option{tag} && !$option{branch} ) {
+        my $prod = config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
+        ($type, $regex) = split /\s*=\s*/, $prod;
+    }
 
     system qw/git fetch/ if $option{fetch} && !$option{local};
     my ($release) = grep {/$regex/} $type eq 'branch' ? branches($option{local} ? 'local' : 'remote') : tags();
@@ -90,6 +102,10 @@ This documentation refers to git-feature version 0.0.1
  OPTIONS:
   branch-name       The name of the new branch to create from the current release branch/tag
 
+  -t --tab[=]str    Specify a tag that any branch with newer commits must contain
+  -b --branch[=]str Similarly a branch that other branches with newer commits must
+                    contain (Default origin/master)
+  -l --local        Shorthand for --branch '^master$'
      --no-fetch     Don't fetch before trying to find the remote branch
   -t --test         Test don't actually run
   -v --verbose      Show more details
@@ -107,6 +123,20 @@ branches or tags that follow a naming convention.
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
+
+Defaults for this script can be set throught C<git config>
+
+ workflow.prod  Sets how a prod release is determined
+                eg the default equavilent is branch=^origin/master$
+
+You can set these values either by editing the repository local C<.git/config>
+file or C<~/.gitconfig> or use the C<git config> command
+
+ # eg Setting the global value
+    git config --global workflow.prod 'branch=^origin/master$'
+
+ # or set a repository's local value
+    git config workflow.prod 'tag=^release_\d{4}_\d{2}\d{2}$'
 
 =head1 DEPENDENCIES
 
