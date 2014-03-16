@@ -129,7 +129,7 @@ sub main {
 
         if ($bad) {
             if ( $option{fix} ) {
-                exec qw/git merge/, $releases->[-1]{name};
+                exec qw/git merge/, $releases[-1]{name};
             }
 
             exit $bad;
