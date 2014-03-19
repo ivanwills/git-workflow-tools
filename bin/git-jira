@@ -12,7 +12,7 @@ use Getopt::Long;
 use Pod::Usage;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow qw/branches/;
+use Git::Workflow;
 
 our $VERSION = 0.001;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;

@@ -13,7 +13,7 @@ use Pod::Usage;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
-use Git::Workflow qw/slurp children/;
+use Git::Workflow;
 use lib "$ENV{HOME}/src/VCS-Which/lib";
 
 our $VERSION = '0.001';
