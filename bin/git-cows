@@ -6,9 +6,6 @@
 # $Revision$, $HeadURL$, $Date$
 # $Revision$, $Source$, $Date$
 
-use strict;
-use warnings;
-use Getopt::Long;
 package Pod::Usage;
 
 use vars qw($VERSION);
@@ -673,8 +670,11 @@ sub preprocess_paragraph {
     return  $self->SUPER::preprocess_paragraph($_);
 }
 
-1; # keep require happy
 package main;
+
+use strict;
+use warnings;
+use Getopt::Long;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 
@@ -702,17 +702,17 @@ sub main {
         'man',
         'help',
         'VERSION!',
-    ) or pod2usage(2);
+    ) or Pod::Usage::pod2usage(2);
 
     if ( $option{'VERSION'} ) {
         print "$name Version = $VERSION\n";
         exit 1;
     }
     elsif ( $option{'man'} ) {
-        pod2usage( -verbose => 2 );
+        Pod::Usage::pod2usage( -verbose => 2 );
     }
     elsif ( $option{'help'} ) {
-        pod2usage( -verbose => 1 );
+        Pod::Usage::pod2usage( -verbose => 1 );
     }
 
     # do stuff here

@@ -900,21 +900,21 @@ sub main {
         'man',
         'help',
         'VERSION!',
-    ) or pod2usage(2);
+    ) or Pod::Usage::pod2usage(2);
 
     if ( $option{'VERSION'} ) {
         print "$name Version = $VERSION\n";
         exit 1;
     }
     elsif ( $option{'man'} ) {
-        pod2usage( -verbose => 2 );
+        Pod::Usage::pod2usage( -verbose => 2 );
     }
     elsif ( $option{'help'} ) {
-        pod2usage( -verbose => 1 );
+        Pod::Usage::pod2usage( -verbose => 1 );
     }
     elsif ( !-s $option{config} ) {
         warn "The config file $option{config} is missing!\n";
-        pod2usage( -verbose => 1 );
+        Pod::Usage::pod2usage( -verbose => 1 );
     }
 
     # do stuff here
