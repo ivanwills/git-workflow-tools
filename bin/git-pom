@@ -1,0 +1,202 @@
+#!/usr/bin/perl
+
+# Created on: 2014-03-19 17:18:17
+# Create by:  Ivan Wills
+# $Id$
+# $Revision$, $HeadURL$, $Date$
+# $Revision$, $Source$, $Date$
+
+use strict;
+use warnings;
+use Getopt::Long;
+use Pod::Usage;
+use Data::Dumper qw/Dumper/;
+use English qw/ -no_match_vars /;
+use FindBin qw/$Bin/;
+use Git::Workflow;
+use XML::Tiny;
+
+our $VERSION = 0.001;
+my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
+
+my %option = (
+    pom     => Git::Workflow::config('workflow.pom') || 'pom.xml',
+    verbose => 0,
+    man     => 0,
+    help    => 0,
+    VERSION => 0,
+);
+
+main();
+exit 0;
+
+sub main {
+
+    Getopt::Long::Configure('bundling');
+    GetOptions(
+        \%option,
+        'pom|p=s',
+        'verbose|v+',
+        'man',
+        'help',
+        'VERSION!',
+    ) or pod2usage(2);
+    my $sub_command = shift @ARGV || 'uniq';
+
+    if ( $option{'VERSION'} ) {
+        print "$name Version = $VERSION\n";
+        exit 1;
+    }
+    elsif ( $option{'man'} ) {
+        pod2usage( -verbose => 2 );
+    }
+    elsif ( $option{'help'} ) {
+        pod2usage( -verbose => 1 );
+    }
+    elsif ( !main->can($sub_command) ) {
+        warn "Unknown sub command '$sub_command'!\n";
+        pod2usage( -verbose => 1 );
+    }
+
+    # do stuff here
+    my $versions = get_versions($option{pom});
+
+    main->$sub_command($option{pom}, $versions);
+
+    return;
+}
+
+sub alphanum_sort {
+    my $A = $a;
+    $A =~ s/(\d+)/sprintf "%014i", $1/egxms;
+    my $B = $b;
+    $B =~ s/(\d+)/sprintf "%014i", $1/egxms;
+
+    return $A cmp $B;
+}
+
+sub uniq {
+    my (undef, $pom, $versions) = @_;
+    my $numerical = my $version = pom_version($pom);
+    $numerical =~ s/-SNAPSHOT$//xms;
+
+    if ( !$versions->{$numerical} || keys %{ $versions->{$numerical} } <= 1 ) {
+        print "POM Version $version is unique\n";
+    }
+    else {
+        warn "Following branches are using version $numerical\n";
+        warn "\t", join "\n\t", (sort keys %{ $versions->{$numerical} }), "\n";
+        exit scalar keys %{ $versions->{$numerical} };
+    }
+
+    return;
+}
+
+sub next {
+    my (undef, $pom, $versions) = @_;
+
+    my ($max) = reverse sort alphanum_sort keys %{$versions};
+    my ($primary, $secondary) = split /[.]/, $max;
+    $secondary++;
+
+    print "$primary.$secondary.0-SNAPSHOT\n";
+}
+
+sub get_versions {
+    my ($pom) = @_;
+    my @branches = Git::Workflow::branches('both');
+    my %versions;
+
+    for my $branch (@branches) {
+        my $xml = `git show $branch:$pom 2> /dev/null`;
+        chomp $xml;
+        next if !$xml;
+
+        $branch =~ s{^origin/}{}xms;
+
+        my $numerical = my $version = pom_version($xml);
+        $numerical =~ s/-SNAPSHOT$//xms;
+
+        $versions{$numerical} ||= {};
+        $versions{$numerical}{$branch} = $version;
+    }
+
+    return \%versions;
+}
+
+sub pom_version {
+    my ($xml) = @_;
+    my $doc = XML::Tiny::parsefile( $xml !~ /\n/ && -f $xml ? $xml : '_TINY_XML_STRING_' . $xml);
+
+    for my $elem (@{ $doc->[0]{content} }) {
+        next if $elem->{name} ne 'version';
+
+        return $elem->{content}[0]{content};
+    }
+
+    return;
+}
+
+__DATA__
+
+=head1 NAME
+
+git-pom - Manage pom.xml file versions
+
+=head1 VERSION
+
+This documentation refers to git-pom version 0.0.1
+
+=head1 SYNOPSIS
+
+   git-pom [uniq] [option]
+   git-pom next [option]
+
+ SUB-COMMAND:
+  uniq              Confirm that the current branch is the only branch using it's version
+  next              Calculates the next available version number
+
+ OPTIONS:
+  -o --other        other option
+
+  -v --verbose      Show more detailed option
+     --version      Prints the version information
+     --help         Prints this help information
+     --man          Prints the full documentation for git-pom
+
+=head1 DESCRIPTION
+
+=head1 SUBROUTINES/METHODS
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 DEPENDENCIES
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+There are no known bugs in this module.
+
+Please report problems to Ivan Wills (ivan.wills@gmail.com).
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Ivan Wills - (ivan.wills@gmail.com)
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2014 Ivan Wills (14 Mullion Close, Hornsby Heights, NSW Australia 2077).
+All rights reserved.
+
+This module is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself. See L<perlartistic>.  This program is
+distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.
+
+=cut

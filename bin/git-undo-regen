@@ -81,7 +81,7 @@ sub main {
 }
 
 sub regen {
-    my @regen = map {/^(.*)$/} slurp( $option{config} );
+    my @regen = map {/^(.*)$/} Git::Workflow::slurp( $option{config} );
     my %regen;
 
     while (my $regen = shift @regen) {
@@ -89,7 +89,7 @@ sub regen {
             $regen{$regen} = 1;
         }
         elsif ( -d $regen ) {
-            push @regen, children($regen);
+            push @regen, Git::Workflow::children($regen);
         }
         else {
             push @regen, glob $regen;

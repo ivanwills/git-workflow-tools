@@ -71,12 +71,12 @@ sub main {
         $regex = $option{branch};
     }
     elsif ( !$option{tag} && !$option{branch} ) {
-        my $prod = config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
+        my $prod = Git::Workflow::config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
         ($type, $regex) = split /\s*=\s*/, $prod;
     }
 
     system qw/git fetch/ if $option{fetch} && !$option{local};
-    my ($release) = grep {/$regex/} $type eq 'branch' ? branches($option{local} ? 'local' : 'remote') : tags();
+    my ($release) = grep {/$regex/} $type eq 'branch' ? Git::Workflow::branches($option{local} ? 'local' : 'remote') : Git::Workflow::tags();
     chomp $release;
 
     print join ' ', qw/git checkout -b/, $feature_branch, $release, "\n" if $option{verbose} || $option{test};
