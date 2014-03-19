@@ -9,7 +9,7 @@
 use strict;
 use warnings;
 use Getopt::Long;
-use Pod::Usage;
+use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use Git::Workflow;
@@ -55,7 +55,7 @@ sub main {
         'man',
         'help',
         'VERSION!',
-    ) or pod2usage(2);
+    ) or Pod::Usage::pod2usage(2);
     my $action = shift @ARGV || 'am-i';
     my $format = 'format_' . $option{format};
 
@@ -64,18 +64,18 @@ sub main {
         exit 1;
     }
     elsif ( $option{'man'} ) {
-        pod2usage( -verbose => 2 );
+        Pod::Usage::pod2usage( -verbose => 2 );
     }
     elsif ( $option{'help'} ) {
-        pod2usage( -verbose => 1 );
+        Pod::Usage::pod2usage( -verbose => 1 );
     }
     elsif ( !$known_actions{$action} ) {
         warn "Unknown action '$action'!\n";
-        pod2usage( -verbose => 1 );
+        Pod::Usage::pod2usage( -verbose => 1 );
     }
     elsif ( $action eq 'show' && !main->can($format) ) {
         warn "Unknown format '$option{format}'!\n";
-        pod2usage( -verbose => 1 );
+        Pod::Usage::pod2usage( -verbose => 1 );
     }
 
     qx/git fetch/ if $option{fetch};

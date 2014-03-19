@@ -9,7 +9,7 @@
 use strict;
 use warnings;
 use Getopt::Long;
-use Pod::Usage;
+use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
@@ -40,7 +40,7 @@ sub main {
         'man',
         'help',
         'VERSION!',
-    ) or pod2usage(2);
+    ) or Pod::Usage::pod2usage(2);
     my $sub_command = shift @ARGV || 'uniq';
 
     if ( $option{'VERSION'} ) {
@@ -48,14 +48,14 @@ sub main {
         exit 1;
     }
     elsif ( $option{'man'} ) {
-        pod2usage( -verbose => 2 );
+        Pod::Usage::pod2usage( -verbose => 2 );
     }
     elsif ( $option{'help'} ) {
-        pod2usage( -verbose => 1 );
+        Pod::Usage::pod2usage( -verbose => 1 );
     }
     elsif ( !main->can($sub_command) ) {
         warn "Unknown sub command '$sub_command'!\n";
-        pod2usage( -verbose => 1 );
+        Pod::Usage::pod2usage( -verbose => 1 );
     }
 
     # do stuff here
