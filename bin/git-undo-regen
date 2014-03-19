@@ -1,0 +1,164 @@
+#!/usr/bin/perl
+
+# Created on: 2014-02-18 14:49:48
+# Create by:  dev
+# $Id$
+# $Revision$, $HeadURL$, $Date$
+# $Revision$, $Source$, $Date$
+
+use strict;
+use warnings;
+use Getopt::Long;
+use Pod::Usage;
+use Data::Dumper qw/Dumper/;
+use English qw/ -no_match_vars /;
+use FindBin qw/$Bin/;
+use Git::Workflow qw/slurp children/;
+use lib "$ENV{HOME}/src/VCS-Which/lib";
+
+our $VERSION = '0.001';
+my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
+
+my %option = (
+    config  => '.regen-files',
+    verbose => 0,
+    man     => 0,
+    help    => 0,
+    VERSION => 0,
+);
+
+main();
+exit 0;
+
+sub main {
+
+    Getopt::Long::Configure('bundling');
+    GetOptions(
+        \%option,
+        'config|c=s',
+        'test|t!',
+        'verbose|v+',
+        'man',
+        'help',
+        'VERSION!',
+    ) or pod2usage(2);
+
+    if ( $option{'VERSION'} ) {
+        print "$name Version = $VERSION\n";
+        exit 1;
+    }
+    elsif ( $option{'man'} ) {
+        pod2usage( -verbose => 2 );
+    }
+    elsif ( $option{'help'} ) {
+        pod2usage( -verbose => 1 );
+    }
+    elsif ( !-s $option{config} ) {
+        warn "The config file $option{config} is missing!\n";
+        pod2usage( -verbose => 1 );
+    }
+
+    # do stuff here
+    my $regen = regen();
+
+    FILE:
+    for my $file ( keys %$regen ) {
+        chomp $file;
+        my $status = `git status $file`;
+        my (undef, $merge, $name) = split /\n?[#]\s+(both\s+)?modified:\s+/, $status;
+
+        if ($name) {
+            if ( $option{test} ) {
+                warn "git checkout $file\n";
+                next FILE;
+            }
+            system qw/git checkout/, $file, $merge ? qw/--ours/ : ();
+            system qw/git add/, $file if $merge;
+        }
+    }
+
+    return;
+}
+
+sub regen {
+    my @regen = map {/^(.*)$/} slurp( $option{config} );
+    my %regen;
+
+    while (my $regen = shift @regen) {
+        if ( -f $regen ) {
+            $regen{$regen} = 1;
+        }
+        elsif ( -d $regen ) {
+            push @regen, children($regen);
+        }
+        else {
+            push @regen, glob $regen;
+        }
+    }
+
+    return \%regen;
+}
+
+__DATA__
+
+=head1 NAME
+
+git-undo-regen - <One-line description of commands purpose>
+
+=head1 VERSION
+
+This documentation refers to git-undo-regen version 0.0.1
+
+=head1 SYNOPSIS
+
+   git-undo-regen [option]
+
+ OPTIONS:
+  -c --config[=]file
+                File containing names of files to checkout (Default .regen-file)
+
+  -v --verbose  Show more detailed option
+     --version  Prints the version information
+     --help     Prints this help information
+     --man      Prints the full documentation for git-undo-regen
+
+
+
+=head1 DESCRIPTION
+
+Checkout any file found in C<--config> (default .regen-files), one line per file or glob.
+
+=head1 SUBROUTINES/METHODS
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 DEPENDENCIES
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+There are no known bugs in this module.
+
+Please report problems to Ivan Wills (ivan.wills@gmail.com).
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Ivan Wills - (ivan.wills@gmail.com)
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2014 dev (123 Timbuc Too).
+All rights reserved.
+
+This module is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself. See L<perlartistic>.  This program is
+distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.
+
+=cut
