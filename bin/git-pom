@@ -66,6 +66,15 @@ sub main {
     return;
 }
 
+sub alphanum_sort {
+    my $A = $a;
+    $A =~ s/(\d+)/sprintf "%014i", $1/egxms;
+    my $B = $b;
+    $B =~ s/(\d+)/sprintf "%014i", $1/egxms;
+
+    return $A cmp $B;
+}
+
 sub uniq {
     my (undef, $pom, $versions) = @_;
     my $numerical = my $version = pom_version($pom);
@@ -85,6 +94,12 @@ sub uniq {
 
 sub next {
     my (undef, $pom, $versions) = @_;
+
+    my ($max) = reverse sort alphanum_sort keys %{$versions};
+    my ($primary, $secondary) = split /[.]/, $max;
+    $secondary++;
+
+    print "$primary.$secondary.0-SNAPSHOT\n";
 }
 
 sub get_versions {
