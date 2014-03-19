@@ -676,7 +676,6 @@ sub preprocess_paragraph {
     return  $self->SUPER::preprocess_paragraph($_);
 }
 
-1; # keep require happy
 package XML::Tiny;
 
 use strict;
@@ -1285,8 +1284,6 @@ sub children {
 
     return grep { $_ ne '.' && $_ ne '..' } readdir $dh;
 }
-
-1;
 
 =head1 NAME
 

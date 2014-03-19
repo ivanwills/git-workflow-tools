@@ -673,7 +673,6 @@ sub preprocess_paragraph {
     return  $self->SUPER::preprocess_paragraph($_);
 }
 
-1; # keep require happy
 package Git::Workflow;
 
 # Created on: 2014-03-11 22:09:32
@@ -787,8 +786,6 @@ sub children {
 
     return grep { $_ ne '.' && $_ ne '..' } readdir $dh;
 }
-
-1;
 
 =head1 NAME
 
