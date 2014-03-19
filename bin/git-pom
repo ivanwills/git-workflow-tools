@@ -6,12 +6,6 @@
 # $Revision$, $HeadURL$, $Date$
 # $Revision$, $Source$, $Date$
 
-use strict;
-use warnings;
-use Getopt::Long;
-use Data::Dumper qw/Dumper/;
-use English qw/ -no_match_vars /;
-use FindBin qw/$Bin/;
 package Pod::Usage;
 
 use vars qw($VERSION);
@@ -1368,6 +1362,12 @@ PARTICULAR PURPOSE.
 
 package main;
 
+use strict;
+use warnings;
+use Getopt::Long;
+use Data::Dumper qw/Dumper/;
+use English qw/ -no_match_vars /;
+use FindBin qw/$Bin/;
 our $VERSION = 0.001;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 

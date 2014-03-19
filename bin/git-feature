@@ -6,9 +6,6 @@
 # $Revision$, $HeadURL$, $Date$
 # $Revision$, $Source$, $Date$
 
-use strict;
-use warnings;
-use Getopt::Long;
 package Pod::Usage;
 
 use vars qw($VERSION);
@@ -869,6 +866,10 @@ PARTICULAR PURPOSE.
 =cut
 
 package main;
+
+use strict;
+use warnings;
+use Getopt::Long;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 
