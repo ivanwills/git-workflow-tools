@@ -63,7 +63,7 @@ sub main {
     $jira = lc $jira;
 
     # check local branches first
-    my ($branch) = grep {/^(\w+_)?$jira/} branches();
+    my ($branch) = grep {/^(\w+_)?$jira/} Git::Workflow::branches();
 
     if ($branch) {
         chomp $branch;
@@ -71,7 +71,7 @@ sub main {
     }
     else {
         # check if there is a remote branch
-        my ($remote_branch) = grep {/^origin\/(\w+_)?$jira/} branches('remote');
+        my ($remote_branch) = grep {/^origin\/(\w+_)?$jira/} Git::Workflow::branches('remote');
         if ($remote_branch) {
             chomp $remote_branch;
             $branch = $remote_branch;

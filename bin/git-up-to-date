@@ -19,7 +19,7 @@ my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
     format      => 'test',
-    max_history => config('workflow.max-history') || 1,
+    max_history => Git::Workflow::config('workflow.max-history') || 1,
     verbose     => 0,
     man         => 0,
     help        => 0,
@@ -95,11 +95,11 @@ sub main {
         $regex = $option{branch};
     }
     elsif ( !$option{tag} && !$option{branch} ) {
-        my $prod = config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
+        my $prod = Git::Workflow::config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
         ($type, $regex) = split /\s*=\s*/, $prod;
     }
 
-    my @releases = match_commits($type, $regex, $option{max_history});
+    my @releases = Git::Workflow::match_commits($type, $regex, $option{max_history});
     die "Could not find any historic releases for $type /$regex/!\n" if !@releases;
 
     if ($option{verbose}) {
@@ -155,7 +155,7 @@ DETAILS
 
 sub branches_contain {
     my @releases = @_;
-    my @branches = branches();
+    my @branches = Git::Workflow::branches();
     my $format = q/--format=format:'%H %at <%an>%ae'/;
     my @csv;
 
@@ -233,7 +233,7 @@ sub format_json {
     my (undef, $csv, @releases) = @_;
 
     require JSON::XS;
-    my $repo   = config('remote.origin.url');
+    my $repo   = Git::Workflow::config('remote.origin.url');
     my ($name) = $repo =~ m{[/:](.*?)(?:[.]git)?$}xms;
 
     print JSON::XS::encode_json({
@@ -255,7 +255,7 @@ sub format_html {
 
     my $sepperator = "</td><td>";
     my $date       = localtime;
-    my $repo       = config('remote.origin.url');
+    my $repo       = Git::Workflow::config('remote.origin.url');
     print <<"HTML";
 <doctype>
 <html>
@@ -312,7 +312,7 @@ sub format_test {
 }
 
 sub branch_status {
-    my @branches = branches();
+    my @branches = Git::Workflow::branches();
     my $format = q/--format=format:'%H %at <%an>%ae'/;
     my $before = $option{age_limit} || ymd();
     my %bin;
