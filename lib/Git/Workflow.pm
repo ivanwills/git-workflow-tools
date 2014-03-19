@@ -14,7 +14,7 @@ use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
 our $VERSION     = 0.001;
-our @EXPORT_OK   = qw/branches tags alphanum_sort config match_commits /;
+our @EXPORT_OK   = qw/branches tags alphanum_sort config match_commits slurp children /;
 our %EXPORT_TAGS = ();
 
 sub alphanum_sort {
@@ -96,6 +96,20 @@ sub sha_from_show {
         time     => $time,
         branches => { map { $_ => 1 } branches('local', $sha) },
     };
+}
+
+sub slurp {
+    my ($file) = @_;
+    open my $fh, '<', $file or die "Can't open file '$file' for reading: $!\n";
+
+    return wantarray ? <$fh> : dop { local $/; <$fh> };
+}
+
+sub children {
+    my ($dir) = @_;
+    opendir my $dh, $dir or die "Couldn't open directory '$dir' for reading: $!\n";
+
+    return grep { $_ ne '.' && $_ ne '..' } readdir $dh;
 }
 
 1;
