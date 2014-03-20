@@ -181,8 +181,10 @@ sub branches_contain {
         }
 
         my $age = time - $releases[0]{time} + 10 * 60 * 60 * 24;
+        my $ago = 0;
         RELEASE:
         for my $released (reverse @releases) {
+            $ago++;
             next RELEASE if !$released->{branches}{$branch};
 
             $release = $released->{name};
@@ -192,7 +194,7 @@ sub branches_contain {
 
         next BRANCH if !$option{all} && !$option{verbose} && $found;
 
-        push @csv, [ $release || "Out of date", $branch, $author, int $age / 60 / 60 / 24];
+        push @csv, [ $release || "Out of date", $branch, $author, int $age / 60 / 60 / 24, $ago];
         warn +( $found ? 'up to date' : "missing $releases[-1]{name}" ) . "\t$branch\t$author\n" if $option{quick};
     }
 
@@ -277,7 +279,7 @@ HTML
             my ($branch) = $row->[1] =~ m{^(?:[^/]+/)?(.+)$}xms;
             $row->[1] = qq[<a href="$option{cgit}/log/?h=$branch" title="cgit log">$branch</a>];
         }
-        print "<tr class=\"age_$row->[3]\"><td>" . (join $sepperator, @$row), "</td></tr>\n";
+        print "<tr class=\"age_$row->[4]\"><td>" . (join $sepperator, @$row), "</td></tr>\n";
     }
 
     print "</table>\n";
