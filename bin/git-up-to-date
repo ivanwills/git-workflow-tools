@@ -155,7 +155,7 @@ DETAILS
 
 sub branches_contain {
     my @releases = @_;
-    my @branches = Git::Workflow::branches();
+    my @branches = Git::Workflow::branches('both');
     my $format = q/--format=format:'%H %at <%an>%ae'/;
     my @csv;
 
@@ -257,16 +257,8 @@ sub format_html {
     my $date       = localtime;
     my $repo       = Git::Workflow::config('remote.origin.url');
     print <<"HTML";
-<doctype>
-<html>
-<head>
-<title>Branch status for $repo</title>
-<link rel="stylesheet" type="text/css" href="style.css" />
-<script type="text/javascript" href="script.js"></script>
-</head>
-<body>
-<h1>Branch statuses for <i>$repo</i> ($date)</h1>
 <table>
+    <caption>Branch statuses for <i>$repo</i> ($date)</caption>
     <thead>
         <tr>
             <th>Production Branch/Tag Status</th>
@@ -282,17 +274,13 @@ HTML
         $row->[0] = $row->[0] eq $releases[-1]{name} ? $row->[0] : qq{<span class="old">$row->[0]</span>};
         $row->[2] = $row->[0] eq $releases[-1]{name} ? $name : qq{<a href="mailto:$email?subject=$row->[1]%20is%20out%20of%20date">$name</a>};
         if ($option{cgit}) {
-            my ($branch) = $row->[1] =~ m{^[^/]+/(.+)$}xms;
+            my ($branch) = $row->[1] =~ m{^(?:[^/]+/)?(.+)$}xms;
             $row->[1] = qq[<a href="$option{cgit}/log/?h=$branch" title="cgit log">$branch</a>];
         }
-        print "<tr><td>" . (join $sepperator, @$row), "</td></tr>\n";
+        print "<tr class=\"age_$row->[3]\"><td>" . (join $sepperator, @$row), "</td></tr>\n";
     }
 
-    print <<"HTML";
-</table>
-</body>
-</html>
-HTML
+    print "</table>\n";
 
     return;
 }
@@ -312,7 +300,7 @@ sub format_test {
 }
 
 sub branch_status {
-    my @branches = Git::Workflow::branches();
+    my @branches = Git::Workflow::branches('both');
     my $format = q/--format=format:'%H %at <%an>%ae'/;
     my $before = $option{age_limit} || ymd();
     my %bin;
