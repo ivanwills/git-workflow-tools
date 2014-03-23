@@ -181,7 +181,7 @@ sub branches_contain {
         }
 
         my $age = time - $releases[0]{time} + 10 * 60 * 60 * 24;
-        my $ago = 0;
+        my $ago = -1;
         RELEASE:
         for my $released (reverse @releases) {
             $ago++;
@@ -279,7 +279,7 @@ HTML
             my ($branch) = $row->[1] =~ m{^(?:[^/]+/)?(.+)$}xms;
             $row->[1] = qq[<a href="$option{cgit}/log/?h=$branch" title="cgit log">$branch</a>];
         }
-        print "<tr class=\"age_$row->[4]\"><td>" . (join $sepperator, @$row), "</td></tr>\n";
+        print "<tr class=\"age_$row->[4]\"><td>" . (join $sepperator, @$row[0..3]), "</td></tr>\n";
     }
 
     print "</table>\n";
