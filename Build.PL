@@ -8,7 +8,8 @@ my $builder = Module::Build->new(
     dist_author       => 'Ivan Wills <ivan.wills@gmail.com>',
     dist_version      => '0.1',
     requires          => {
-        'perl' => '5.008',
+        'perl'      => '5.008',
+        'XML::Tiny' => 0,
     },
     recommends => {
         'JSON::XS'    => '2.34',
