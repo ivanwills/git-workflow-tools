@@ -94,7 +94,7 @@ sub sha_from_show {
         name     => $name,
         sha      => $sha,
         time     => $time,
-        branches => { map { $_ => 1 } branches('local', $sha) },
+        branches => { map { $_ => 1 } branches('both', $sha) },
     };
 }
 
