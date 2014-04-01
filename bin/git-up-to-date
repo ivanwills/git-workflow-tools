@@ -26,8 +26,9 @@ my %option = (
     VERSION     => 0,
 );
 my %known_actions = (
-    'am-i' => 1,
-    show   => 1,
+    'am-i'  => 1,
+    show    => 1,
+    current => 1,
 );
 
 main();
@@ -97,6 +98,10 @@ sub main {
     elsif ( !$option{tag} && !$option{branch} ) {
         my $prod = Git::Workflow::config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
         ($type, $regex) = split /\s*=\s*/, $prod;
+        if ( !$regex ) {
+            $type = 'branch';
+            $regex = '^origin/master$';
+        }
     }
 
     my @releases = Git::Workflow::match_commits($type, $regex, $option{max_history});
@@ -148,6 +153,9 @@ DETAILS
         else {
             print "Up to date\n";
         }
+    }
+    elsif ( $action eq 'current' ) {
+        print "Current prod \"$releases[0]{name}\"\n";
     }
 
     return;
@@ -350,12 +358,15 @@ This documentation refers to git-up-to-date version 0.0.1
 
 =head1 SYNOPSIS
 
-   git-up-to-date [option] [show|am-i]
+   git-up-to-date [am-i] [option]
+   git-up-to-date show [option]
+   git-up-to-date current [option]
 
  SUB-COMMANDS
-  am-i               (default) determine if the current branch is up-to-date
+  am-i              (default) determine if the current branch is up-to-date
   show              Show's the status of all active branches (ie branches with
                     commits since last release)
+  current           Show the current "production" branch or tag
 
  OPTIONS:
   -t --tab[=]str    Specify a tag that any branch with newer commits must contain
