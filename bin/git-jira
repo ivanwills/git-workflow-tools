@@ -98,11 +98,12 @@ sub which_branch {
     return $branches[0] if @branches == 1;
 
     my $count = 0;
-    print "Which branch:\n\t";
-    print join "", map { ++$count . ". $_\n\t" } @branches;
-    print "\n[1..$count] : ";
-    my $ans = <>;
+    print {*STDERR} "Which branch:\n\t";
+    print {*STDERR} join "", map { ++$count . ". $_\n\t" } @branches;
+    print {*STDERR} "\n[1..$count] : ";
+    my $ans = <STDIN>;
     chomp $ans;
+    $ans--;
     die "Bad answer!\n" if !$branches[$ans];
 
     return $branches[$ans];
