@@ -38,7 +38,8 @@ sub main {
     Getopt::Long::Configure('bundling');
     GetOptions(
         \%option,
-        'out|o=s',
+        'all|a',
+        'remote|r',
         'verbose|v+',
         'man',
         'help',
@@ -63,18 +64,18 @@ sub main {
     $jira = lc $jira;
 
     # check local branches first
-    my ($branch) = grep {/^(\w+_)?$jira/} Git::Workflow::branches();
+    my @branch = grep {/^(\w+_)?$jira/} Git::Workflow::branches();
 
-    if ($branch) {
-        chomp $branch;
+    if (@branch && !$option{remote}) {
+        my $branch = which_branch(@branch);
         system qw/git checkout/, $branch;
     }
     else {
         # check if there is a remote branch
-        my ($remote_branch) = grep {/^origin\/(\w+_)?$jira/} Git::Workflow::branches('remote');
-        if ($remote_branch) {
-            chomp $remote_branch;
-            $branch = $remote_branch;
+        my (@remote_branch) = grep {/^origin\/(\w+_)?$jira/} Git::Workflow::branches('remote');
+        if (@remote_branch) {
+            my $remote_branch = which_branch(@remote_branch);
+            my $branch = $remote_branch;
             $branch =~ s{^origin/}{};
             system qw/git checkout -b/, $branch, '--track', $remote_branch;
         }
@@ -89,6 +90,22 @@ sub main {
     }
 
     return;
+}
+
+sub which_branch {
+    my @branches = map {/(.*)$/} @_;
+
+    return $branches[0] if @branches == 1;
+
+    my $count = 0;
+    print "Which branch:\n\t";
+    print join "", map { ++$count . ". $_\n\t" } @branches;
+    print "\n[1..$count] : ";
+    my $ans = <>;
+    chomp $ans;
+    die "Bad answer!\n" if !$branches[$ans];
+
+    return $branches[$ans];
 }
 
 __DATA__
