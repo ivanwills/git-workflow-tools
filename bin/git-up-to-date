@@ -13,6 +13,7 @@ use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use Git::Workflow;
+use Carp qw/cluck/;
 
 our $VERSION = 0.001;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -122,41 +123,66 @@ DETAILS
 
     $option{all} = 1 if $option{format} eq 'test';
 
-    if ( $action eq 'show' ) {
-        my $csv = branches_contain(@releases);
-        if ($option{verbose}) {
-            warn @$csv . " branches found\n";
-        }
+    $action =~ s/-/_/g;
+    $action = "do_$action";
 
-        main->$format($csv, @releases);
+    main->$action(@releases);
+
+    return;
+}
+
+sub do_show {
+    my (undef, @releases) = @_;
+    my $csv = branches_contain(@releases);
+    if ($option{verbose}) {
+        warn @$csv . " branches found\n";
     }
-    elsif ( $action eq 'am-i' ) {
-        # work out current branch, check that it contains a release branch
-        my $format = q/--format=format:'%H %at <%an>%ae'/;
 
-        my $bad = 0;
-        for my $release (reverse @releases) {
-            my ($ans) = `git log $format | grep $release->{sha}`;
-            chomp $ans if $ans;
-            next if $ans;
-            $bad++;
-            warn "Missing release $release->{name}!\n";
-        }
+    my $format = 'format_' . $option{format};
+    main->$format($csv, @releases);
 
-        if ($bad) {
-            if ( $option{fix} ) {
-                exec qw/git merge/, $releases[-1]{name};
-            }
+    return;
+}
 
-            exit $bad;
-        }
-        else {
-            print "Up to date\n";
-        }
+sub do_am_i {
+    my (undef, @releases) = @_;
+
+    # work out current branch, check that it contains a release branch
+    my $format = q/--format=format:'%H %at <%an>%ae'/;
+
+    my $bad = 0;
+    for my $release (reverse @releases) {
+        my ($ans) = `git log $format | grep $release->{sha}`;
+        chomp $ans if $ans;
+        next if $ans;
+        $bad++;
+        warn "Missing release $release->{name}!\n";
     }
-    elsif ( $action eq 'current' ) {
-        print "Current prod \"$releases[0]{name}\"\n";
+
+    if ($bad) {
+        if ( $option{fix} ) {
+            exec qw/git merge/, $releases[-1]{name};
+        }
+
+        exit $bad;
     }
+    else {
+        print "Up to date\n";
+    }
+
+    return;
+}
+
+sub do_current {
+    my (undef, @releases) = @_;
+    print "Current prod \"$releases[0]{name}\"\n";
+
+    return;
+}
+
+sub do_update_me {
+    my (undef, @releases) = @_;
+    print "Current prod \"$releases[0]{name}\"\n";
 
     return;
 }
@@ -361,12 +387,14 @@ This documentation refers to git-up-to-date version 0.0.1
    git-up-to-date [am-i] [option]
    git-up-to-date show [option]
    git-up-to-date current [option]
+   git-up-to-date update-me [option]
 
  SUB-COMMANDS
   am-i              (default) determine if the current branch is up-to-date
   show              Show's the status of all active branches (ie branches with
                     commits since last release)
   current           Show the current "production" branch or tag
+  update-me         Merges in the latest release
 
  OPTIONS:
   -t --tab[=]str    Specify a tag that any branch with newer commits must contain
