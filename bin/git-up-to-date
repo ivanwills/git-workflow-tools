@@ -132,14 +132,14 @@ DETAILS
 }
 
 sub do_show {
-    my (undef, @releases) = @_;
+    my ($main, @releases) = @_;
     my $csv = branches_contain(@releases);
     if ($option{verbose}) {
         warn @$csv . " branches found\n";
     }
 
     my $format = 'format_' . $option{format};
-    main->$format($csv, @releases);
+    $main->$format($csv, @releases);
 
     return;
 }
