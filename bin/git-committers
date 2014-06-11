@@ -1,0 +1,158 @@
+#!/usr/bin/perl
+
+# Created on: 2014-06-11 10:00:36
+# Create by:  Ivan Wills
+# $Id$
+# $Revision$, $HeadURL$, $Date$
+# $Revision$, $Source$, $Date$
+
+use strict;
+use warnings;
+use Getopt::Long;
+use Pod::Usage ();
+use Data::Dumper qw/Dumper/;
+use English qw/ -no_match_vars /;
+use Time::Piece;
+
+our $VERSION = 0.001;
+my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
+
+my %option = (
+    period  => 'day',
+    verbose => 0,
+    man     => 0,
+    help    => 0,
+    VERSION => 0,
+);
+
+main();
+exit 0;
+
+sub main {
+
+    Getopt::Long::Configure('bundling');
+    GetOptions(
+        \%option,
+        'date|d=s',
+        'period|p=s',
+        'verbose|v+',
+        'man',
+        'help',
+        'VERSION!',
+    ) or Pod::Usage::pod2usage(2);
+
+    if ( $option{'VERSION'} ) {
+        print "$name Version = $VERSION\n";
+        exit 1;
+    }
+    elsif ( $option{'man'} ) {
+        Pod::Usage::pod2usage( -verbose => 2 );
+    }
+    elsif ( $option{'help'} ) {
+        Pod::Usage::pod2usage( -verbose => 1 );
+    }
+
+    # do stuff here
+    my %users;
+    my $commits = 0;
+    my $date = $option{date};
+
+    if (!$date) {
+        my $now = localtime;
+        my $period
+            = $option{period} eq 'day'   ? 1
+            : $option{period} eq 'week'  ? 7
+            : $option{period} eq 'month' ? 30
+            : $option{period} eq 'year'  ? 365
+            :                              1;
+        $date
+            = $now->wday == 1 ? localtime(time - 3 * $period * 24 * 60 * 60)->ymd
+            : $now->wday == 7 ? localtime(time - 2 * $period * 24 * 60 * 60)->ymd
+            :                   localtime(time - 1 * $period * 24 * 60 * 60)->ymd;
+    }
+
+    open my $branches, '-|', 'git branch -r' or die "Can't read branches: $!\n";
+
+    while (my $branch = <$branches>) {
+        warn qq{git log --format=format:"%h %an" --since=$date $branch} if $option{verbose};
+        chomp $branch;
+        open my $logs, '-|', qq{git log --format=format:"%h %an" --since=$date $branch} or die "Can't read logs: $!\n";
+        while (my $log = <$logs>) {
+            chomp $log;
+            my ($hash, $name) = split /\s/, $log, 2;
+            $users{$name}{$hash} = 1;
+            $commits++;
+        }
+    }
+
+    print map {sprintf "% 4d $_\n", $users{$_}}
+        reverse sort {$users{$a} <=> $users{$b}}
+        map { $users{$_} = scalar keys %{$users{$_}}; $_ }
+        keys %users;
+    print "Total commits = $commits\n";
+
+    return;
+}
+
+__DATA__
+
+=head1 NAME
+
+git-committers - Stats on the number of commits by commiter
+
+=head1 VERSION
+
+This documentation refers to git-committers version 0.0.1
+
+=head1 SYNOPSIS
+
+   git-committers [option]
+
+ OPTIONS:
+  -d --date=YYYY-MM-DD
+                Commits since this date
+  -p --period=[day|week|month|year]
+                If --date is not specified this works out the date for the
+                last day/week/month/year
+
+  -v --verbose  Show more detailed option
+     --version  Prints the version information
+     --help     Prints this help information
+     --man      Prints the full documentation for git-committers
+
+=head1 DESCRIPTION
+
+=head1 SUBROUTINES/METHODS
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 DEPENDENCIES
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+There are no known bugs in this module.
+
+Please report problems to Ivan Wills (ivan.wills@gmail.com).
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Ivan Wills - (ivan.wills@gmail.com)
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2014 Ivan Wills (14 Mullion Close, Hornsby Heights, NSW Australia 2077).
+All rights reserved.
+
+This module is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself. See L<perlartistic>.  This program is
+distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.
+
+=cut
