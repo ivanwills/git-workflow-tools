@@ -102,7 +102,7 @@ This documentation refers to git-feature version 0.0.1
  OPTIONS:
   branch-name       The name of the new branch to create from the current release branch/tag
 
-  -t --tab[=]str    Specify a tag that any branch with newer commits must contain
+  -t --tag[=]str    Specify a tag that any branch with newer commits must contain
   -b --branch[=]str Similarly a branch that other branches with newer commits must
                     contain (Default origin/master)
   -l --local        Shorthand for --branch '^master$'
@@ -115,8 +115,12 @@ This documentation refers to git-feature version 0.0.1
 
 =head1 DESCRIPTION
 
-Allows for a short cut method of creating feature branches from specific
-branches or tags that follow a naming convention.
+The C<git feature> command alows a simplified way to create and switch to
+feature branches using whatever is defined as the I<current release>
+
+By default I<current release> is defined as the origin/master branch that
+can be changed either on the command line using the --tag or --branch
+arguments or by setting the C<workflow.prod> git config.
 
 =head1 SUBROUTINES/METHODS
 
