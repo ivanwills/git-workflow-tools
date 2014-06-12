@@ -41,6 +41,7 @@ sub main {
         'branch|b=s',
         'local|l!',
         'fetch|f!',
+        'push|p',
         'test|t',
         'verbose|v+',
         'man',
@@ -76,11 +77,20 @@ sub main {
     }
 
     system qw/git fetch/ if $option{fetch} && !$option{local};
-    my ($release) = grep {/$regex/} $type eq 'branch' ? Git::Workflow::branches($option{local} ? 'local' : 'remote') : Git::Workflow::tags();
+    my ($release) = reverse grep {/$regex/} $type eq 'branch' ? Git::Workflow::branches($option{local} ? 'local' : 'remote') : Git::Workflow::tags();
     chomp $release;
 
-    print join ' ', qw/git checkout -b/, $feature_branch, $release, "\n" if $option{verbose} || $option{test};
-    system qw/git checkout -b/, $feature_branch, $release if !$option{test};
+    # checkout branch
+    my @cmd = ( qw/git checkout -b/, $feature_branch, $release );
+    print join ' ', @cmd, "\n" if $option{verbose} || $option{test};
+    system @cmd if !$option{test};
+
+    # push if requested to
+    if ($option{push}) {
+        @cmd = ( qw/git push -u origin/, $feature_branch );
+        print join ' ', @cmd, "\n" if $option{verbose} || $option{test};
+        system @cmd if !$option{test};
+    }
 
     return;
 }
@@ -106,6 +116,7 @@ This documentation refers to git-feature version 0.0.1
   -b --branch[=]str Similarly a branch that other branches with newer commits must
                     contain (Default origin/master)
   -l --local        Shorthand for --branch '^master$'
+  -p --push         Push the new brach upstream
      --no-fetch     Don't fetch before trying to find the remote branch
   -t --test         Test don't actually run
   -v --verbose      Show more details
