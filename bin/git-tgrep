@@ -33,6 +33,7 @@ sub main {
     GetOptions(
         \%option,
         'verbose|v+',
+        'sort|s',
         'man',
         'help',
         'VERSION!',
@@ -53,7 +54,18 @@ sub main {
     my $cmd = join ' ', qw/git tab/;
 
     print "$cmd | grep -P '$ARGV[0]'\n" if $option{verbose} || $option{test};
-    return exec "$cmd | grep -P '$ARGV[0]'";
+    return exec "$cmd | grep -P '$ARGV[0]' | sort -n" if !$option{sort};
+
+    print sort {sorter()} `$cmd | grep -P '$ARGV[0]'`;
+}
+
+sub sorter {
+    no warnings;
+    my $A = $a;
+    my $B = $b;
+    $A =~ s/(\d+)/sprintf "%06d", $1/egxms;
+    $B =~ s/(\d+)/sprintf "%06d", $1/egxms;
+    $A cmp $B;
 }
 
 __DATA__
