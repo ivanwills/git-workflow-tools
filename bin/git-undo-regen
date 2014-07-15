@@ -36,6 +36,8 @@ sub main {
     GetOptions(
         \%option,
         'config|c=s',
+        'ours|o',
+        'theirs|t',
         'test|t!',
         'verbose|v+',
         'man',
@@ -60,6 +62,7 @@ sub main {
 
     # do stuff here
     my $regen = regen();
+    my $merge = $option{theirs} && !$option{ours} ? '--theirs' : '--ours';
 
     FILE:
     for my $file ( keys %$regen ) {
@@ -72,7 +75,7 @@ sub main {
                 warn "git checkout $file\n";
                 next FILE;
             }
-            system qw/git checkout/, $file, $merge ? qw/--ours/ : ();
+            system qw/git checkout/, $file, $merge ? ($merge) : ();
             system qw/git add/, $file if $merge;
         }
     }
@@ -103,7 +106,7 @@ __DATA__
 
 =head1 NAME
 
-git-undo-regen - <One-line description of commands purpose>
+git-undo-regen - Undo changes from a regen
 
 =head1 VERSION
 
@@ -116,6 +119,9 @@ This documentation refers to git-undo-regen version 0.0.1
  OPTIONS:
   -c --config[=]file
                 File containing names of files to checkout (Default .regen-file)
+     --ours     Do a git checkout --ours in a merge (default in a merge)
+     --theirs   Do a git checkout --theirs in a merge
+  -t --test     Don't actually checkout just show what would be checked out
 
   -v --verbose  Show more detailed option
      --version  Prints the version information

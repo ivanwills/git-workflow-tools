@@ -85,7 +85,7 @@ This documentation refers to git-branch-grep version 0.0.1
 
 =head1 SYNOPSIS
 
-   git-branch-grep [option]
+   git-branch-grep [option] regex
 
  OPTIONS:
   regex         grep's perl (-P) regular expression

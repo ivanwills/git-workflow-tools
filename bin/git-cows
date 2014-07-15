@@ -17,7 +17,6 @@ our $VERSION = 0.001;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
-    out     => undef,
     verbose => 0,
     man     => 0,
     help    => 0,
@@ -83,16 +82,23 @@ This documentation refers to git-cows version 0.0.1
    git-cows [option]
 
  OPTIONS:
+  -q --quiet    Suppress notifying of files changed
 
-  -v --verbose       Show more detailed option
-     --version       Prints the version information
-     --help          Prints this help information
-     --man           Prints the full documentation for git-cows
+  -v --verbose  Show more detailed option
+     --version  Prints the version information
+     --help     Prints this help information
+     --man      Prints the full documentation for git-cows
 
 =head1 DESCRIPTION
 
-Reset any files that only contain whitespace changes so they don't appear
-in C<git status>.
+C<git-cows> resets any files that only contain whitespace changes.
+This is done by finding all files modified (as shown by a C<git status>) ard
+run them through C<git diff -w>. If any file results in no out put is shown
+(ie the changes are only white spaces) the file is then C<git checkout>ed to
+remove those changes.
+
+This makes it easier make your commits clean of pointless whitespace only
+changes and makes others work easier.
 
 =head1 SUBROUTINES/METHODS
 

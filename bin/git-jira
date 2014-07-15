@@ -125,7 +125,8 @@ This documentation refers to git-jira version 0.0.1
 
  OPTIONS:
   JIRAID            A Jira format id
-  -o --other        other option
+  -r --remote       Look in remote branches for the jira branch
+  -a --all          Look everywhere?
 
   -v --verbose      Show more detailed option
      --version      Prints the version information
