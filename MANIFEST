@@ -1,12 +1,16 @@
+bin/git-bgrep
+bin/git-committers
 bin/git-cows
 bin/git-feature
 bin/git-hook-setup
 bin/git-jira
 bin/git-pom
+bin/git-tgrep
 bin/git-undo-regen
 bin/git-up-to-date
 Build.PL
 Changes
+fatpack.pl
 hooks/commit-msg
 install.pl
 lib/Git/Workflow.pm
