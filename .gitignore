@@ -18,3 +18,5 @@ nytprof*
 tmp*
 *~
 errors.err
+fatlib/
+out/
