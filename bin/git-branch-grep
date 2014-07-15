@@ -77,15 +77,15 @@ __DATA__
 
 =head1 NAME
 
-git-bgrep - grep for branch names
+git-branch-grep - grep for branch names
 
 =head1 VERSION
 
-This documentation refers to git-bgrep version 0.0.1
+This documentation refers to git-branch-grep version 0.0.1
 
 =head1 SYNOPSIS
 
-   git-bgrep [option]
+   git-branch-grep [option]
 
  OPTIONS:
   regex         grep's perl (-P) regular expression
@@ -95,7 +95,7 @@ This documentation refers to git-bgrep version 0.0.1
   -v --verbose  Show more detailed option
      --version  Prints the version information
      --help     Prints this help information
-     --man      Prints the full documentation for git-bgrep
+     --man      Prints the full documentation for git-branch-grep
 
 =head1 DESCRIPTION
 
