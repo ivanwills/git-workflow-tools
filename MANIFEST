@@ -1,11 +1,11 @@
-bin/git-bgrep
+bin/git-branch-grep
 bin/git-committers
 bin/git-cows
 bin/git-feature
 bin/git-hook-setup
 bin/git-jira
 bin/git-pom
-bin/git-tgrep
+bin/git-tag-grep
 bin/git-undo-regen
 bin/git-up-to-date
 Build.PL
@@ -16,6 +16,7 @@ install.pl
 lib/Git/Workflow.pm
 LICENSE
 Makefile.PL
+META.yml
 MANIFEST
 MANIFEST.SKIP
 META.yml
