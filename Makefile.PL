@@ -6,8 +6,10 @@ WriteMakefile
   'NAME' => 'git-workflow-tools',
   'VERSION_FROM' => 'lib/git-workflow-tools.pm',
   'PREREQ_PM' => {
+                   'Path::Class' => 0,
                    'Test::More' => 0,
                    'Test::NoWarnings' => 0,
+                   'Time::Piece' => 0,
                    'XML::Tiny' => 0
                  },
   'INSTALLDIRS' => 'site',

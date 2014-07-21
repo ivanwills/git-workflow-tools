@@ -1,5 +1,70 @@
 Revision history for git-workflow-tools
 
-0.0.1   Date/time
-        First version, released on an unsuspecting world.
+0.1     2014-07-22
+        Updated version numbers
+        Updated dependencies
+        Fixed module stuff
+        Added missing scripts to test
+        Fixed spelling issues
+        Fixed manafest
+        Lots of POD cleaning/work
+        Fixed documentation to match new names
+        Renamed files
+        Udated manafest
+        Added helper script to create fatpacked file
+        Added numerical sorting option
+        Fixed calling of format method
+        Shorthand scripts
+        Added push option to imediatly push the branch
+        Improved documentation
+        New script to show stats on committers
+        Refactored actions to methods, added update-me sub-command
+        installation helper script
+        Updated manifest
+        Fixed question not being displayed before answer request
+        Starting to add logic for handling case where there are multiple branches for a jira
+        Added "current" sub-command to show current branch or tag
+        Graham's updates
+        Added new hook setup capabilities
+        Added XML::Tiny missing dependency
+        Fixed counts of age
+        Changed how branch age is recorded for HTML
+        Changed html output to being only a fragment
+        Changed sha_from_show to show all branch statuses
+        Added missing scripts to compile test
+        No longer importing pod2usage
+        Removed imported functions
+        Added calculating the next unused version number
+        New script to check that versions in POM files are unique
+        Changed from exporting to using explicitly methods
+        LICENCE update
+        Made detailedsage clearer
+        t sMerge branch 'master' of github.com:ivanwills/git-workflow-tools
+        Merge branch 'master' of github.com:ivanwills/git-workflow-tools
+        New script for undoing changed build objects in a git repository (with the use of a config file)
+        Added Makefile.PL for windows use
+        Fixed error
+        Changed the ami sub-command to am-i, to make it clear what it is saying
+        Added --fix to ami sub-command to merge in the release branch or tag
+        Changed git-feature to work the same as git-up-to-date (which added --local to match git-feture)
+        Improved documentation and added getting --max-history from git config
+        Removed Path::Class dependency
+        Minor tweeks to get ami sub-command working
+        moved environment options to git config, added ami sub command (and made previous functionality part of show)
+        Moved match_commits function here
+        Made much more configurable
+        Added exporting config
+        Started to implement getting configs from git
+        Removed unnessesary used of FinBin
+        Started using the tags and branches methods
+        Added sorting and tags functions
+        Helper lib
+        Fixed regexp
+        Cleaned up POD
+        Added testing bin/* files
+        Cleaned up dependencies so only perl 5.6 is required
+        Fixed build files
+        Removed bad lib file name
+        New git tools
+        Initial commit
 
