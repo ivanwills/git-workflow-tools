@@ -40,6 +40,7 @@ sub main {
         \%option,
         'all|a',
         'remote|r',
+        'quiet|q!',
         'verbose|v+',
         'man',
         'help',
@@ -79,7 +80,7 @@ sub main {
             $branch =~ s{^origin/}{};
             system qw/git checkout -b/, $branch, '--track', $remote_branch;
         }
-        else {
+        elsif (!$option{quiet}) {
             # suggest how to construct the branch
             warn "No branch for jira $jira exists!\n";
             warn "Create with one of the following:\n";
