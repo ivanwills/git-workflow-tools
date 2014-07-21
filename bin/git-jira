@@ -113,7 +113,7 @@ __DATA__
 
 =head1 NAME
 
-git-jira - Checkout any branch mentioning the passed jira
+git-jira - Checkout any branch mentioning the passed Jira
 
 =head1 VERSION
 
@@ -125,17 +125,17 @@ This documentation refers to git-jira version 0.0.1
 
  OPTIONS:
   JIRAID            A Jira format id
-  -r --remote       Look in remote branches for the jira branch
+  -r --remote       Look in remote branches for the Jira branch
   -a --all          Look everywhere?
 
   -v --verbose      Show more detailed option
      --version      Prints the version information
      --help         Prints this help information
-     --man          Prints the full documentation for git-jira
+     --man          Prints the full documentation for git-Jira
 
 =head1 DESCRIPTION
 
-Finds any branch containing the passed jira issue id and switches to that
+Finds any branch containing the passed Jira issue id and switches to that
 branch.
 
 =head1 SUBROUTINES/METHODS

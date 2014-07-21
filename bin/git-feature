@@ -126,7 +126,7 @@ This documentation refers to git-feature version 0.0.1
 
 =head1 DESCRIPTION
 
-The C<git feature> command alows a simplified way to create and switch to
+The C<git feature> command allows a simplified way to create and switch to
 feature branches using whatever is defined as the I<current release>
 
 By default I<current release> is defined as the origin/master branch that
@@ -139,7 +139,7 @@ arguments or by setting the C<workflow.prod> git config.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-Defaults for this script can be set throught C<git config>
+Defaults for this script can be set thought C<git config>
 
  workflow.prod  Sets how a prod release is determined
                 eg the default equavilent is branch=^origin/master$

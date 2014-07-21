@@ -92,9 +92,9 @@ This documentation refers to git-cows version 0.0.1
 =head1 DESCRIPTION
 
 C<git-cows> resets any files that only contain whitespace changes.
-This is done by finding all files modified (as shown by a C<git status>) ard
+This is done by finding all files modified (as shown by a C<git status>) and
 run them through C<git diff -w>. If any file results in no out put is shown
-(ie the changes are only white spaces) the file is then C<git checkout>ed to
+(i.e. the changes are only white spaces) the file is then C<git checkout>ed to
 remove those changes.
 
 This makes it easier make your commits clean of pointless whitespace only

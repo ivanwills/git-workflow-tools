@@ -98,7 +98,7 @@ __DATA__
 
 =head1 NAME
 
-git-committers - Stats on the number of commits by commiter
+git-committers - Stats on the number of commits by committer
 
 =head1 VERSION
 

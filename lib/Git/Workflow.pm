@@ -160,7 +160,7 @@ Returns a list of all tags.
 
 =head2 C<alphanum_sort ()>
 
-Does sorting (for the building C<sort>) in a aplha numerical fashion.
+Does sorting (for the building C<sort>) in a alpha numerical fashion.
 Specifically all numbers are converted for the comparison to 14 digit strings
 with leading zeros.
 

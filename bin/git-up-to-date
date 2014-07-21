@@ -440,7 +440,7 @@ This documentation refers to git-up-to-date version 0.0.1
 The C<git up-to-date> command can tell you the status of "active" branches as
 compared to a release tag or branch. It does this by finding all tags or
 branches that match the regular expression passed to C<--tag> or C<--branch>,
-sorts them alphanumerically assuming that the largest is the most recent.
+sorts them alpha-numerically assuming that the largest is the most recent.
 
  eg release_1, release_1_1
 
@@ -448,7 +448,7 @@ The branch release_1_1 would be considered the most recent. With the found
 tag/branch the date/time it was created is used to find all branches that
 have newer commits (unless C<--all> is used). These branches are then searched
 to see if they contain the found release tag or branch (and if C<--max-history>
-is secified and the branch doesn't contain the relase branch or tag the older
+is specified and the branch doesn't contain the release branch or tag the older
 releases are searched for).
 
 =head1 SUBROUTINES/METHODS
@@ -457,7 +457,7 @@ releases are searched for).
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-Defaults for this script can be set throught C<git config>
+Defaults for this script can be set thought C<git config>
 
  workflow.prod  Sets how a prod release is determined
                 eg the default equavilent is branch=^origin/master$
