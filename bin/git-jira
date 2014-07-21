@@ -39,6 +39,7 @@ sub main {
     GetOptions(
         \%option,
         'all|a',
+        'list|l',
         'remote|r',
         'quiet|q!',
         'verbose|v+',
@@ -96,6 +97,10 @@ sub main {
 sub which_branch {
     my @branches = map {/(.*)$/} @_;
 
+    if ($option{list}) {
+        print +( join "\n", @branches ), "\n";
+        exit 0;
+    }
     return $branches[0] if @branches == 1;
 
     my $count = 0;
