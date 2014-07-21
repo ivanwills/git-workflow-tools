@@ -16,7 +16,7 @@ use FindBin qw/$Bin/;
 use Git::Workflow;
 use XML::Tiny;
 
-our $VERSION = 0.001;
+our $VERSION = 0.1;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
@@ -145,7 +145,7 @@ git-pom - Manage pom.xml file versions
 
 =head1 VERSION
 
-This documentation refers to git-pom version 0.0.1
+This documentation refers to git-pom version 0.1
 
 =head1 SYNOPSIS
 

@@ -13,7 +13,7 @@ use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 
-our $VERSION = 0.001;
+our $VERSION = 0.1;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
@@ -76,7 +76,7 @@ git-tag-grep - grep tags
 
 =head1 VERSION
 
-This documentation refers to git-tag-grep version 0.0.1
+This documentation refers to git-tag-grep version 0.1
 
 =head1 SYNOPSIS
 

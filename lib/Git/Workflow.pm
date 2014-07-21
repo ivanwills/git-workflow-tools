@@ -13,7 +13,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
-our $VERSION     = 0.001;
+our $VERSION     = 0.1;
 our @EXPORT_OK   = qw/branches tags alphanum_sort config match_commits slurp children /;
 our %EXPORT_TAGS = ();
 
@@ -122,7 +122,7 @@ Git::Workflow - Git workflow tools
 
 =head1 VERSION
 
-This documentation refers to Git::Workflow version 0.0.1
+This documentation refers to Git::Workflow version 0.1
 
 =head1 SYNOPSIS
 
