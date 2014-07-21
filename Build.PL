@@ -9,8 +9,10 @@ my $builder = Module::Build->new(
     dist_version  => '0.1',
     dist_abstract => 'Tools to help make git workflows easier',
     requires      => {
-        'perl'      => '5.008',
-        'XML::Tiny' => 0,
+        'perl'        => '5.008',
+        'XML::Tiny'   => 0,
+        'Path::Class' => 0,
+        'Time::Piece' => 0,
     },
     recommends => {
         'JSON::XS'    => '2.34',
