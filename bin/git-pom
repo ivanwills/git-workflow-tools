@@ -100,6 +100,27 @@ sub next {
     $secondary++;
 
     print "$primary.$secondary.0-SNAPSHOT\n";
+
+    return;
+}
+
+sub whos {
+    my (undef, $pom, $versions) = @_;
+    my $version = shift @ARGV;
+
+    if (!$version) {
+        warn "No version supplied!\n";
+        Pod::Usage::pod2usage( -verbose => 1 );
+    }
+
+    $version =~ s/-SNAPSHOT$//;
+
+    my $version_re = $version =~ /^\d+[.]\d+[.]\d+/ ? qr/^$version$/ : qr/^$version[.]\d+$/;
+    my %versions = map {%{ $versions->{$_} }} grep {/$version_re/} keys %{ $versions };
+
+    print join '', map {"$_\t$versions{$_}\n"} sort keys %versions;
+
+    return;
 }
 
 sub get_versions {
@@ -151,10 +172,12 @@ This documentation refers to git-pom version 0.1
 
    git-pom [uniq] [option]
    git-pom next [option]
+   git-pom whos version [option]
 
  SUB-COMMAND:
   uniq              Confirm that the current branch is the only branch using it's version
   next              Calculates the next available version number
+  whos              Which branch uses the pom version "version"
 
  OPTIONS:
   -o --other        other option
