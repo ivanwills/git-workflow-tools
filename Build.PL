@@ -3,11 +3,12 @@ use warnings;
 use Module::Build;
 
 my $builder = Module::Build->new(
-    module_name       => 'git-workflow-tools',
-    license           => 'perl',
-    dist_author       => 'Ivan Wills <ivan.wills@gmail.com>',
-    dist_version      => '0.1',
-    requires          => {
+    module_name   => 'git-workflow-tools',
+    license       => 'perl',
+    dist_author   => 'Ivan Wills <ivan.wills@gmail.com>',
+    dist_version  => '0.1',
+    dist_abstract => 'Tools to help make git workflows easier',
+    requires      => {
         'perl'      => '5.008',
         'XML::Tiny' => 0,
     },
