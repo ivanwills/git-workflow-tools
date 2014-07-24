@@ -66,7 +66,7 @@ sub main {
     $jira = lc $jira;
 
     # check local branches first
-    my @branch = grep {/^(\w+_)?$jira/} Git::Workflow::branches();
+    my @branch = grep {/^(\w+_)?$jira(?:\D|$)/} Git::Workflow::branches();
 
     if (@branch && !$option{remote}) {
         my $branch = which_branch(@branch);
