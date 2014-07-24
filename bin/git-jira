@@ -62,7 +62,7 @@ sub main {
 
     # do stuff here
     my $jira = shift @ARGV;
-    $jira =~ s/-/_/;
+    $jira =~ s/[-_]/[-_]/;
     $jira = lc $jira;
 
     # check local branches first
