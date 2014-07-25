@@ -33,7 +33,7 @@ sub main {
     GetOptions(
         \%option,
         'verbose|v+',
-        'sort|s',
+        'since|s=s',
         'man',
         'help',
         'VERSION!',
@@ -51,12 +51,29 @@ sub main {
     }
 
     # do stuff here
-    my $cmd = join ' ', qw/git tab/;
+    my $action = @ARGV && main->can($ARGV[0]) ? shift @ARGV : 'changed';
 
-    print "$cmd | grep -P '$ARGV[0]'\n" if $option{verbose} || $option{test};
-    return exec "$cmd | grep -P '$ARGV[0]' | sort -n" if !$option{sort};
+    return main->$action(@ARGV);
+}
 
-    print sort {sorter()} `$cmd | grep -P '$ARGV[0]'`;
+sub changed {
+    my $args = $option{since} ? "--since=$option{since}" : "--max-age=" . ( time - 60 * 60 * 24 * 7 );
+    my @commits = `git rev-list --all $args`;
+    my %files;
+
+    for my $id (@commits) {
+        chomp $id;
+        my (undef, @files) = `git show --name-only --oneline $id`;
+        for my $file (@files) {
+            chomp $file;
+            $files{$file}++;
+        }
+    }
+
+    print
+        map  { sprintf "%4d %s\n", $files{$_}, $_ }
+        sort { $files{$a} <=> $files{$b} || $a cmp $b }
+        keys %files;
 }
 
 sub sorter {
