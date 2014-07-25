@@ -1,0 +1,137 @@
+#!/usr/bin/perl
+
+# Created on: 2014-03-11 20:58:59
+# Create by:  Ivan Wills
+# $Id$
+# $Revision$, $HeadURL$, $Date$
+# $Revision$, $Source$, $Date$
+
+use strict;
+use warnings;
+use Getopt::Long;
+use Pod::Usage ();
+use Data::Dumper qw/Dumper/;
+use English qw/ -no_match_vars /;
+
+our $VERSION = 0.1;
+my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
+
+my %option = (
+    out     => undef,
+    verbose => 0,
+    man     => 0,
+    help    => 0,
+    VERSION => 0,
+);
+
+main();
+exit 0;
+
+sub main {
+
+    Getopt::Long::Configure('bundling');
+    GetOptions(
+        \%option,
+        'verbose|v+',
+        'sort|s',
+        'man',
+        'help',
+        'VERSION!',
+    ) or Pod::Usage::pod2usage(2);
+
+    if ( $option{'VERSION'} ) {
+        print "$name Version = $VERSION\n";
+        exit 1;
+    }
+    elsif ( $option{'man'} ) {
+        Pod::Usage::pod2usage( -verbose => 2 );
+    }
+    elsif ( $option{'help'} ) {
+        Pod::Usage::pod2usage( -verbose => 1 );
+    }
+
+    # do stuff here
+    my $cmd = join ' ', qw/git tab/;
+
+    print "$cmd | grep -P '$ARGV[0]'\n" if $option{verbose} || $option{test};
+    return exec "$cmd | grep -P '$ARGV[0]' | sort -n" if !$option{sort};
+
+    print sort {sorter()} `$cmd | grep -P '$ARGV[0]'`;
+}
+
+sub sorter {
+    no warnings;
+    my $A = $a;
+    my $B = $b;
+    $A =~ s/(\d+)/sprintf "%06d", $1/egxms;
+    $B =~ s/(\d+)/sprintf "%06d", $1/egxms;
+    $A cmp $B;
+}
+
+__DATA__
+
+=head1 NAME
+
+git-files - Actions of files like changed changed
+
+=head1 VERSION
+
+This documentation refers to git-files version 0.1
+
+=head1 SYNOPSIS
+
+   git-files [changed] [option]
+   git-files set [option]
+   git-files
+
+ SUB COMMANDS:
+  changed       Files that have changed
+  set           Sets files to their committed date
+
+ OPTIONS:
+  -a --all      All branches not just the current branch
+  -s --since[=]YYYY-MM-DDTHH::MM
+                Files changed since date
+
+  -v --verbose  Show more detailed option
+     --version  Prints the version information
+     --help     Prints this help information
+     --man      Prints the full documentation for git-files
+
+=head1 DESCRIPTION
+
+
+=head1 SUBROUTINES/METHODS
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 DEPENDENCIES
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+There are no known bugs in this module.
+
+Please report problems to Ivan Wills (ivan.wills@gmail.com).
+
+Patches are welcome.
+
+=head1 AUTHOR
+
+Ivan Wills - (ivan.wills@gmail.com)
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2014 Ivan Wills (14 Mullion Close, Hornsby Heights, NSW Australia 2077).
+All rights reserved.
+
+This module is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself. See L<perlartistic>.  This program is
+distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.
+
+=cut
