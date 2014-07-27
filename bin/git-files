@@ -12,12 +12,13 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
+use Git::Workflow qw/releases current/;
 
 our $VERSION = 0.1;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
-    out     => undef,
+    age     => 28,
     verbose => 0,
     man     => 0,
     help    => 0,
@@ -34,6 +35,7 @@ sub main {
         \%option,
         'verbose|v+',
         'since|s=s',
+        'age|a=i',
         'man',
         'help',
         'VERSION!',
@@ -51,13 +53,66 @@ sub main {
     }
 
     # do stuff here
-    my $action = @ARGV && main->can($ARGV[0]) ? shift @ARGV : 'changed';
+    my $action = @ARGV && main->can("do_$ARGV[0]") ? 'do_' . shift @ARGV : 'do_changed';
 
-    return main->$action(@ARGV);
+    my ($release) = releases(%option);
+
+    return main->$action($release, @ARGV);
 }
 
-sub changed {
-    my $args = $option{since} ? "--since=$option{since}" : "--max-age=" . ( time - 60 * 60 * 24 * 7 );
+sub do_local {
+    my (undef, $release) = @_;
+
+    # get local branch changed files vs prod
+    my @local_files = map {/(.*)$/; $1} `git diff --name-only $release->{name}`;
+    my $all_files   = files_changed();
+    my ($type, $name) = current();
+    my %files;
+
+    # iterate over all locally changed files
+    for my $file (@local_files) {
+        warn "$file\n" if $option{verbose};
+
+        # check that it has been modified in recent times
+        if ($all_files->{$file}) {
+            # iterate over each commit id to eliminate them from the current branch
+            for my $sha (@{ $all_files->{$file}{sha} }) {
+                warn "    $sha\n" if $option{verbose} > 1;
+
+                # get a list of branches that the file changed on (apart from the current)
+                my @branches =
+                    grep {$_ ne $name}
+                    map {m{ ([^/\s]*) $}xms; $1}
+                    `git branch -a --contains $sha`;
+
+                next if !@branches;
+
+                my $show = `git show $sha`;
+                my ($author) = $show =~ /^Author: \s+ (.*?) \s+ </xms;
+                push @{ $files{$file}{branches} }, @branches;
+                push @{ $files{$file}{authors} }, $author;
+            }
+        }
+    }
+    for my $file (sort keys %files) {
+        my %branches = map { $_ => 1 } @{ $files{$file}{branches} };
+        my %authors = map { $_ => 1 } @{ $files{$file}{authors} };
+        print "$file\n";
+        print "    Modified in : " . (join ', ', sort keys %branches) . "\n";
+        print "             by : " . (join ', ', sort keys %authors) . "\n";
+    }
+}
+
+sub do_changed {
+    my $files = files_changed();
+    print
+        map  { sprintf "%4d %s\n", $files->{$_}{count}, $_ }
+        sort { $files->{$a}{count} <=> $files->{$b}{count} || $a cmp $b }
+        keys %$files;
+}
+
+sub files_changed {
+    my $args = $option{since} ? "--since=$option{since}" : "--max-age=" . ( time - 60 * 60 * 24 * $option{age} );
     my @commits = `git rev-list --all $args`;
     my %files;
 
@@ -66,14 +121,12 @@ sub changed {
         my (undef, @files) = `git show --name-only --oneline $id`;
         for my $file (@files) {
             chomp $file;
-            $files{$file}++;
+            $files{$file}{count}++;
+            push @{ $files{$file}{sha} }, $id;
         }
     }
 
-    print
-        map  { sprintf "%4d %s\n", $files{$_}, $_ }
-        sort { $files{$a} <=> $files{$b} || $a cmp $b }
-        keys %files;
+    return \%files;
 }
 
 sub sorter {
