@@ -12,7 +12,7 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow;
+use Git::Workflow qw/releases/;
 use Carp qw/cluck/;
 
 our $VERSION = 0.1;
@@ -87,26 +87,7 @@ sub main {
         return branch_age();
     }
 
-    my ($type, $regex);
-    if ($option{tag}) {
-        $type = 'tag';
-        $regex = $option{tag};
-    }
-    elsif ($option{branch}) {
-        $type = 'branch';
-        $regex = $option{branch};
-    }
-    elsif ( !$option{tag} && !$option{branch} ) {
-        my $prod = Git::Workflow::config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
-        ($type, $regex) = split /\s*=\s*/, $prod;
-        if ( !$regex ) {
-            $type = 'branch';
-            $regex = '^origin/master$';
-        }
-    }
-
-    my @releases = Git::Workflow::match_commits($type, $regex, $option{max_history});
-    die "Could not find any historic releases for $type /$regex/!\n" if !@releases;
+    my @releases = releases(%option);
 
     if ($option{verbose}) {
         my $local = localtime($releases[-1]{time});

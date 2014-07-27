@@ -14,7 +14,7 @@ use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
 our $VERSION     = 0.1;
-our @EXPORT_OK   = qw/branches tags alphanum_sort config match_commits slurp children /;
+our @EXPORT_OK   = qw/branches tags alphanum_sort config match_commits releases slurp children /;
 our %EXPORT_TAGS = ();
 
 sub alphanum_sort {
@@ -79,10 +79,36 @@ sub config {
 
 sub match_commits {
     my ($type, $regex, $max) = @_;
+    $max ||= 1;
     my @commits = grep {/$regex/} $type eq 'tag' ? tags() : branches('both');
 
     my $oldest = @commits > $max ? -$max : -scalar @commits;
     return map { sha_from_show($_) } @commits[ $oldest .. -1 ];
+}
+
+sub releases {
+    my %option = @_;
+    my ($type, $regex);
+    if ($option{tag}) {
+        $type = 'tag';
+        $regex = $option{tag};
+    }
+    elsif ($option{branch}) {
+        $type = 'branch';
+        $regex = $option{branch};
+    }
+    elsif ( !$option{tag} && !$option{branch} ) {
+        my $prod = Git::Workflow::config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
+        ($type, $regex) = split /\s*=\s*/, $prod;
+        if ( !$regex ) {
+            $type = 'branch';
+            $regex = '^origin/master$';
+        }
+    }
+
+    my @releases = Git::Workflow::match_commits($type, $regex, $option{max_history});
+    die "Could not find any historic releases for $type /$regex/!\n" if !@releases;
+    return @releases;
 }
 
 sub sha_from_show {
