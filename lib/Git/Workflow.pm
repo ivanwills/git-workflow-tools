@@ -14,7 +14,7 @@ use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
 our $VERSION     = 0.1;
-our @EXPORT_OK   = qw/branches tags alphanum_sort config match_commits releases slurp children /;
+our @EXPORT_OK   = qw/branches tags current alphanum_sort config match_commits releases slurp children /;
 our %EXPORT_TAGS = ();
 
 sub alphanum_sort {
@@ -66,6 +66,35 @@ sub alphanum_sort {
 
         return @{ $result };
     }
+}
+
+sub current {
+    # get the git directory
+    my $git_dir = `git rev-parse --show-toplevel`;
+    chomp $git_dir;
+
+    # read the HEAD file to find what branch or id we are on
+    open my $fh, '<', "$git_dir/.git/HEAD" or die "Can't open '$git_dir/.git/HEAD' for reading: $!\n";
+    my $head = <$fh>;
+    close $fh;
+    chomp $head;
+
+    if ($head =~ m{ref: refs/heads/(.*)$}) {
+        return ('branch', $1);
+    }
+
+    # try to identify the commit as it's not a local branch
+    open $fh, '<', "$git_dir/.git/FETCH_HEAD" or die "Can't open '$git_dir/.git/FETCH_HEAD' for reading: $!\n";
+    while (my $line = <$fh>) {
+        next if $line !~ /^$head/;
+
+        my ($type, $name, $remote) = $line =~ /(tag|branch) \s+ '([^']+)' \s+ of \s+ (.*?) $/xms;
+        # TODO calculate the remote's alias rather than assume that it is "origin"
+        return ($type, $type eq 'branch' ? "origin/$name" : $name);
+    }
+
+    # not on a branch or commit
+    return ('sha', $head);
 }
 
 sub config {
