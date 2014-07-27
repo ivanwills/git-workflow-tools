@@ -142,7 +142,7 @@ __DATA__
 
 =head1 NAME
 
-git-files - Actions of files like changed changed
+git-files - Get information on files changed accross branches.
 
 =head1 VERSION
 
@@ -156,6 +156,8 @@ This documentation refers to git-files version 0.1
 
  SUB COMMANDS:
   changed       Files that have changed
+  local         See if any locally (to the branch) changed files have been
+                modified in other branches.
   set           Sets files to their committed date
 
  OPTIONS:
@@ -170,6 +172,11 @@ This documentation refers to git-files version 0.1
 
 =head1 DESCRIPTION
 
+The C<git-files> command helps to find out which files are being activly
+changed by whome and where those files changes are occuring. The aim is to
+help developers see if other developers are working on the same files. This
+should reduce the potential for conflicts later on (or at least start the
+process to resolve those conflicts).
 
 =head1 SUBROUTINES/METHODS
 
