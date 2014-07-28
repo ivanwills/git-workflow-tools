@@ -161,7 +161,8 @@ This documentation refers to git-files version 0.1
   set           Sets files to their committed date
 
  OPTIONS:
-  -a --all      All branches not just the current branch
+  -a --age[=]days
+                Age in days to look changed files
   -s --since[=]YYYY-MM-DDTHH::MM
                 Files changed since date
 
