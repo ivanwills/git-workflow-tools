@@ -50,7 +50,7 @@ sub main {
     }
 
     # do stuff here
-    my $cmd = join ' ', qw/git tab/;
+    my $cmd = join ' ', qw/git tag/;
 
     print "$cmd | grep -P '$ARGV[0]'\n" if $option{verbose} || $option{test};
     return exec "$cmd | grep -P '$ARGV[0]' | sort -n" if !$option{sort};
