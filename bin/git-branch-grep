@@ -84,7 +84,7 @@ This documentation refers to git-branch-grep version 0.1
 
 =head1 SYNOPSIS
 
-   git-branch-grep [option] regex
+   git-branch-grep [--remote|-r|--all|-a] regex
 
  OPTIONS:
   regex         grep's perl (-P) regular expression
@@ -92,7 +92,7 @@ This documentation refers to git-branch-grep version 0.1
   -a --all      List all branches
 
   -v --verbose  Show more detailed option
-     --version  Prints the version information
+     --VERSION  Prints the version information
      --help     Prints this help information
      --man      Prints the full documentation for git-branch-grep
 
