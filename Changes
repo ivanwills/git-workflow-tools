@@ -1,5 +1,25 @@
 Revision history for git-workflow-tools
 
+0.2     2014-07-31
+        Fixed VERSION option (Ivan Wills)
+        made the usage info clearer (Ivan Wills)
+        Fixed tracking origin/master when not careful (Ivan Wills)
+        Fixed typo (Ivan Wills)
+        Removed unused option (Ivan Wills)
+        Fixed changed argument description (Ivan Wills)
+        Working on documentation (Ivan Wills)
+        Added "local" sub-command to show any other branch with changes to files that have been also changed in the current branch (Ivan Wills)
+        Added new method to find the current branch (Ivan Wills)
+        Factered out getting current releases (Ivan Wills)
+        Now showing changed files (Ivan Wills)
+        New script to do stuff with files (Ivan Wills)
+        Added word boundry to limit to exactly the requested jira (Ivan Wills)
+        Made the regex broader for finding jiras (Ivan Wills)
+        Added whos sub-command to tell which branches use the pom version number (Ivan Wills)
+        Added list option to show any found branches (Ivan Wills)
+        Added option to quiet messages (Ivan Wills)
+        Added changes for first release (Ivan Wills)
+
 0.1     2014-07-22
         Updated version numbers
         Updated dependencies

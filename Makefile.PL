@@ -18,6 +18,7 @@ WriteMakefile
                    'bin/git-committers',
                    'bin/git-cows',
                    'bin/git-feature',
+                   'bin/git-files',
                    'bin/git-hook-setup',
                    'bin/git-jira',
                    'bin/git-pom',

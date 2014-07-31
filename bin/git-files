@@ -14,7 +14,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use Git::Workflow qw/releases current/;
 
-our $VERSION = 0.1;
+our $VERSION = 0.2;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
@@ -142,11 +142,11 @@ __DATA__
 
 =head1 NAME
 
-git-files - Get information on files changed accross branches.
+git-files - Get information on files changed across branches.
 
 =head1 VERSION
 
-This documentation refers to git-files version 0.1
+This documentation refers to git-files version 0.2
 
 =head1 SYNOPSIS
 
@@ -173,8 +173,8 @@ This documentation refers to git-files version 0.1
 
 =head1 DESCRIPTION
 
-The C<git-files> command helps to find out which files are being activly
-changed by whome and where those files changes are occuring. The aim is to
+The C<git-files> command helps to find out which files are being actively
+changed by whom and where those files changes are occurring. The aim is to
 help developers see if other developers are working on the same files. This
 should reduce the potential for conflicts later on (or at least start the
 process to resolve those conflicts).
