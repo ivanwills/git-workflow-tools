@@ -116,7 +116,7 @@ This documentation refers to git-committers version 0.1
                 last day/week/month/year
 
   -v --verbose  Show more detailed option
-     --version  Prints the version information
+     --VERSION  Prints the version information
      --help     Prints this help information
      --man      Prints the full documentation for git-committers
 

@@ -139,7 +139,7 @@ This documentation refers to git-hook-setup version 0.1.
  OPTIONS:
 
   -v --verbose      Show more detailed option
-     --version      Prints the version information
+     --VERSION      Prints the version information
      --help         Prints this help information
      --man          Prints the full documentation for git-hook-setup
 

@@ -183,7 +183,7 @@ This documentation refers to git-pom version 0.1
   -o --other        other option
 
   -v --verbose      Show more detailed option
-     --version      Prints the version information
+     --VERSION      Prints the version information
      --help         Prints this help information
      --man          Prints the full documentation for git-pom
 

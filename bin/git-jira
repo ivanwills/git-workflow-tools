@@ -134,7 +134,7 @@ This documentation refers to git-jira version 0.1
   -a --all          Look everywhere?
 
   -v --verbose      Show more detailed option
-     --version      Prints the version information
+     --VERSION      Prints the version information
      --help         Prints this help information
      --man          Prints the full documentation for git-Jira
 

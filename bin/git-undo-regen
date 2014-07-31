@@ -124,7 +124,7 @@ This documentation refers to git-undo-regen version 0.1
   -t --test     Don't actually checkout just show what would be checked out
 
   -v --verbose  Show more detailed option
-     --version  Prints the version information
+     --VERSION  Prints the version information
      --help     Prints this help information
      --man      Prints the full documentation for git-undo-regen
 

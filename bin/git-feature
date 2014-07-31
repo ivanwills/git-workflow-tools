@@ -120,7 +120,7 @@ This documentation refers to git-feature version 0.1
      --no-fetch     Don't fetch before trying to find the remote branch
   -t --test         Test don't actually run
   -v --verbose      Show more details
-     --version      Prints the version information
+     --VERSION      Prints the version information
      --help         Prints this help information
      --man          Prints the full documentation for git-feature
 

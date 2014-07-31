@@ -167,7 +167,7 @@ This documentation refers to git-files version 0.1
                 Files changed since date
 
   -v --verbose  Show more detailed option
-     --version  Prints the version information
+     --VERSION  Prints the version information
      --help     Prints this help information
      --man      Prints the full documentation for git-files
 
