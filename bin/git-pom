@@ -36,6 +36,7 @@ sub main {
     GetOptions(
         \%option,
         'pom|p=s',
+        'update|u!',
         'verbose|v+',
         'man',
         'help',
@@ -99,7 +100,12 @@ sub next {
     my ($primary, $secondary) = split /[.]/, $max;
     $secondary++;
 
-    print "$primary.$secondary.0-SNAPSHOT\n";
+    my $version = "$primary.$secondary.0-SNAPSHOT";
+    print "$version\n";
+
+    if ($option{update}) {
+        system qw/mvn versions:set/, "–DnewVersion=$version";
+    }
 
     return;
 }
@@ -171,7 +177,7 @@ This documentation refers to git-pom version 0.2
 =head1 SYNOPSIS
 
    git-pom [uniq] [option]
-   git-pom next [option]
+   git-pom next [--update|-u]
    git-pom whos version [option]
 
  SUB-COMMAND:
@@ -180,7 +186,7 @@ This documentation refers to git-pom version 0.2
   whos              Which branch uses the pom version "version"
 
  OPTIONS:
-  -o --other        other option
+  -u --update       Update to version (used with next)
 
   -v --verbose      Show more detailed option
      --VERSION      Prints the version information
