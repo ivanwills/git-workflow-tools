@@ -12,12 +12,15 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow;
+use Git::Workflow qw/release/;
+use Git::Workflow::Pom qw/next_pom_version/;
 
 our $VERSION = 0.2;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
+    pom     => Git::Workflow::config('workflow.pom') || 'pom.xml',
+    local   => Git::Workflow::config('workflow.pom-local') || undef,
     fetch   => 1,
     verbose => 0,
     man     => 0,
@@ -40,7 +43,10 @@ sub main {
         'tag|t=s',
         'branch|b=s',
         'local|l!',
+        'pom|P=s',
+        'update|u!',
         'fetch|f!',
+        'new_pom|new-pom|n!',
         'push|p',
         'test|t',
         'verbose|v+',
@@ -77,13 +83,18 @@ sub main {
     }
 
     system qw/git fetch/ if $option{fetch} && !$option{local};
-    my ($release) = reverse grep {/$regex/} $type eq 'branch' ? Git::Workflow::branches($option{local} ? 'local' : 'remote') : Git::Workflow::tags();
-    chomp $release;
+    my $release = release($type, $option{local}, $regex);
 
     # checkout branch
     my @cmd = ( qw/git checkout -b/, $feature_branch, '--no-track', $release );
     print join ' ', @cmd, "\n" if $option{verbose} || $option{test};
     system @cmd if !$option{test};
+
+    if ($option{new_pom}) {
+        my $version = next_pom_version($option{pom});
+
+        system qw/mvn versions:set/, "–DnewVersion=$version";
+    }
 
     # push if requested to
     if ($option{push}) {
