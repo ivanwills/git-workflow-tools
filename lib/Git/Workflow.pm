@@ -14,10 +14,11 @@ use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
 our $VERSION     = 0.2;
-our @EXPORT_OK   = qw/branches tags current alphanum_sort config match_commits releases slurp children /;
+our @EXPORT_OK   = qw/branches tags current config match_commits release releases slurp children /;
 our %EXPORT_TAGS = ();
 
 sub alphanum_sort {
+    no warnings qw/once/;
     my $A = $a;
     $A =~ s/(\d+)/sprintf "%014i", $1/egxms;
     my $B = $b;
@@ -113,6 +114,17 @@ sub match_commits {
 
     my $oldest = @commits > $max ? -$max : -scalar @commits;
     return map { sha_from_show($_) } @commits[ $oldest .. -1 ];
+}
+
+sub release {
+    my ($tag_or_branch, $local, $search) = @_;
+    my ($release) = reverse grep {/$search/}
+        $tag_or_branch eq 'branch'
+        ? branches($local ? 'local' : 'remote')
+        : tags();
+    chomp $release;
+
+    return $release;
 }
 
 sub releases {
