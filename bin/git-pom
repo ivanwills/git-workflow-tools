@@ -21,6 +21,7 @@ my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
     pom     => Git::Workflow::config('workflow.pom') || 'pom.xml',
+    fetch   => 1,
     verbose => 0,
     man     => 0,
     help    => 0,
@@ -37,6 +38,7 @@ sub main {
         \%option,
         'pom|p=s',
         'update|u!',
+        'fetch|f!',
         'verbose|v+',
         'man',
         'help',
@@ -59,7 +61,9 @@ sub main {
         Pod::Usage::pod2usage( -verbose => 1 );
     }
 
-    # do stuff here
+    # make sure that git is up-to-date
+    system qw/git fetch/ if $option{fetch};
+
     my $versions = get_versions($option{pom});
 
     main->$sub_command($option{pom}, $versions);
