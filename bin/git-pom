@@ -14,7 +14,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
 use Git::Workflow;
-use XML::Tiny;
+use Git::Workflow::Pom qw/get_pom_versions pom_version next_pom_version/;
 
 our $VERSION = 0.2;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -36,7 +36,7 @@ sub main {
     Getopt::Long::Configure('bundling');
     GetOptions(
         \%option,
-        'pom|p=s',
+        'pom|P=s',
         'update|u!',
         'fetch|f!',
         'verbose|v+',
@@ -64,20 +64,11 @@ sub main {
     # make sure that git is up-to-date
     system qw/git fetch/ if $option{fetch};
 
-    my $versions = get_versions($option{pom});
+    my $versions = get_pom_versions($option{pom});
 
     main->$sub_command($option{pom}, $versions);
 
     return;
-}
-
-sub alphanum_sort {
-    my $A = $a;
-    $A =~ s/(\d+)/sprintf "%014i", $1/egxms;
-    my $B = $b;
-    $B =~ s/(\d+)/sprintf "%014i", $1/egxms;
-
-    return $A cmp $B;
 }
 
 sub uniq {
@@ -100,11 +91,7 @@ sub uniq {
 sub next {
     my (undef, $pom, $versions) = @_;
 
-    my ($max) = reverse sort alphanum_sort keys %{$versions};
-    my ($primary, $secondary) = split /[.]/, $max;
-    $secondary++;
-
-    my $version = "$primary.$secondary.0-SNAPSHOT";
+    my $version = next_pom_version($option{pom}, $versions);
     print "$version\n";
 
     if ($option{update}) {
@@ -129,44 +116,6 @@ sub whos {
     my %versions = map {%{ $versions->{$_} }} grep {/$version_re/} keys %{ $versions };
 
     print join '', map {"$_\t$versions{$_}\n"} sort keys %versions;
-
-    return;
-}
-
-sub get_versions {
-    my ($pom) = @_;
-    my @branches = Git::Workflow::branches('both');
-    my %versions;
-
-    for my $branch (@branches) {
-        my $xml = `git show $branch:$pom 2> /dev/null`;
-        chomp $xml;
-        next if !$xml;
-
-        $branch =~ s{^origin/}{}xms;
-
-        my $numerical = my $version = pom_version($xml);
-        # remove snapshots from the end
-        $numerical =~ s/-SNAPSHOT$//xms;
-        # remove any extranious text from the front
-        $numerical =~ s/^\D+//xms;
-
-        $versions{$numerical} ||= {};
-        $versions{$numerical}{$branch} = $version;
-    }
-
-    return \%versions;
-}
-
-sub pom_version {
-    my ($xml) = @_;
-    my $doc = XML::Tiny::parsefile( $xml !~ /\n/ && -f $xml ? $xml : '_TINY_XML_STRING_' . $xml);
-
-    for my $elem (@{ $doc->[0]{content} }) {
-        next if $elem->{name} ne 'version';
-
-        return $elem->{content}[0]{content};
-    }
 
     return;
 }
