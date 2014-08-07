@@ -13,14 +13,14 @@ use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
-use Git::Workflow;
+use Git::Workflow qw/config runner/;
 use Git::Workflow::Pom qw/get_pom_versions pom_version next_pom_version/;
 
 our $VERSION = 0.2;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
-    pom     => Git::Workflow::config('workflow.pom') || 'pom.xml',
+    pom     => config('workflow.pom') || 'pom.xml',
     fetch   => 1,
     verbose => 0,
     man     => 0,
@@ -61,8 +61,11 @@ sub main {
         Pod::Usage::pod2usage( -verbose => 1 );
     }
 
+    $Git::Workflow::VERBOSE = $option{verbose};
+    $Git::Workflow::TEST    = $option{test};
+
     # make sure that git is up-to-date
-    system qw/git fetch/ if $option{fetch};
+    runner(qw/git fetch/) if $option{fetch};
 
     my $versions = get_pom_versions($option{pom});
 
@@ -95,7 +98,7 @@ sub next {
     print "$version\n";
 
     if ($option{update}) {
-        system qw/mvn versions:set/, "–DnewVersion=$version";
+        runner(qw/mvn versions:set/, "–DnewVersion=$version");
     }
 
     return;

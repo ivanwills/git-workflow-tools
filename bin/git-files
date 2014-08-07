@@ -12,7 +12,7 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow qw/releases current/;
+use Git::Workflow qw/current releases runner/;
 
 our $VERSION = 0.2;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -53,6 +53,9 @@ sub main {
     }
 
     # do stuff here
+    $Git::Workflow::VERBOSE = $option{verbose};
+    $Git::Workflow::TEST    = $option{test};
+
     my $action = @ARGV && main->can("do_$ARGV[0]") ? 'do_' . shift @ARGV : 'do_changed';
 
     my ($release) = releases(%option);
@@ -64,7 +67,7 @@ sub do_local {
     my (undef, $release) = @_;
 
     # get local branch changed files vs prod
-    my @local_files = map {/(.*)$/; $1} `git diff --name-only $release->{name}`;
+    my @local_files = map {/(.*)$/; $1} runner("git diff --name-only $release->{name}");
     my $all_files   = files_changed();
     my ($type, $name) = current();
     my %files;
@@ -83,11 +86,11 @@ sub do_local {
                 my @branches =
                     grep {$_ ne $name}
                     map {m{ ([^/\s]*) $}xms; $1}
-                    `git branch -a --contains $sha`;
+                    runner("git branch -a --contains $sha");
 
                 next if !@branches;
 
-                my $show = `git show $sha`;
+                my $show = runner("git show $sha");
                 my ($author) = $show =~ /^Author: \s+ (.*?) \s+ </xms;
                 push @{ $files{$file}{branches} }, @branches;
                 push @{ $files{$file}{authors} }, $author;
@@ -113,12 +116,12 @@ sub do_changed {
 
 sub files_changed {
     my $args = $option{since} ? "--since=$option{since}" : "--max-age=" . ( time - 60 * 60 * 24 * $option{age} );
-    my @commits = `git rev-list --all $args`;
+    my @commits = runner("git rev-list --all $args");
     my %files;
 
     for my $id (@commits) {
         chomp $id;
-        my (undef, @files) = `git show --name-only --oneline $id`;
+        my (undef, @files) = runner("git show --name-only --oneline $id");
         for my $file (@files) {
             chomp $file;
             $files{$file}{count}++;

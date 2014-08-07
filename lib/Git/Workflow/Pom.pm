@@ -13,7 +13,7 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use XML::Tiny;
-use Git::Workflow;
+use Git::Workflow qw/branches runner/;
 use base qw/Exporter/;
 
 our $VERSION     = 0.2;
@@ -31,11 +31,11 @@ sub alphanum_sort {
 
 sub get_pom_versions {
     my ($pom) = @_;
-    my @branches = Git::Workflow::branches('both');
+    my @branches = branches('both');
     my %versions;
 
     for my $branch (@branches) {
-        my $xml = `git show $branch:$pom 2> /dev/null`;
+        my $xml = runner("git show $branch:$pom 2> /dev/null");
         chomp $xml;
         next if !$xml;
 

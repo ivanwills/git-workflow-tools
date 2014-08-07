@@ -12,15 +12,15 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow qw/release/;
+use Git::Workflow qw/config release runner/;
 use Git::Workflow::Pom qw/next_pom_version/;
 
 our $VERSION = 0.2;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
-    pom     => Git::Workflow::config('workflow.pom') || 'pom.xml',
-    local   => Git::Workflow::config('workflow.pom-local') || undef,
+    pom     => config('workflow.pom') || 'pom.xml',
+    local   => config('workflow.pom-local') || undef,
     fetch   => 1,
     verbose => 0,
     man     => 0,
@@ -66,6 +66,9 @@ sub main {
     }
 
     # do stuff here
+    $Git::Workflow::VERBOSE = $option{verbose};
+    $Git::Workflow::TEST    = $option{test};
+
     my ($feature_branch) = shift @ARGV;
     my ($type, $regex);
     if ($option{tag}) {
@@ -77,29 +80,25 @@ sub main {
         $regex = $option{branch};
     }
     elsif ( !$option{tag} && !$option{branch} ) {
-        my $prod = Git::Workflow::config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
+        my $prod = config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
         ($type, $regex) = split /\s*=\s*/, $prod;
     }
 
-    system qw/git fetch/ if $option{fetch} && !$option{local};
+    runner(qw/git fetch/) if $option{fetch} && !$option{local};
     my $release = release($type, $option{local}, $regex);
 
     # checkout branch
-    my @cmd = ( qw/git checkout -b/, $feature_branch, '--no-track', $release );
-    print join ' ', @cmd, "\n" if $option{verbose} || $option{test};
-    system @cmd if !$option{test};
+    runner( qw/git checkout -b/, $feature_branch, '--no-track', $release );
 
     if ($option{new_pom}) {
         my $version = next_pom_version($option{pom});
 
-        system qw/mvn versions:set/, "–DnewVersion=$version";
+        runner(qw/mvn versions:set/, "–DnewVersion=$version");
     }
 
     # push if requested to
     if ($option{push}) {
-        @cmd = ( qw/git push -u origin/, $feature_branch );
-        print join ' ', @cmd, "\n" if $option{verbose} || $option{test};
-        system @cmd if !$option{test};
+        runner( qw/git push -u origin/, $feature_branch );
     }
 
     return;
@@ -157,6 +156,10 @@ Defaults for this script can be set thought C<git config>
 
  workflow.prod  Sets how a prod release is determined
                 eg the default equavilent is branch=^origin/master$
+ workflow.pom   The default location for the pom.xml file (used C<--new-pom>
+                and updating the pom.xml for the new branch)
+ workflow.pom-local
+                Can set default value of C<--local>
 
 You can set these values either by editing the repository local C<.git/config>
 file or C<~/.gitconfig> or use the C<git config> command
@@ -166,6 +169,9 @@ file or C<~/.gitconfig> or use the C<git config> command
 
  # or set a repository's local value
     git config workflow.prod 'tag=^release_\d{4}_\d{2}\d{2}$'
+
+ # or setting pom.xml location to a sub directory
+    git config workflow.pom 'somedir/pom.xml'
 
 =head1 DEPENDENCIES
 
