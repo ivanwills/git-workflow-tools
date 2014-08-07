@@ -44,7 +44,6 @@ sub main {
         'branch|b=s',
         'local|l!',
         'pom|P=s',
-        'update|u!',
         'fetch|f!',
         'new_pom|new-pom|n!',
         'push|p',
@@ -129,6 +128,10 @@ This documentation refers to git-feature version 0.2
   -l --local        Shorthand for --branch '^master$'
   -p --push         Push the new brach upstream
      --no-fetch     Don't fetch before trying to find the remote branch
+  -n --new-pom      Set the pom.xml version to the next available version
+  -P --pom[=]pom.xml
+                    The location of the master pom.xml if it isn't in the
+                    current directory.
   -t --test         Test don't actually run
   -v --verbose      Show more details
      --VERSION      Prints the version information
