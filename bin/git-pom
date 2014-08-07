@@ -142,7 +142,7 @@ This documentation refers to git-pom version 0.2
   whos              Which branch uses the pom version "version"
 
  OPTIONS:
-  -u --update       Update to version (used with next)
+  -u --update       Update to next version (used with next)
 
   -v --verbose      Show more detailed option
      --VERSION      Prints the version information
