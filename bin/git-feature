@@ -89,6 +89,7 @@ sub main {
 
     # checkout branch
     runner( qw/git checkout -b/, $feature_branch, '--no-track', $release );
+    runner( qw/git branch/, "--set-upstream-to=origin/$feature_branch" );
 
     if ($option{new_pom}) {
         my $version = next_pom_version($option{pom});
