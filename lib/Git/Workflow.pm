@@ -14,8 +14,10 @@ use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
 our $VERSION     = 0.2;
-our @EXPORT_OK   = qw/branches tags current config match_commits release releases slurp children /;
+our @EXPORT_OK   = qw/branches tags current config match_commits release releases slurp children runner /;
 our %EXPORT_TAGS = ();
+our $VERBOSE     = 0;
+our $TEST        = 0;
 
 sub alphanum_sort {
     no warnings qw/once/;
@@ -48,7 +50,7 @@ sub alphanum_sort {
             sort alphanum_sort
             map { /^[*]?\s+(?:remotes\/)?(.*?)\s*$/xms }
             grep {!/HEAD/}
-            `git branch $type`
+            runner("git branch $type")
         ];
 
         return @{ $results{$type} };
@@ -62,7 +64,7 @@ sub alphanum_sort {
         $result ||= [
             sort alphanum_sort
             map { /^(.*?)\s*$/xms }
-            `git tag`
+            runner("git tag")
         ];
 
         return @{ $result };
@@ -71,7 +73,7 @@ sub alphanum_sort {
 
 sub current {
     # get the git directory
-    my $git_dir = `git rev-parse --show-toplevel`;
+    my $git_dir = runner("git rev-parse --show-toplevel");
     chomp $git_dir;
 
     # read the HEAD file to find what branch or id we are on
@@ -101,7 +103,7 @@ sub current {
 sub config {
     my ($name, $default) = @_;
     local $SIG{__WARN__} = sub {};
-    my $value = `git config $name`;
+    my $value = runner("git config $name");
     chomp $value;
 
     return $value || $default;
@@ -154,7 +156,7 @@ sub releases {
 
 sub sha_from_show {
     my ($name) = @_;
-    my ($log) = `git rev-list -1 --timestamp $name`;
+    my ($log) = runner("git rev-list -1 --timestamp $name");
     chomp $log;
     my ($time, $sha) = split /\s+/, $log;
     return {
@@ -177,6 +179,19 @@ sub children {
     opendir my $dh, $dir or die "Couldn't open directory '$dir' for reading: $!\n";
 
     return grep { $_ ne '.' && $_ ne '..' } readdir $dh;
+}
+
+sub runner {
+    my @cmd = @_;
+
+    print join ' ', @cmd, "\n" if $VERBOSE;
+    return if $TEST;
+
+    return system @cmd if !defined wantarray;
+
+    carp "Too many arguments!\n" if @cmd != 1;
+
+    return qx/$cmd[0]/;
 }
 
 1;
