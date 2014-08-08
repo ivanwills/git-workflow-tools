@@ -154,6 +154,27 @@ This documentation refers to git-pom version 0.2
 
 =head1 DESCRIPTION
 
+The C<git-pom> tool helps working with MAven POM files by looking at all branches to see
+what versions are set. The sub commands allow different kinds of checking to be done.
+
+=over 4
+
+=item uniq
+
+Check that the current branch's POM version is unique accross all branches.
+
+=item next
+
+Finds the next available POM version number bu finding the current nighest
+POM version and incrementing the second number. If C<--update> is used then
+the POM version is updated to that number.
+
+=item whos
+
+Find which branch or branches use a POM version number.
+
+=back
+
 =head1 SUBROUTINES/METHODS
 
 =head1 DIAGNOSTICS
