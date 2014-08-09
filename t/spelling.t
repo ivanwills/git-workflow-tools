@@ -36,5 +36,7 @@ add_stopwords(qw/
     committers
     jira
     xml
+    uniq
+    whos
 /);
 all_pod_files_spelling_ok();

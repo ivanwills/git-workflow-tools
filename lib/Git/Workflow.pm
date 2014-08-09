@@ -19,7 +19,7 @@ our %EXPORT_TAGS = ();
 our $VERBOSE     = 0;
 our $TEST        = 0;
 
-sub alphanum_sort {
+sub _alphanum_sort {
     no warnings qw/once/;
     my $A = $a;
     $A =~ s/(\d+)/sprintf "%014i", $1/egxms;
@@ -47,7 +47,7 @@ sub alphanum_sort {
 
         # assign to or cache
         $results{$type} ||= [
-            sort alphanum_sort
+            sort _alphanum_sort
             map { /^[*]?\s+(?:remotes\/)?(.*?)\s*$/xms }
             grep {!/HEAD/}
             runner("git branch $type")
@@ -62,7 +62,7 @@ sub alphanum_sort {
     sub tags {
         # assign to or cache
         $result ||= [
-            sort alphanum_sort
+            sort _alphanum_sort
             map { /^(.*?)\s*$/xms }
             runner("git tag")
         ];
@@ -240,11 +240,39 @@ Returns a list of all branches of the specified type. (Default type is local)
 
 Returns a list of all tags.
 
-=head2 C<alphanum_sort ()>
+=head2 C<_alphanum_sort ()>
 
 Does sorting (for the building C<sort>) in a alpha numerical fashion.
 Specifically all numbers are converted for the comparison to 14 digit strings
 with leading zeros.
+
+=head2 C<children ($dir)>
+
+Get the child files of C<$dir>
+
+=head2 C<config ($name, $default)>
+
+Get the git config value of C<$name>, or if not set C<$default>
+
+=head2 C<current ()>
+
+Get the current branch/tag or commit
+
+=head2 C<match_commits ($type, $regex, $max)>
+
+=head2 C<release ($tag_or_branch, $local, $search)>
+
+=head2 C<releases (%option)>
+
+=head2 C<runner (@cmd)>
+
+=head2 C<sha_from_show ($name)>
+
+Get info from C<git show $name>
+
+=head2 C<slurp ($file)>
+
+Return the contents of C<$file>
 
 =head1 DIAGNOSTICS
 
