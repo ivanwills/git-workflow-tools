@@ -181,6 +181,25 @@ Find which branch or branches use a POM version number.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+Defaults for this script can be set thought C<git config>
+
+ workflow.prod  Sets how a prod release is determined
+                eg the default equavilent is branch=^origin/master$
+ workflow.pom   The default location for the pom.xml file (used C<--new-pom>
+                and updating the pom.xml for the new branch)
+
+You can set these values either by editing the repository local C<.git/config>
+file or C<~/.gitconfig> or use the C<git config> command
+
+ # eg Setting the global value
+    git config --global workflow.prod 'branch=^origin/master$'
+
+ # or set a repository's local value
+    git config workflow.prod 'tag=^release_\d{4}_\d{2}\d{2}$'
+
+ # or setting pom.xml location to a sub directory
+    git config workflow.pom 'somedir/pom.xml'
+
 =head1 DEPENDENCIES
 
 =head1 INCOMPATIBILITIES
