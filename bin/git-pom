@@ -95,9 +95,8 @@ sub do_uniq {
 
 sub do_next {
     my (undef, $pom) = @_;
-    my $versions = get_pom_versions($option{pom});
 
-    my $version = next_pom_version($option{pom}, $versions);
+    my $version = next_pom_version($option{pom});
     print "$version\n";
 
     if ($option{update}) {
