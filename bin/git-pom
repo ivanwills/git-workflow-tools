@@ -39,6 +39,9 @@ sub main {
         'pom|P=s',
         'update|u!',
         'fetch|f!',
+        'tag|t=s',
+        'branch|b=s',
+        'local|l!',
         'verbose|v+',
         'man',
         'help',
@@ -123,6 +126,22 @@ sub whos {
     return;
 }
 
+sub release {
+    my (undef, $pom, $versions) = @_;
+    my ($type, $regex);
+
+    if ( !$option{tag} && !$option{branch} ) {
+        my $prod = config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
+        ($type, $regex) = split /\s*=\s*/, $prod;
+    }
+
+    my $release = release($type, $option{local}, $regex);
+    my $xml = runner("git show $release:$pom 2> /dev/null");
+    my $version = pom_version($xml);
+
+    print "$release uses $version\n";
+}
+
 __DATA__
 
 =head1 NAME
@@ -138,14 +157,22 @@ This documentation refers to git-pom version 0.2
    git-pom [uniq] [option]
    git-pom next [--update|-u]
    git-pom whos version [option]
+   git-pom release [(-t|--tag) release_tag_re|(-b|--branch) relase_branch_re] [-l|--local]
 
  SUB-COMMAND:
   uniq          Confirm that the current branch is the only branch using it's version
   next          Calculates the next available version number
   whos          Which branch uses the pom version "version"
+  release       Display the currently used POM version in the current release
 
  OPTIONS:
   -u --update   Update to next version (used with next)
+  -t --tag[=]str
+                Specify a tag that any branch with newer commits must contain
+  -b --branch[=]str
+                Similarly a branch that other branches with newer commits must
+                contain (Default origin/master)
+  -l --local    Shorthand for --branch '^master$'
 
   -v --verbose  Show more detailed option
      --VERSION  Prints the version information
