@@ -20,7 +20,7 @@ our $VERSION     = 0.2;
 our @EXPORT_OK   = qw/get_pom_versions pom_version next_pom_version/;
 our %EXPORT_TAGS = ();
 
-sub alphanum_sort {
+sub _alphanum_sort {
     my $A = $a;
     $A =~ s/(\d+)/sprintf "%014i", $1/egxms;
     my $B = $b;
@@ -71,7 +71,7 @@ sub next_pom_version {
     my ($pom, $versions) = @_;
     $versions ||= get_pom_versions($pom);
 
-    my ($max) = reverse sort alphanum_sort keys %{$versions};
+    my ($max) = reverse sort _alphanum_sort keys %{$versions};
     my ($primary, $secondary) = split /[.]/, $max;
     $secondary++;
 
@@ -92,12 +92,20 @@ This documentation refers to Git::Workflow::Pom version 0.2
 
 =head1 SYNOPSIS
 
-   use Git::Workflow::Pom;
+   use Git::Workflow::Pom qw/get_pom_versions pom_version next_pom_version/;
 
-   # Brief but working code example(s) here showing the most common usage(s)
-   # This section will be as far as many users bother reading, so make it as
-   # educational and exemplary as possible.
+   # get all branch POM versions
+   my $versions = get_pom_versions("pom.xml");
+   # {
+   #    1.0 => { "some_branch" => "1.0.0-SNAPSHOT" },
+   #    ...
+   # }
 
+   # extract the version from the POM
+   my $version = pom_version("pom.xml");
+
+   # find the next unused POM version.
+   my $next = next_pom_version("pom.xml");
 
 =head1 DESCRIPTION
 
