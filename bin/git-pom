@@ -13,7 +13,7 @@ use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
-use Git::Workflow qw/config runner/;
+use Git::Workflow qw/config runner release/;
 use Git::Workflow::Pom qw/get_pom_versions pom_version next_pom_version/;
 
 our $VERSION = 0.2;
