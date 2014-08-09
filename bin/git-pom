@@ -47,7 +47,7 @@ sub main {
         'help',
         'VERSION!',
     ) or Pod::Usage::pod2usage(2);
-    my $sub_command = shift @ARGV || 'uniq';
+    my $sub_command = 'do_' . ( shift @ARGV || 'uniq' );
 
     if ( $option{'VERSION'} ) {
         print "$name Version = $VERSION\n";
@@ -70,15 +70,14 @@ sub main {
     # make sure that git is up-to-date
     runner(qw/git fetch/) if $option{fetch};
 
-    my $versions = get_pom_versions($option{pom});
-
-    main->$sub_command($option{pom}, $versions);
+    main->$sub_command($option{pom}, @ARGV);
 
     return;
 }
 
-sub uniq {
-    my (undef, $pom, $versions) = @_;
+sub do_uniq {
+    my (undef, $pom) = @_;
+    my $versions  = get_pom_versions($option{pom});
     my $numerical = my $version = pom_version($pom);
     $numerical =~ s/-SNAPSHOT$//xms;
 
@@ -94,8 +93,9 @@ sub uniq {
     return;
 }
 
-sub next {
-    my (undef, $pom, $versions) = @_;
+sub do_next {
+    my (undef, $pom) = @_;
+    my $versions = get_pom_versions($option{pom});
 
     my $version = next_pom_version($option{pom}, $versions);
     print "$version\n";
@@ -107,9 +107,9 @@ sub next {
     return;
 }
 
-sub whos {
-    my (undef, $pom, $versions) = @_;
-    my $version = shift @ARGV;
+sub do_whos {
+    my (undef, $pom, $version) = @_;
+    my $versions = get_pom_versions($option{pom});
 
     if (!$version) {
         warn "No version supplied!\n";
@@ -126,8 +126,8 @@ sub whos {
     return;
 }
 
-sub release {
-    my (undef, $pom, $versions) = @_;
+sub do_release {
+    my (undef, $pom) = @_;
     my ($type, $regex);
 
     if ( !$option{tag} && !$option{branch} ) {
