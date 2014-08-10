@@ -13,7 +13,7 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use XML::Tiny;
-use Git::Workflow qw/branches runner/;
+use Git::Workflow qw/branches runner settings sha_from_show/;
 use base qw/Exporter/;
 
 our $VERSION     = 0.2;
@@ -32,9 +32,22 @@ sub _alphanum_sort {
 sub get_pom_versions {
     my ($pom) = @_;
     my @branches = branches('both');
+    my $settings = settings();
     my %versions;
+    my $count = 0;
 
+    BRANCH:
     for my $branch (@branches) {
+        my $setting = $settings->{pom_versions}{$branch};
+        my $state   = sha_from_show($branch);
+
+        # used saved version if it exists.
+        if ( $setting && $setting->{time} < $state->{time} ) {
+            $versions{$setting->{numerical}}{$branch} = $setting->{version};
+            next BRANCH;
+        }
+        warn $branch;
+
         my $xml = runner("git show $branch:$pom 2> /dev/null");
         chomp $xml;
         next if !$xml;
@@ -49,6 +62,12 @@ sub get_pom_versions {
 
         $versions{$numerical} ||= {};
         $versions{$numerical}{$branch} = $version;
+        $settings->{pom_versions}{$branch} = {
+            numerical => $numerical,
+            version   => $version,
+            time      => $state->{time},
+        };
+        Git::Workflow::save_settings() if $count++ % 10 == 0;
     }
 
     return \%versions;
