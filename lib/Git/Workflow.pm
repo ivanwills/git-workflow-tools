@@ -168,7 +168,7 @@ sub releases {
 }
 
 sub sha_from_show {
-    my ($name) = @_;
+    my ($name, $no_branches) = @_;
     my ($log) = runner("git rev-list -1 --timestamp $name");
     chomp $log;
     my ($time, $sha) = split /\s+/, $log;
@@ -176,7 +176,7 @@ sub sha_from_show {
         name     => $name,
         sha      => $sha,
         time     => $time,
-        branches => { map { $_ => 1 } branches('both', $sha) },
+        branches => $no_branches ? {} : { map { $_ => 1 } branches('both', $sha) },
     };
 }
 
