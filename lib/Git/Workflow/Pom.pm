@@ -19,6 +19,7 @@ use base qw/Exporter/;
 our $VERSION     = 0.2;
 our @EXPORT_OK   = qw/get_pom_versions pom_version next_pom_version/;
 our %EXPORT_TAGS = ();
+our $MAX_AGE     = 60 * 60 * 24 * 120;
 
 sub _alphanum_sort {
     my $A = $a;
@@ -38,15 +39,24 @@ sub get_pom_versions {
 
     BRANCH:
     for my $branch (@branches) {
-        my $setting = $settings->{pom_versions}{$branch};
-        my $state   = sha_from_show($branch);
+        my $saved = $settings->{pom_versions}{$branch};
+        # skip branches marked as OLD
+        next BRANCH if $saved->{old};
 
-        # used saved version if it exists.
-        if ( $setting && $setting->{time} < $state->{time} ) {
-            $versions{$setting->{numerical}}{$branch} = $setting->{version};
+        my $current = sha_from_show($branch, 1);
+
+        # Skip any branches that are over $MAX_AGE old
+        if ( $current->{time} < time - $MAX_AGE ) {
+            $saved->{old} = 1;
+            Git::Workflow::save_settings() if $count++ % 10 == 0;
             next BRANCH;
         }
-        warn $branch;
+
+        # used saved version if it exists.
+        if ( $saved && $saved->{time} && $saved->{time} == $current->{time} ) {
+            $versions{$saved->{numerical}}{$branch} = $saved->{version};
+            next BRANCH;
+        }
 
         my $xml = runner("git show $branch:$pom 2> /dev/null");
         chomp $xml;
@@ -60,12 +70,11 @@ sub get_pom_versions {
         # remove any extranious text from the front
         $numerical =~ s/^\D+//xms;
 
-        $versions{$numerical} ||= {};
         $versions{$numerical}{$branch} = $version;
         $settings->{pom_versions}{$branch} = {
             numerical => $numerical,
             version   => $version,
-            time      => $state->{time},
+            time      => $current->{time},
         };
         Git::Workflow::save_settings() if $count++ % 10 == 0;
     }
