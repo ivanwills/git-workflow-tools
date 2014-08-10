@@ -14,7 +14,20 @@ use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
 our $VERSION     = 0.2;
-our @EXPORT_OK   = qw/branches tags current config match_commits release releases slurp children runner /;
+our @EXPORT_OK   = qw/
+    branches
+    children
+    config
+    current
+    match_commits
+    release
+    releases
+    runner
+    settings
+    sha_from_show
+    slurp
+    tags
+/;
 our %EXPORT_TAGS = ();
 our $VERBOSE     = 0;
 our $TEST        = 0;
@@ -171,7 +184,14 @@ sub slurp {
     my ($file) = @_;
     open my $fh, '<', $file or die "Can't open file '$file' for reading: $!\n";
 
-    return wantarray ? <$fh> : dop { local $/; <$fh> };
+    return wantarray ? <$fh> : do { local $/; <$fh> };
+}
+
+sub spew {
+    my ($file, @out) = @_;
+    open my $fh, '>', $file or die "Can't open file '$file' for writing: $!\n";
+
+    print $fh @out;
 }
 
 sub children {
@@ -192,6 +212,41 @@ sub runner {
     carp "Too many arguments!\n" if @cmd != 1;
 
     return qx/$cmd[0]/;
+}
+
+{
+    my ($settings, $file);
+    sub settings {
+        my $git_dir = runner("git rev-parse --show-toplevel");
+        chomp $git_dir;
+
+        if ($settings) {
+            $settings->{$git_dir} ||= {};
+            return $settings->{$git_dir};
+        }
+        $ENV{HOME} ||= "/tmp/";
+        $file = "$ENV{HOME}/.git-workflow.settings";
+
+        $settings
+            = -f $file
+            ? eval scalar slurp($file)  ## no critic
+            : {};
+
+        $settings->{$git_dir} ||= {};
+
+        return $settings->{$git_dir};
+    }
+
+    sub save_settings {
+        local $Data::Dumper::Indent   = 1;
+        local $Data::Dumper::Sortkeys = 1;
+        $settings->{version} =$Git::Workflow::VERSION;
+        spew($file, 'my ' . Dumper $settings);
+    }
+}
+
+sub DESTROY {
+    save_settings();
 }
 
 1;
