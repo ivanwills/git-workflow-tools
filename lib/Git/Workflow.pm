@@ -217,12 +217,16 @@ sub runner {
 {
     my ($settings, $file);
     sub settings {
-        my $git_dir = runner("git rev-parse --show-toplevel");
-        chomp $git_dir;
+        my $key = runner('git config remote.origin.url');
+        chomp $key;
+        if ( !$key ) {
+            $key = runner("git rev-parse --show-toplevel");
+            chomp $key;
+        }
 
         if ($settings) {
-            $settings->{$git_dir} ||= {};
-            return $settings->{$git_dir};
+            $settings->{$key} ||= {};
+            return $settings->{$key};
         }
         $ENV{HOME} ||= "/tmp/";
         $file = "$ENV{HOME}/.git-workflow.settings";
@@ -232,9 +236,13 @@ sub runner {
             ? eval scalar slurp($file)  ## no critic
             : {};
 
-        $settings->{$git_dir} ||= {};
+        $settings->{$key} ||= {};
 
-        return $settings->{$git_dir};
+        if ( $settings->{version} && $settings->{version} > $Git::Workflow::VERSION ) {
+            die "Current settings created with newer version than this program!\n";
+        }
+
+        return $settings->{$key};
     }
 
     sub save_settings {
