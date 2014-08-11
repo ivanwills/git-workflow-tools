@@ -172,6 +172,7 @@ sub sha_from_show {
     my ($log) = runner("git rev-list -1 --timestamp $name");
     chomp $log;
     my ($time, $sha) = split /\s+/, $log;
+
     return {
         name     => $name,
         sha      => $sha,
@@ -189,6 +190,7 @@ sub slurp {
 
 sub spew {
     my ($file, @out) = @_;
+    die "No file passed!" if !$file;
     open my $fh, '>', $file or die "Can't open file '$file' for writing: $!\n";
 
     print $fh @out;
@@ -201,15 +203,40 @@ sub children {
     return grep { $_ ne '.' && $_ ne '..' } readdir $dh;
 }
 
+my %times;
 sub runner {
     my @cmd = @_;
 
     print join ' ', @cmd, "\n" if $VERBOSE;
     return if $TEST;
 
-    return system @cmd if !defined wantarray;
+    if (!defined wantarray) {
+        if ($ENV{GIT_WORKFLOW_TIMER}) {
+            require Time::HiRes;
+            my $start = Time::HiRes::time();
+            my $ans = system @cmd;
+            push @{ $times{$cmd[1]} }, Time::HiRes::time() - $start;
+            return $ans;
+        }
+        return system @cmd;
+    }
 
     carp "Too many arguments!\n" if @cmd != 1;
+
+    if ($ENV{GIT_WORKFLOW_TIMER}) {
+        require Time::HiRes;
+        my $start = Time::HiRes::time();
+        my (@ans, $ans);
+        if (wantarray) {
+            @ans = qx/$cmd[0]/;
+        }
+        else {
+            $ans = qx/$cmd[0]/;
+        }
+        my ($sub) = $cmd[0] =~ /^git \s (\S+) \s/xms;
+        push @{ $times{$sub} }, Time::HiRes::time() - $start;
+        return wantarray ? @ans : $ans;
+    }
 
     return qx/$cmd[0]/;
 }
@@ -253,8 +280,22 @@ sub runner {
     }
 }
 
-sub DESTROY {
+sub _url_encode {
+    my ($url) = @_;
+    $url =~ s/([^-\w.:])/sprintf "%%%x", ord $1/egxms;
+    return $url;
+}
+
+sub END {
     save_settings();
+    if ($ENV{GIT_WORKFLOW_TIMER}) {
+        for my $sub (sort keys %times) {
+            print "git $sub\n";
+            my $total = 0;
+            map {$total += $_} @{ $times{$sub} };
+            printf "    Avg : %0.3fs for %i runs. Total time %0.3fs\n", $total / @{ $times{$sub} }, (scalar @{ $times{$sub} }), $total;
+        }
+    }
 }
 
 1;
