@@ -244,32 +244,32 @@ sub runner {
 {
     my ($settings, $file);
     sub settings {
+        return $settings if $settings;
+
+        $ENV{HOME} ||= "/tmp/";
+        my $dir = "$ENV{HOME}/.git-workflow";
+        mkdir $dir if !-d $dir;
+
         my $key = runner('git config remote.origin.url');
         chomp $key;
         if ( !$key ) {
             $key = runner("git rev-parse --show-toplevel");
             chomp $key;
         }
+        $key = _url_encode($key);
 
-        if ($settings) {
-            $settings->{$key} ||= {};
-            return $settings->{$key};
-        }
-        $ENV{HOME} ||= "/tmp/";
-        $file = "$ENV{HOME}/.git-workflow.settings";
+        $file = "$dir/$key";
 
         $settings
             = -f $file
             ? eval scalar slurp($file)  ## no critic
             : {};
 
-        $settings->{$key} ||= {};
-
         if ( $settings->{version} && $settings->{version} > $Git::Workflow::VERSION ) {
             die "Current settings created with newer version than this program!\n";
         }
 
-        return $settings->{$key};
+        return $settings;
     }
 
     sub save_settings {
