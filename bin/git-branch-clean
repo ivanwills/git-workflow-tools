@@ -12,6 +12,7 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
+use Git::Workflow qw/branches sha_from_show/;
 
 our $VERSION = 0.2;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -31,7 +32,14 @@ sub main {
     Getopt::Long::Configure('bundling');
     GetOptions(
         \%option,
-        'quiet|q',
+        'remote|r',
+        'all|a',
+        'max_age|max-age|m=i',
+        'min_age|min-age|n=i',
+        'tag|t!',
+        'tag_prefix|tag-prefix|p=s',
+        'tag_postfix|tag-postfix|q=s',
+        'test!',
         'verbose|v+',
         'man',
         'help',
@@ -49,7 +57,33 @@ sub main {
         Pod::Usage::pod2usage( -verbose => 1 );
     }
 
-    # do stuff here
+    # get the list of branches to look at
+    my @branches = branches($option{remote} ? 'remote' : $option{all} ? 'both' : undef );
+    my ($total, $deleted) = (0, 0);
+
+    for my $branch (@branches) {
+        my $details = sha_from_show($branch);
+
+        if ( in_master($details) ) {
+            warn "deleting branch $branch\n";
+            $deleted++;
+        }
+        $total++;
+    }
+
+    warn "Deleted $deleted of $total branches\n";
+
+    return;
+}
+
+sub in_master {
+    my ($details) = @_;
+
+    return 1 if $details->{branches}{master};
+
+    for my $branch (keys %{ $details->{branches} }) {
+        return 1 if $branch =~ m{^ (?:[^/]+/)? master$}xms;
+    }
 
     return;
 }
@@ -69,7 +103,9 @@ This documentation refers to git-branch-clean version 0.2
    git-branch-clean [option]
 
  OPTIONS:
-  -a --max-age[=]days
+  -r --remote   Only remote branches (defaults to local branches)
+  -a --all      All branches
+  -m --max-age[=]days
                 Maximum age of a branch with out changes before it is cleaned
                 weather it's merged to master or not. (Default 0, no max age)
   -n --min-age[=]days
