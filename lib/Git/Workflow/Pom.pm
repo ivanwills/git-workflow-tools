@@ -36,48 +36,59 @@ sub get_pom_versions {
     my $settings = settings();
     my %versions;
     my $count = 0;
+    my $max_age = $MAX_AGE;
+    my $run = !$settings->{max_age} || $settings->{max_age} == $max_age ? 0 : 1;
 
-    BRANCH:
-    for my $branch (@branches) {
-        my $saved = $settings->{pom_versions}{$branch};
-        # skip branches marked as OLD
-        next BRANCH if $saved->{old};
+    while (!%versions && $run < 10) {
+        BRANCH:
+        for my $branch (@branches) {
+            $settings->{pom_versions}{$branch} ||= {};
+            my $saved = $settings->{pom_versions}{$branch};
 
-        my $current = sha_from_show($branch, 1);
+            # skip branches marked as OLD
+            next BRANCH if !$run && $saved->{old};
 
-        # Skip any branches that are over $MAX_AGE old
-        if ( $current->{time} < time - $MAX_AGE ) {
-            $saved->{old} = 1;
-            Git::Workflow::save_settings() if $count++ % 10 == 0;
-            next BRANCH;
+            my $current = sha_from_show($branch, 1);
+
+            # Skip any branches that are over $MAX_AGE old
+            if ( $current->{time} < time - $max_age ) {
+                $saved->{old} = 1;
+                Git::Workflow::save_settings() if $count++ % 20 == 0;
+                next BRANCH;
+            }
+
+            delete $saved->{old};
+
+            # used saved version if it exists.
+            if ( $saved && $saved->{time} && $saved->{time} == $current->{time} ) {
+                $versions{$saved->{numerical}}{$branch} = $saved->{version};
+                next BRANCH;
+            }
+
+            my $xml = runner("git show $branch:$pom 2> /dev/null");
+            chomp $xml;
+            next if !$xml;
+
+            $branch =~ s{^origin/}{}xms;
+
+            my $numerical = my $version = pom_version($xml);
+            # remove snapshots from the end
+            $numerical =~ s/-SNAPSHOT$//xms;
+            # remove any extranious text from the front
+            $numerical =~ s/^\D+//xms;
+
+            $versions{$numerical}{$branch} = $version;
+            $settings->{pom_versions}{$branch} = {
+                numerical => $numerical,
+                version   => $version,
+                time      => $current->{time},
+            };
+            Git::Workflow::save_settings() if $count++ % 20 == 0;
         }
-
-        # used saved version if it exists.
-        if ( $saved && $saved->{time} && $saved->{time} == $current->{time} ) {
-            $versions{$saved->{numerical}}{$branch} = $saved->{version};
-            next BRANCH;
-        }
-
-        my $xml = runner("git show $branch:$pom 2> /dev/null");
-        chomp $xml;
-        next if !$xml;
-
-        $branch =~ s{^origin/}{}xms;
-
-        my $numerical = my $version = pom_version($xml);
-        # remove snapshots from the end
-        $numerical =~ s/-SNAPSHOT$//xms;
-        # remove any extranious text from the front
-        $numerical =~ s/^\D+//xms;
-
-        $versions{$numerical}{$branch} = $version;
-        $settings->{pom_versions}{$branch} = {
-            numerical => $numerical,
-            version   => $version,
-            time      => $current->{time},
-        };
-        Git::Workflow::save_settings() if $count++ % 10 == 0;
+        $max_age *= 2;
+        $run++;
     }
+    $settings->{max_age} = $max_age;
 
     return \%versions;
 }
