@@ -110,6 +110,9 @@ sub next_pom_version {
     my ($pom, $versions) = @_;
     $versions ||= get_pom_versions($pom);
 
+    # sanity check
+    die "No POM versions found!" if !%$versions;
+
     my ($max) = reverse sort _alphanum_sort keys %{$versions};
     my ($primary, $secondary) = split /[.]/, $max;
     $secondary++;
