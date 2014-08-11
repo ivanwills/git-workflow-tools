@@ -13,13 +13,13 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use XML::Tiny;
-use Git::Workflow qw/branches runner settings sha_from_show/;
+use Git::Workflow qw/branches runner settings sha_from_show config/;
 use base qw/Exporter/;
 
 our $VERSION     = 0.2;
 our @EXPORT_OK   = qw/get_pom_versions pom_version next_pom_version/;
 our %EXPORT_TAGS = ();
-our $MAX_AGE     = 60 * 60 * 24 * 120;
+our $MAX_AGE     = 60 * 60 * 24 * ( $ENV{GIT_WORKFLOW_MAX_AGE} || config('workflow.max_age', 120) );
 
 sub _alphanum_sort {
     my $A = $a;
