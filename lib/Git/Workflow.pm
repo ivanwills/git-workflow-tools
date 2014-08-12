@@ -273,6 +273,7 @@ sub runner {
     }
 
     sub save_settings {
+        return if !$file;
         local $Data::Dumper::Indent   = 1;
         local $Data::Dumper::Sortkeys = 1;
         $settings->{version} =$Git::Workflow::VERSION;
