@@ -62,9 +62,17 @@ sub main {
     my ($total, $deleted) = (0, 0);
     my $max = 0;
 
+    BRANCH:
     for my $branch (@branches) {
-        next if $branch =~ m{^ (?:[^/]+/)? master $}xms;
+        # skip master branches
+        next BRANCH if $branch =~ m{^ (?:[^/]+/)? master $}xms;
+
+        # get branch details
         my $details = sha_from_show($branch);
+
+        # don't delete young branches even if merged
+        next BRANCH if $option{min_age} && $details->{time} > time - $option{min_age} * 60 * 60 * 24;
+
         $max = $details->{time} if $max < $details->{time};
 
         if ( in_master($details) || too_old($details) ) {
