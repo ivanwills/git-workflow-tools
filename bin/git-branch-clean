@@ -60,18 +60,21 @@ sub main {
     # get the list of branches to look at
     my @branches = branches($option{remote} ? 'remote' : $option{all} ? 'both' : undef );
     my ($total, $deleted) = (0, 0);
+    my $max = 0;
 
     for my $branch (@branches) {
+        next if $branch =~ m{^ (?:[^/]+/)? master $}xms;
         my $details = sha_from_show($branch);
+        $max = $details->{time} if $max < $details->{time};
 
-        if ( in_master($details) ) {
+        if ( in_master($details) || too_old($details) ) {
             warn "deleting branch $branch\n";
             $deleted++;
         }
         $total++;
     }
 
-    warn "Deleted $deleted of $total branches\n";
+    warn "Deleted $deleted of $total branches\nMax = " . (int $max/60/60/24) . "\n";
 
     return;
 }
@@ -86,6 +89,14 @@ sub in_master {
     }
 
     return;
+}
+
+sub too_old {
+    my ($details) = @_;
+
+    return if !$option{max_age};
+
+    return time - $option{max_age} * 60 * 60 * 24 > $details->{time};
 }
 
 __DATA__
