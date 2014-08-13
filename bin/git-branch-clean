@@ -85,7 +85,16 @@ sub main {
 
             if ( $option{tag} ) {
                 my $tag = $option{tag_prefix} . $name . $option{tag_suffix};
-                runner(qw/git tag/, $tag) if !$option{test};
+                runner(qw/git tag -a -m /, "Converting '$name' to the tag '$tag'", $tag) if !$option{test};
+            }
+
+            if ( !$option{test} ) {
+                if ($remote) {
+                    runner(qw/git push/, $remote, ":refs/heads/$name");
+                }
+                else {
+                    runner(qw/git branch -D/, "$name");
+                }
             }
         }
         $total++;
