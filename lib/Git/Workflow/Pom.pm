@@ -8,7 +8,6 @@ package Git::Workflow::Pom;
 
 use strict;
 use warnings;
-use version;
 use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
