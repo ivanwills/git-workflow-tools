@@ -33,6 +33,10 @@ sub main {
         \%option,
         'verbose|v+',
         'sort|s',
+        'insensitive|i',
+        'context|C=i',
+        'before|B=i',
+        'after|A=i',
         'man',
         'help',
         'VERSION!',
@@ -51,8 +55,14 @@ sub main {
 
     # do stuff here
     my $cmd = join ' ', qw/git tag/;
+    my @grep_options;
+    push @grep_options, '-i'                  if $option{insensitive};
+    push @grep_options, "-C $option{context}" if $option{context};
+    push @grep_options, "-B $option{before}"  if $option{before};
+    push @grep_options, "-A $option{after}"   if $option{after};
+    my $grep = join ' ', @grep_options;
 
-    print "$cmd | grep -P '$ARGV[0]'\n" if $option{verbose} || $option{test};
+    print "$cmd | grep -P $grep '$ARGV[0]'\n" if $option{verbose} || $option{test};
     return exec "$cmd | grep -P '$ARGV[0]' | sort -n" if !$option{sort};
 
     print sort {sorter()} `$cmd | grep -P '$ARGV[0]'`;
