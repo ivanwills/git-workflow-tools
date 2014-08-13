@@ -379,6 +379,18 @@ Get info from C<git show $name>
 
 Return the contents of C<$file>
 
+=head2 C<spew ( $file, @data )>
+
+Write C<@data> to the file C<$file>
+
+=head2 C<settings ()>
+
+Get the saved settings for the current repository
+
+=head2 C<save_settings ()>
+
+Save any changed settings for the current repository
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
