@@ -4,7 +4,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile
 (
   'NAME' => 'git-workflow-tools',
-  'VERSION_FROM' => 'lib/git-workflow-tools.pm',
+  'VERSION_FROM' => 'lib/Git/Workflow.pm',
   'PREREQ_PM' => {
                    'Path::Class' => 0,
                    'Test::More' => 0,
@@ -14,6 +14,7 @@ WriteMakefile
                  },
   'INSTALLDIRS' => 'site',
   'EXE_FILES' => [
+                   'bin/git-branch-clean',
                    'bin/git-branch-grep',
                    'bin/git-committers',
                    'bin/git-cows',
