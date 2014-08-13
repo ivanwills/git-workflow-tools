@@ -13,7 +13,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
-our $VERSION     = 0.2;
+our $VERSION     = 0.3;
 our @EXPORT_OK   = qw/
     branches
     children
@@ -309,7 +309,7 @@ Git::Workflow - Git workflow tools
 
 =head1 VERSION
 
-This documentation refers to Git::Workflow version 0.2
+This documentation refers to Git::Workflow version 0.3
 
 =head1 SYNOPSIS
 
