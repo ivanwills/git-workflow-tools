@@ -60,12 +60,12 @@ sub main {
 
 
     # do stuff here
-    my $jira = shift @ARGV;
-    $jira =~ s/[-_]/[-_]/;
-    $jira = lc $jira;
+    my $jira_re = my $jira = shift @ARGV;
+    $jira_re =~ s/[-_]/[-_]/;
+    $jira_re = lc $jira_re;
 
     # check local branches first
-    my @branch = grep {/^(\w+_)?$jira(?:\D|$)/} Git::Workflow::branches();
+    my @branch = grep {/^(\w+_)?$jira_re(?:\D|$)/} Git::Workflow::branches();
 
     if (@branch && !$option{remote}) {
         my $branch = which_branch(@branch);
@@ -73,7 +73,7 @@ sub main {
     }
     else {
         # check if there is a remote branch
-        my (@remote_branch) = grep {/^origin\/(\w+_)?$jira/} Git::Workflow::branches('remote');
+        my (@remote_branch) = grep {/^origin\/(\w+_)?$jira_re/} Git::Workflow::branches('remote');
         if (@remote_branch) {
             my $remote_branch = which_branch(@remote_branch);
             my $branch = $remote_branch;
@@ -84,9 +84,7 @@ sub main {
             # suggest how to construct the branch
             warn "No branch for jira $jira exists!\n";
             warn "Create with one of the following:\n";
-            warn "git checkout -b shop_$jira\_...\n";
-            warn "git checkout -b care_$jira\_...\n";
-            warn "git checkout -b mobi_$jira\_...\n";
+            warn "git feature $jira\n";
         }
     }
 
