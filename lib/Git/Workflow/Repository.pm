@@ -8,20 +8,17 @@ package Git::Workflow::Repository;
 
 use strict;
 use warnings;
-use version;
 use Carp;
-use Scalar::Util;
-use List::Util;
-#use List::MoreUtils;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use Git;
 use File::Spec;
 use base qw/Exporter/;
 
-our $VERSION     = version->new('0.3');
+our $VERSION     = 0.3;
 our @EXPORT_OK   = qw//;
 our %EXPORT_TAGS = ();
+our $last;
 
 sub new {
     my $caller = shift;
@@ -41,7 +38,11 @@ sub new {
 
     bless $self, $class;
 
-    return $self;
+    return $last = $self;
+}
+
+sub git {
+    return $last || Git::Workflow::Repository->new;
 }
 
 our $AUTOLOAD;
