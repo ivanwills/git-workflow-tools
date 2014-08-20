@@ -63,8 +63,15 @@ sub main {
         my $id = git_state();
 
         if ( !$last || $last ne $id ) {
+            # TODO:
+            #   limit to file/branches
+            #   set env variables to indicate what has changed what has changed
+
             if ( $action eq 'show' ) {
                 print "$id\n";
+            }
+            else {
+                system @ARGV;
             }
         }
 
