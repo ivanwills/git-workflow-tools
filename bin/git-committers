@@ -35,6 +35,7 @@ sub main {
         \%option,
         'date|d=s',
         'period|p=s',
+        'merges|m!',
         'verbose|v+',
         'man',
         'help',
@@ -72,11 +73,12 @@ sub main {
     }
 
     open my $branches, '-|', 'git branch -r' or die "Can't read branches: $!\n";
+    my $merges = $option{merges} ? '' : '--no-merges';
 
     while (my $branch = <$branches>) {
-        warn qq{git log --format=format:"%h %an" --since=$date $branch} if $option{verbose};
+        warn qq{git log --format=format:"%h %an" $merges --since=$date $branch} if $option{verbose};
         chomp $branch;
-        open my $logs, '-|', qq{git log --format=format:"%h %an" --since=$date $branch} or die "Can't read logs: $!\n";
+        open my $logs, '-|', qq{git log --format=format:"%h %an" $merges --since=$date $branch} or die "Can't read logs: $!\n";
         while (my $log = <$logs>) {
             chomp $log;
             my ($hash, $name) = split /\s/, $log, 2;
@@ -114,6 +116,9 @@ This documentation refers to git-committers version 0.3
   -p --period=[day|week|month|year]
                 If --date is not specified this works out the date for the
                 last day/week/month/year
+  -m --merges   Count merge commits
+     --no-merges
+                Don't count merge commits
 
   -v --verbose  Show more detailed option
      --VERSION  Prints the version information
