@@ -63,9 +63,9 @@ sub main {
     my $grep = join ' ', @grep_options;
 
     print "$cmd | grep -P $grep '$ARGV[0]'\n" if $option{verbose} || $option{test};
-    return exec "$cmd | grep -P '$ARGV[0]' | sort -n" if !$option{sort};
+    return exec "$cmd | grep -P $grep '$ARGV[0]' | sort -n" if !$option{sort};
 
-    print sort {sorter()} `$cmd | grep -P '$ARGV[0]'`;
+    print sort {sorter()} `$cmd | grep -P $grep '$ARGV[0]'`;
 }
 
 sub sorter {
