@@ -12,12 +12,13 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow;
+use Git::Workflow qw/config/;
 
 our $VERSION = 0.3;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
+    url     => config('jira.url'),
     verbose => 0,
     man     => 0,
     help    => 0,
@@ -41,6 +42,9 @@ sub main {
         'list|l',
         'remote|r',
         'quiet|q!',
+        'url|u=s',
+        'user|U=s',
+        'pass|password|P=s',
         'verbose|v+',
         'man',
         'help',
@@ -81,10 +85,24 @@ sub main {
             system qw/git checkout -b/, $branch, '--track', $remote_branch;
         }
         elsif (!$option{quiet}) {
-            # suggest how to construct the branch
-            warn "No branch for jira $jira exists!\n";
-            warn "Create with one of the following:\n";
-            warn "git feature $jira\n";
+            if ( $option{url} && eval { require JIRA::REST } ) {
+                $jira =~ s/_/-/;
+                $jira = uc $jira;
+                my $jira_rest = JIRA::REST->new($option{url}, $option{user}, $option{pass});
+                my $issue     = eval { $jira_rest->GET("/issue/$jira") };
+                my $branch    = lc "$jira $issue->{title}";
+                $branch =~ s/[ !?-]+/_/gxms;
+
+                warn "No branch found for $jira!\n";
+                warn "Create with one of the following:\n";
+                warn "git feature $branch\n";
+            }
+            else {
+                # suggest how to construct the branch
+                warn "No branch for jira $jira exists!\n";
+                warn "Create with one of the following:\n";
+                warn "git feature $jira\n";
+            }
         }
     }
 
