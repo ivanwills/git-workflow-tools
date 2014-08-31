@@ -148,6 +148,7 @@ This documentation refers to git-jira version 0.3
   JIRAID            A Jira format id
   -r --remote       Look in remote branches for the Jira branch
   -a --all          Look everywhere?
+  -u --url[=]URL    Use URL as the JIRA instance for looking up summaries.
 
   -v --verbose      Show more detailed option
      --VERSION      Prints the version information
@@ -157,13 +158,28 @@ This documentation refers to git-jira version 0.3
 =head1 DESCRIPTION
 
 Finds any branch containing the passed Jira issue id and switches to that
-branch.
+branch. If none is found then it suggests creating the branch using
+L<git-feature>. If L<JIRA::REST> is installed the suggestion will use the
+JIRA summary as part of the name.
 
 =head1 SUBROUTINES/METHODS
 
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
+
+Defaults for this script can be set thought C<git config>
+
+ jira.url       Specifiys the URL for the JIRA instance being used.
+
+You can set these values either by editing the repository local C<.git/config>
+file or C<~/.gitconfig> or use the C<git config> command
+
+ # eg Setting the local value (ie only the current repository)
+    git config jira.url https://jira.example.com/
+
+ # eg Setting the global value
+    git config --global jira.url https://jira.example.com/
 
 =head1 DEPENDENCIES
 
