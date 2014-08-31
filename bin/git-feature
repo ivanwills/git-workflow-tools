@@ -14,6 +14,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use Git::Workflow qw/config release runner/;
 use Git::Workflow::Pom qw/next_pom_version/;
+use Git::Workflow::Repository;
 
 our $VERSION = 0.3;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -84,12 +85,13 @@ sub main {
         ($type, $regex) = split /\s*=\s*/, $prod;
     }
 
-    runner(qw/git fetch/) if $option{fetch} && !$option{local};
+    my $git = Git::Workflow::Repository->git();
+
+    $git->fetch() if $option{fetch} && !$option{local};
     my $release = release($type, $option{local}, $regex);
 
     # checkout branch
-    runner( qw/git checkout -b/, $feature_branch, '--no-track', $release );
-    runner( qw/git branch/, "--set-upstream-to=origin/$feature_branch" );
+    $git->checkout( '-b', $feature_branch, '--no-track', $release );
 
     if ($option{new_pom}) {
         my $version = next_pom_version($option{pom});
@@ -99,7 +101,7 @@ sub main {
 
     # push if requested to
     if ($option{push}) {
-        runner( qw/git push -u origin/, $feature_branch );
+        $git->push( qw/-u origin/, $feature_branch );
     }
 
     return;
