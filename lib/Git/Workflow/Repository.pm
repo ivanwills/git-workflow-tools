@@ -16,6 +16,7 @@ use File::Spec;
 use base qw/Exporter/;
 
 our $VERSION     = 0.3;
+our @EXPORT      = qw/git/;
 our @EXPORT_OK   = qw//;
 our %EXPORT_TAGS = ();
 our $last;
@@ -49,7 +50,7 @@ our $AUTOLOAD;
 sub AUTOLOAD {
     my $self = shift;
 
-    my $called =  $AUTOLOAD =~ s/.*:://r;
+    my $called =  $AUTOLOAD =~ s/.*:://;
 
     return $self->{git}->command($called, @_);
 }
