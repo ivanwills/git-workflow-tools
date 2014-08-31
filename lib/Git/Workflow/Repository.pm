@@ -52,7 +52,7 @@ sub AUTOLOAD {
 
     my $called =  $AUTOLOAD =~ s/.*:://;
 
-    return $self->{git}->command($called, @_);
+    return $self->{git}->command($called, @_) if $self && $self->{git};
 }
 
 1;
