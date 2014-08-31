@@ -90,7 +90,7 @@ sub main {
                 $jira = uc $jira;
                 my $jira_rest = JIRA::REST->new($option{url}, $option{user}, $option{pass});
                 my $issue     = eval { $jira_rest->GET("/issue/$jira") };
-                my $branch    = lc "$jira $issue->{title}";
+                my $branch    = lc "$jira $issue->{fields}{summary}";
                 $branch =~ s/[ !?-]+/_/gxms;
 
                 warn "No branch found for $jira!\n";
