@@ -11,10 +11,11 @@ use warnings;
 use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
+use Git::Workflow::Repository;
 use base qw/Exporter/;
 
-our $VERSION     = 0.3;
-our @EXPORT_OK   = qw/
+our $VERSION   = 0.3;
+our @EXPORT_OK = qw/
     branches
     children
     config
@@ -31,6 +32,7 @@ our @EXPORT_OK   = qw/
 our %EXPORT_TAGS = ();
 our $VERBOSE     = 0;
 our $TEST        = 0;
+our $git         = Git::Workflow::Repository->git;
 
 sub _alphanum_sort {
     no warnings qw/once/;
@@ -46,16 +48,15 @@ sub _alphanum_sort {
     my %results;
     sub branches {
         my ($type, $contains) = @_;
-        $type
-            = !defined $type    ? ''
-            : $type eq 'local'  ? ''
-            : $type eq 'remote' ? '-r'
-            : $type eq 'both'   ? '-a'
+        my @options
+            = !defined $type    ? ()
+            : $type eq 'local'  ? ()
+            : $type eq 'remote' ? ('-r')
+            : $type eq 'both'   ? ('-a')
             :                     confess "Unknown type '$type'!\n";
 
         if ($contains) {
-            $type &&= "$type ";
-            $type .= "--contains $contains";
+            push @options, "--contains", $contains;
         }
 
         # assign to or cache
@@ -63,7 +64,7 @@ sub _alphanum_sort {
             sort _alphanum_sort
             map { /^[*]?\s+(?:remotes\/)?(.*?)\s*$/xms }
             grep {!/HEAD/}
-            runner("git branch $type")
+            $git->branch(@options)
         ];
 
         return @{ $results{$type} };
@@ -77,7 +78,7 @@ sub _alphanum_sort {
         $result ||= [
             sort _alphanum_sort
             map { /^(.*?)\s*$/xms }
-            runner("git tag")
+            $git->tag
         ];
 
         return @{ $result };
@@ -116,7 +117,7 @@ sub current {
 sub config {
     my ($name, $default) = @_;
     local $SIG{__WARN__} = sub {};
-    my $value = runner("git config $name");
+    my $value = runner("git config $name 2> /dev/null");
     chomp $value;
 
     return $value || $default;
