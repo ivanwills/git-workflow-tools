@@ -23,6 +23,7 @@ my %option = (
     pom     => config('workflow.pom') || 'pom.xml',
     local   => config('workflow.pom-local') || undef,
     fetch   => 1,
+    url     => config('jira.url'),
     verbose => 0,
     man     => 0,
     help    => 0,
@@ -44,7 +45,11 @@ sub main {
         'tag|t=s',
         'branch|b=s',
         'local|l!',
-        'pom|P=s',
+        'pom|x=s',
+        'url|u=s',
+        'user|U=s',
+        'pass|password|P=s',
+        'jira|j=s',
         'fetch|f!',
         'new_pom|new-pom|n!',
         'push|p',
@@ -70,7 +75,7 @@ sub main {
     $Git::Workflow::VERBOSE = $option{verbose};
     $Git::Workflow::TEST    = $option{test};
 
-    my ($feature_branch) = shift @ARGV;
+    my ($feature_branch) = shift @ARGV || jira();
     my ($type, $regex);
     if ($option{tag}) {
         $type = 'tag';
@@ -107,6 +112,19 @@ sub main {
     return;
 }
 
+sub jira {
+    die "No JIRA specified!"     if !$option{jira};
+    die "No JIRA url specified!" if !$option{url};
+    require JIRA::REST;
+
+    my $jira_rest = JIRA::REST->new($option{url}, $option{user}, $option{pass});
+    my $issue     = $jira_rest->GET("/issue/$option{jira}");
+    my $branch    = lc "$option{jira} $issue->{fields}{summary}";
+    $branch =~ s/[ !?-]+/_/gxms;
+
+    return $branch;
+}
+
 __DATA__
 
 =head1 NAME
@@ -120,10 +138,18 @@ This documentation refers to git-feature version 0.3
 =head1 SYNOPSIS
 
    git-feature [option] branch-name
+   git-feature [option] [--jira|-j] JIRAID
 
  OPTIONS:
   branch-name       The name of the new branch to create from the current release branch/tag
 
+  -j --jira[=]JIRAID
+                    Specify a JIRA ID to use to find the summary of an make it
+                    branch name for the feature.
+  -u --url[=]URL    Use URL as the JIRA instance for looking up summaries.
+  -U --user[=]str   JIRA user name to use when looking up JIRA
+  -P --password[=]str
+                    JIRA password for --user
   -t --tag[=]str    Specify a tag that any branch with newer commits must contain
   -b --branch[=]str Similarly a branch that other branches with newer commits must
                     contain (Default origin/master)
@@ -131,7 +157,7 @@ This documentation refers to git-feature version 0.3
   -p --push         Push the new brach upstream
      --no-fetch     Don't fetch before trying to find the remote branch
   -n --new-pom      Set the pom.xml version to the next available version
-  -P --pom[=]pom.xml
+  -x --pom[=]dir/pom.xml
                     The location of the master pom.xml if it isn't in the
                     current directory.
   -t --test         Test don't actually run
