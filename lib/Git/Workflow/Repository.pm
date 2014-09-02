@@ -50,7 +50,8 @@ our $AUTOLOAD;
 sub AUTOLOAD {
     my $self = shift;
 
-    my $called =  $AUTOLOAD =~ s/.*:://;
+    my $called =  $AUTOLOAD;
+    $called =~ s/.*:://;
 
     return $self->{git}->command($called, @_) if $self && $self->{git};
 }
