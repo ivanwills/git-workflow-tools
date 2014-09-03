@@ -65,7 +65,7 @@ sub main {
     # do stuff here
     my $action = $actions{$ARGV[0]} ? shift @ARGV : 'do';
     my $once   = $option{once}      ? -1          : 1;
-    my $last;
+    my $last   = git_state();
 
     while ($once) {
         my $id = git_state();
