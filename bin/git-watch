@@ -78,7 +78,8 @@ sub main {
 
             if ( found($changes) ) {
                 if ( $action eq 'show' ) {
-                    print "$id\n";
+                    my $time = $option{verbose} ? ' @ ' . localtime $changes->{time} : '';
+                    print "$id$time\n";
 
                     if ( !$option{quiet} ) {
                         my $join = $option{verbose} ? "\n    " : '';
@@ -89,7 +90,7 @@ sub main {
                         print $join, join +($join || ', '), keys %{ $changes->{files} };
                         print "\n";
                         print "  Users:    ";
-                        print $join, join +($join || ', '), keys %{ $changes->{email} };
+                        print $join, join +($join || ', '), keys %{ $changes->{user} };
                         print "\n\n";
                     }
                 }
