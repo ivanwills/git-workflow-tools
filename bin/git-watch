@@ -179,6 +179,9 @@ This documentation refers to git-watch version 0.3
                 by default looks only at local branches
   -r --remote   With --branch only look at remote branches
   -a --all      With --branch look at all branches (local and remote)
+  -m --max[=]int
+                Look only --max changes back in history to see what is
+                happening (Default 10)
   -s --sleep[=]int
                 Sleep time between fetches (devault 60s)
   -q --quiet    Suppress notifying of what files and branches have changed
