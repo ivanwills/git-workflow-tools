@@ -12,6 +12,7 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
+use Git::Workflow qw/branches sha_from_show/;
 
 our $VERSION = 0.3;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -36,7 +37,12 @@ sub main {
     Getopt::Long::Configure('bundling');
     GetOptions(
         \%option,
+        'all|a',
+        'fetch|f',
+        'once|1',
         'quiet|q',
+        'remote|r=s',
+        'sleep|s=i',
         'verbose|v+',
         'man',
         'help',
@@ -56,7 +62,7 @@ sub main {
 
     # do stuff here
     my $action = $actions{$ARGV[0]} ? shift @ARGV : 'do';
-    my $once   = $option{once}      ? -1          : 0;
+    my $once   = $option{once}      ? -1          : 1;
     my $last;
 
     while ($once++) {
@@ -66,9 +72,16 @@ sub main {
             # TODO:
             #   limit to file/branches
             #   set env variables to indicate what has changed what has changed
+            my $changes = sha_from_show($id, branches => 1, files => 1 );
 
             if ( $action eq 'show' ) {
                 print "$id\n";
+                print "  Branches:\n    ";
+                print join "\n    ", keys %{ $changes->{branches} };
+                print "\n";
+                print "  Files:\n    ";
+                print join "\n    ", keys %{ $changes->{files} };
+                print "\n\n";
             }
             else {
                 system @ARGV;
@@ -86,11 +99,12 @@ sub git_state {
     my $id;
 
     if ( $option{all} || $option{remote} ) {
-        `git fetch`;
+        `git fetch 2>/dev/null`;
         my $out = `git reflog --all`;
         ($id) = $out =~ /^([0-9a-f]+)\s/;
     }
     else {
+        `git fetch 2>/dev/null` if $option{fetch};
         my $out = `git show`;
         ($id) = $out =~ /commit\s+([0-9a-f]+)/
     }
