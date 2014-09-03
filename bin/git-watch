@@ -207,7 +207,7 @@ This documentation refers to git-watch version 0.3
 The C<git-watch> command allows you to run a command when something changes.
 The simple option is C<show> which just shows what has changed when it changes
 and nothing else, this is useful for seeing what is happening in the
-repository. The the C<do> sub-command actually runs a script everytime a
+repository. The the C<do> sub-command actually runs a script every time a
 change is detected.
 
 =head2 show
@@ -219,8 +219,8 @@ show more or less information.
 
 When the C<do> sub-command runs it sets the environment variables C<$WATCH_SHA>,
 C<$WATCH_FILES> and C<$WATCH_BRANCHES> with the latest commit SHA, the files
-that have changed and the branches that have changed respectivily. The files
-and branches are comma seperated for your command to inspect.
+that have changed and the branches that have changed respectively. The files
+and branches are comma separated for your command to inspect.
 
 A simple example:
 
