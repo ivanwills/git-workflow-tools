@@ -180,7 +180,7 @@ sub sha_from_show {
         time     => $time,
         branches => $options{branches} ? { map { $_ => 1 } branches('both', $sha) } : {},
         files    => $options{files}    ? files_from_sha($sha) : {},
-        user     => $options{user}     ? $git->log(qw/--format=format:'%an' -1/, $name) : '',
+        user     => $options{user}     ? $git->log(qw/--format=format:%an -1/, $name) : '',
     };
 }
 
