@@ -10,6 +10,7 @@ bin/git-pom
 bin/git-tag-grep
 bin/git-undo-regen
 bin/git-up-to-date
+bin/git-watch
 Build.PL
 Changes
 fatpack.pl
@@ -17,10 +18,10 @@ hooks/commit-msg
 install.pl
 lib/Git/Workflow.pm
 lib/Git/Workflow/Pom.pm
+lib/Git/Workflow/Repository.pm
 LICENSE
 Makefile.PL
 MANIFEST
-MANIFEST.SKIP
 META.json
 META.yml
 README
