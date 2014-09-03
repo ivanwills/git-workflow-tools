@@ -392,6 +392,10 @@ Get the current branch/tag or commit
 
 Get info from C<git show $name>
 
+=head2 C<files_from_sha ($sha)>
+
+Get the files changed by the commit
+
 =head2 C<slurp ($file)>
 
 Return the contents of C<$file>
