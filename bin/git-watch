@@ -89,6 +89,7 @@ sub main {
                     }
                 }
                 else {
+                    $ENV{WATCH_SHA}      = $id;
                     $ENV{WATCH_FILES}    = join ',', keys %{ $changes->{files} };
                     $ENV{WATCH_BRANCHES} = join ',', keys %{ $changes->{branches} };
                     system @ARGV;
@@ -164,14 +165,37 @@ This documentation refers to git-watch version 0.3
   -a --all      With --branch look at all branches (local and remote)
   -s --sleep[=]int
                 Sleep time between fetches (devault 60s)
-  -q --quiet    Suppress notifying of files changed
-
-  -v --verbose  Show more detailed option
+  -q --quiet    Suppress notifying of what files and branches have changed
+  -v --verbose  Show more detailes
      --VERSION  Prints the version information
      --help     Prints this help information
      --man      Prints the full documentation for git-watch
 
 =head1 DESCRIPTION
+
+The C<git-watch> command allows you to run a command when something changes.
+The simple option is C<show> which just shows what has changed when it changes
+and nothing else, this is useful for seeing what is happening in the
+repository. The the C<do> sub-command actually runs a script everytime a
+change is detected.
+
+=head2 show
+
+The output of C<show> is changed with the C<--quiet> and C<--verbose> options to
+show more or less information.
+
+=head2 do
+
+When the C<do> sub-command runs it sets the environment variables C<$WATCH_SHA>,
+C<$WATCH_FILES> and C<$WATCH_BRANCHES> with the latest commit SHA, the files
+that have changed and the branches that have changed respectivily. The files
+and branches are comma seperated for your command to inspect.
+
+A simple example:
+
+  git watch 'echo $WATCH_FILES'
+
+This would just echo the files that have changed with each change.
 
 =head1 SUBROUTINES/METHODS
 
