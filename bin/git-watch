@@ -38,7 +38,9 @@ sub main {
     GetOptions(
         \%option,
         'all|a',
+        'branch|b=s',
         'fetch|F',
+        'file|f=s',
         'once|1',
         'quiet|q',
         'remote|r=s',
@@ -65,32 +67,32 @@ sub main {
     my $once   = $option{once}      ? -1          : 1;
     my $last;
 
-    while ($once++) {
+    while ($once) {
         my $id = git_state();
 
         if ( !$last || $last ne $id ) {
-            # TODO:
-            #   limit to file/branches
-            #   set env variables to indicate what has changed what has changed
+            $once++;
             my $changes = sha_from_show($id, branches => 1, files => 1 );
 
-            if ( $action eq 'show' ) {
-                print "$id\n";
+            if ( found($changes) ) {
+                if ( $action eq 'show' ) {
+                    print "$id\n";
 
-                if ( !$option{quiet} ) {
-                    my $join = $option{verbose} ? "\n    " : '';
-                    print "  Branches: ";
-                    print $join, join +($join || ', '), keys %{ $changes->{branches} };
-                    print "\n";
-                    print "  Files:    ";
-                    print $join, join +($join || ', '), keys %{ $changes->{files} };
-                    print "\n\n";
+                    if ( !$option{quiet} ) {
+                        my $join = $option{verbose} ? "\n    " : '';
+                        print "  Branches: ";
+                        print $join, join +($join || ', '), keys %{ $changes->{branches} };
+                        print "\n";
+                        print "  Files:    ";
+                        print $join, join +($join || ', '), keys %{ $changes->{files} };
+                        print "\n\n";
+                    }
                 }
-            }
-            else {
-                $ENV{WATCH_FILES}    = join ',', keys %{ $changes->{files} };
-                $ENV{WATCH_BRANCHES} = join ',', keys %{ $changes->{branches} };
-                system @ARGV;
+                else {
+                    $ENV{WATCH_FILES}    = join ',', keys %{ $changes->{files} };
+                    $ENV{WATCH_BRANCHES} = join ',', keys %{ $changes->{branches} };
+                    system @ARGV;
+                }
             }
         }
 
@@ -116,6 +118,20 @@ sub git_state {
     }
 
     return $id;
+}
+
+sub found {
+    my ($changes) = @_;
+
+    if ($option{file}) {
+        return 1 if grep {/$option{file}/} keys %{ $changes->{files} };
+    }
+
+    if ($option{branch}) {
+        return 1 if grep {/$option{branch}/} keys %{ $changes->{branches} };
+    }
+
+    return !$option{file} && !$option{branch};
 }
 
 __DATA__
