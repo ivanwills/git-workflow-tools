@@ -181,6 +181,7 @@ sub sha_from_show {
         branches => $options{branches} ? { map { $_ => 1 } branches('both', $sha) } : {},
         files    => $options{files}    ? files_from_sha($sha) : {},
         user     => $options{user}     ? $git->log(qw/--format=format:%an -1/, $name) : '',
+        emmail   => $options{user}     ? $git->log(qw/--format=format:%ae -1/, $name) : '',
     };
 }
 

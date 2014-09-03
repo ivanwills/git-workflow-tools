@@ -89,13 +89,14 @@ sub main {
                         print $join, join +($join || ', '), keys %{ $changes->{files} };
                         print "\n";
                         print "  Users:    ";
-                        print $join, join +($join || ', '), keys %{ $changes->{user} };
+                        print $join, join +($join || ', '), keys %{ $changes->{email} };
                         print "\n\n";
                     }
                 }
                 else {
                     $ENV{WATCH_SHA}      = $id;
                     $ENV{WATCH_USERS}    = join ',', keys %{ $changes->{user} };
+                    $ENV{WATCH_EMAILS}   = join ',', keys %{ $changes->{email} };
                     $ENV{WATCH_FILES}    = join ',', keys %{ $changes->{files} };
                     $ENV{WATCH_BRANCHES} = join ',', keys %{ $changes->{branches} };
                     system @ARGV;
@@ -142,14 +143,18 @@ sub found {
 sub changes {
     my ($last, $newest, @ids) = @_;
     my $changes = sha_from_show($newest, branches => 1, files => 1, user => 1 );
-    $changes->{user} = { $changes->{user} => 1 };
+
+    $changes->{user}  = { $changes->{user} => 1 };
+    $changes->{email} = { $changes->{email} => 1 };
 
     for my $id (@ids) {
         last if $id eq $last;
         my $change  = sha_from_show($id, branches => 1, files => 1, user => 1 );
-        $changes->{files} = { %{$changes->{files}}, %{$change->{files}} };
+
+        $changes->{files}    = { %{$changes->{files}}, %{$change->{files}} };
         $changes->{branches} = { %{$changes->{branches}}, %{$change->{branches}} };
-        $changes->{user} = { %{$changes->{user}}, $change->{user} => 1 };
+        $changes->{user}     = { %{$changes->{user}}, $change->{user} => 1 };
+        $changes->{email}    = { %{$changes->{email}}, $change->{email} => 1 };
     }
 
     return $changes;
