@@ -38,7 +38,7 @@ sub main {
     GetOptions(
         \%option,
         'all|a',
-        'fetch|f',
+        'fetch|F',
         'once|1',
         'quiet|q',
         'remote|r=s',
@@ -76,14 +76,20 @@ sub main {
 
             if ( $action eq 'show' ) {
                 print "$id\n";
-                print "  Branches:\n    ";
-                print join "\n    ", keys %{ $changes->{branches} };
-                print "\n";
-                print "  Files:\n    ";
-                print join "\n    ", keys %{ $changes->{files} };
-                print "\n\n";
+
+                if ( !$option{quiet} ) {
+                    my $join = $option{verbose} ? "\n    " : '';
+                    print "  Branches: ";
+                    print $join, join +($join || ', '), keys %{ $changes->{branches} };
+                    print "\n";
+                    print "  Files:    ";
+                    print $join, join +($join || ', '), keys %{ $changes->{files} };
+                    print "\n\n";
+                }
             }
             else {
+                $ENV{WATCH_FILES}    = join ',', keys %{ $changes->{files} };
+                $ENV{WATCH_BRANCHES} = join ',', keys %{ $changes->{branches} };
                 system @ARGV;
             }
         }
@@ -125,11 +131,11 @@ This documentation refers to git-watch version 0.3
 =head1 SYNOPSIS
 
    git-watch show [-1|--once] [(-f|--file) file ...]
-   git-watch [do] [-1|--once] [(-f|--file) file ...] cmd
+   git-watch [do] [-1|--once] [(-f|--file) file ...] [--] cmd
 
  SUB-COMMAND
   show          Simply show when a file
-  do            Execute a shell script when a change occurs
+  do            Execute a shell script cmd when a change occurs
 
  OPTIONS:
   -1 --once     Run once then exit
