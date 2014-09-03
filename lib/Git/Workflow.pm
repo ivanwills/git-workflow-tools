@@ -169,7 +169,7 @@ sub releases {
 }
 
 sub sha_from_show {
-    my ($name, $no_branches) = @_;
+    my ($name, %options) = @_;
     my ($log) = runner("git rev-list -1 --timestamp $name");
     chomp $log;
     my ($time, $sha) = split /\s+/, $log;
@@ -178,8 +178,22 @@ sub sha_from_show {
         name     => $name,
         sha      => $sha,
         time     => $time,
-        branches => $no_branches ? {} : { map { $_ => 1 } branches('both', $sha) },
+        branches => $options{branches} ? { map { $_ => 1 } branches('both', $sha) } : {},
+        files    => $options{files}    ? files_from_sha($sha) : {},
     };
+}
+
+sub files_from_sha {
+    my ($sha) = @_;
+    my $show = $git->show('--name-status', $sha);
+    $show =~ s/\A.*\n\n//xms;
+    my %files;
+    for my $file (split /\n/, $show) {
+        my ($state, $file) = split /\s+/, $file, 2;
+        $files{$file} = $state;
+    }
+
+    return \%files;
 }
 
 sub slurp {
