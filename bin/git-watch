@@ -12,7 +12,7 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow qw/branches sha_from_show/;
+use Git::Workflow qw/branches commit_details/;
 
 our $VERSION = 0.3;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -142,14 +142,14 @@ sub found {
 
 sub changes {
     my ($last, $newest, @ids) = @_;
-    my $changes = sha_from_show($newest, branches => 1, files => 1, user => 1 );
+    my $changes = commit_details($newest, branches => 1, files => 1, user => 1 );
 
     $changes->{user}  = { $changes->{user} => 1 };
     $changes->{email} = { $changes->{email} => 1 };
 
     for my $id (@ids) {
         last if $id eq $last;
-        my $change  = sha_from_show($id, branches => 1, files => 1, user => 1 );
+        my $change  = commit_details($id, branches => 1, files => 1, user => 1 );
 
         $changes->{files}    = { %{$changes->{files}}, %{$change->{files}} };
         $changes->{branches} = { %{$changes->{branches}}, %{$change->{branches}} };

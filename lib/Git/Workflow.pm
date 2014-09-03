@@ -25,7 +25,7 @@ our @EXPORT_OK = qw/
     releases
     runner
     settings
-    sha_from_show
+    commit_details
     slurp
     tags
 /;
@@ -129,7 +129,7 @@ sub match_commits {
     my @commits = grep {/$regex/} $type eq 'tag' ? tags() : branches('both');
 
     my $oldest = @commits > $max ? -$max : -scalar @commits;
-    return map { sha_from_show($_) } @commits[ $oldest .. -1 ];
+    return map { sha_from_show($_, branches => 1) } @commits[ $oldest .. -1 ];
 }
 
 sub release {
@@ -168,7 +168,7 @@ sub releases {
     return @releases;
 }
 
-sub sha_from_show {
+sub commit_details {
     my ($name, %options) = @_;
     my ($log) = runner("git rev-list -1 --timestamp $name");
     chomp $log;
@@ -388,7 +388,7 @@ Get the current branch/tag or commit
 
 =head2 C<runner (@cmd)>
 
-=head2 C<sha_from_show ($name)>
+=head2 C<commit_details ($name)>
 
 Get info from C<git show $name>
 

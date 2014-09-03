@@ -13,7 +13,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use XML::Tiny;
 use Git::Workflow::Repository;
-use Git::Workflow qw/branches runner settings sha_from_show config/;
+use Git::Workflow qw/branches runner settings commit_details config/;
 use base qw/Exporter/;
 
 our $VERSION     = 0.3;
@@ -49,7 +49,7 @@ sub get_pom_versions {
             # skip branches marked as OLD
             next BRANCH if !$run && $saved->{old};
 
-            my $current = sha_from_show($branch, 1);
+            my $current = commit_details($branch);
 
             # Skip any branches that are over $MAX_AGE old
             if ( $current->{time} < time - $max_age ) {

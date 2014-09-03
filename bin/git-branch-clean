@@ -12,7 +12,7 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow qw/branches sha_from_show/;
+use Git::Workflow qw/branches commit_details/;
 
 our $VERSION = 0.3;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -70,7 +70,7 @@ sub main {
         next BRANCH if $branch =~ m{^ (?:[^/]+/)? master $}xms;
 
         # get branch details
-        my $details = sha_from_show($branch);
+        my $details = commit_details($branch, branches => 1);
 
         # don't delete young branches even if merged
         next BRANCH if $option{min_age} && $details->{time} > time - $option{min_age} * 60 * 60 * 24;
