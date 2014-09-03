@@ -18,6 +18,7 @@ our $VERSION = 0.3;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
+    max     => 10,
     sleep   => 60,
     verbose => 0,
     man     => 0,
@@ -41,6 +42,7 @@ sub main {
         'branch|b=s',
         'fetch|F',
         'file|f=s',
+        'max|m=i',
         'once|1',
         'quiet|q',
         'remote|r=s',
@@ -65,14 +67,14 @@ sub main {
     # do stuff here
     my $action = $actions{$ARGV[0]} ? shift @ARGV : 'do';
     my $once   = $option{once}      ? -1          : 1;
-    my $last   = git_state();
+    my ($last) = git_state();
 
     while ($once) {
-        my $id = git_state();
+        my ($id, @rest) = git_state();
 
         if ( !$last || $last ne $id ) {
             $once++;
-            my $changes = sha_from_show($id, branches => 1, files => 1 );
+            my $changes = changes($last, $id, @rest);
 
             if ( found($changes) ) {
                 if ( $action eq 'show' ) {
@@ -105,20 +107,18 @@ sub main {
 }
 
 sub git_state {
-    my $id;
+    my @out;
 
     if ( $option{all} || $option{remote} ) {
         `git fetch 2>/dev/null`;
-        my $out = `git reflog --all`;
-        ($id) = $out =~ /^([0-9a-f]+)\s/;
+        @out = `git rev-list --all -$option{max}`;
     }
     else {
         `git fetch 2>/dev/null` if $option{fetch};
-        my $out = `git show`;
-        ($id) = $out =~ /commit\s+([0-9a-f]+)/
+        @out = `git log --oneline -$option{max}`;
     }
 
-    return $id;
+    return map {/^([0-9a-f]+)\s*/; $1} @out;
 }
 
 sub found {
@@ -133,6 +133,20 @@ sub found {
     }
 
     return !$option{file} && !$option{branch};
+}
+
+sub changes {
+    my ($last, $newest, @ids) = @_;
+    my $changes = sha_from_show($newest, branches => 1, files => 1 );
+
+    for my $id (@ids) {
+        last if $id eq $last;
+        my $change  = sha_from_show($id, branches => 1, files => 1 );
+       $changes->{files} = { %{$changes->{files}}, %{$change->{files}} };
+       $changes->{branches} = { %{$changes->{branches}}, %{$change->{branches}} };
+    }
+
+    return $changes;
 }
 
 __DATA__
@@ -156,6 +170,8 @@ This documentation refers to git-watch version 0.3
 
  OPTIONS:
   -1 --once     Run once then exit
+  -F --fetch    Before checking if anything has changed do a git fetch
+                This is implied with --all and --remote
   -f --file[=]regex
                 Watch file any files changing that match "regex"
   -b --branch[=]regex
