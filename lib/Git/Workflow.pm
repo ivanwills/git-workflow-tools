@@ -129,7 +129,7 @@ sub match_commits {
     my @commits = grep {/$regex/} $type eq 'tag' ? tags() : branches('both');
 
     my $oldest = @commits > $max ? -$max : -scalar @commits;
-    return map { sha_from_show($_, branches => 1) } @commits[ $oldest .. -1 ];
+    return map { commit_details($_, branches => 1) } @commits[ $oldest .. -1 ];
 }
 
 sub release {
