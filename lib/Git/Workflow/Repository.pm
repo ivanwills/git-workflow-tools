@@ -53,6 +53,19 @@ sub AUTOLOAD {
     my $called =  $AUTOLOAD;
     $called =~ s/.*:://;
 
+    if ($ENV{REPO_RECORD}) {
+        open my $fh, '>>', '/tmp/repo-record.txt';
+        my ($result, @result);
+        if (wantarray) {
+            @result = $self->{git}->command($called, @_);
+        }
+        else {
+            $result = $self->{git}->command($called, @_);
+        }
+        print {$fh} Dumper [$called, \@_, { scalar => $result, array => \@result }];
+        return wantarray ? @result : $result;
+    }
+
     return $self->{git}->command($called, @_) if $self && $self->{git};
 }
 
