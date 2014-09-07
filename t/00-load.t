@@ -7,6 +7,7 @@ use FindBin qw/$Bin/;
 
 use_ok('Git::Workflow');
 use_ok('Git::Workflow::Pom');
+use_ok('Git::Workflow::Repository');
 ok( !(system 'perl', "-I $Bin/../lib", '-c', "$Bin/../bin/git-branch-clean"), "bin/git-branch-clean compiles");
 ok( !(system 'perl', "-I $Bin/../lib", '-c', "$Bin/../bin/git-branch-grep" ), "bin/git-branch-grep compiles" );
 ok( !(system 'perl', "-I $Bin/../lib", '-c', "$Bin/../bin/git-committers"  ), "bin/git-committers compiles"  );
