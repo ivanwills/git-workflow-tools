@@ -26,10 +26,17 @@ META.json
 META.yml
 README
 t/00-load.t
+t/bad-pom.xml
+t/boilerplate.t
 t/critic.t
+t/good-pom.xml
 t/kwalitee.t
+t/lib/Mock/Git/Workflow/Repository.pm
 t/manifest.t
 t/perlcriticrc
 t/pod-coverage.t
 t/pod.t
+t/pom.t
+t/repo.t
 t/spelling.t
+t/workflow.t
