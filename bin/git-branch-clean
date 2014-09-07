@@ -18,6 +18,7 @@ our $VERSION = 0.3;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
+    max_age     => 60 * 60 * 24 * ( $ENV{GIT_WORKFLOW_MAX_AGE} || config('workflow.max', 120) ),
     tag_prefix  => '',
     tag_postfix => '',
     verbose     => 0,
