@@ -6,6 +6,8 @@ WriteMakefile
   'NAME' => 'git-workflow-tools',
   'VERSION_FROM' => 'lib/Git/Workflow.pm',
   'PREREQ_PM' => {
+                   'Error' => 0,
+                   'Git' => 0,
                    'Path::Class' => 0,
                    'Test::More' => 0,
                    'Test::NoWarnings' => 0,
@@ -25,7 +27,8 @@ WriteMakefile
                    'bin/git-pom',
                    'bin/git-tag-grep',
                    'bin/git-undo-regen',
-                   'bin/git-up-to-date'
+                   'bin/git-up-to-date',
+                   'bin/git-watch'
                  ],
   'PL_FILES' => {}
 )
