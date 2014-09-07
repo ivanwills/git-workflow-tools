@@ -52,6 +52,7 @@ sub AUTOLOAD {
 
     my $called =  $AUTOLOAD;
     $called =~ s/.*:://;
+    $called =~ s/_/-/g;
 
     if ($ENV{REPO_RECORD}) {
         open my $fh, '>>', '/tmp/repo-record.txt';
@@ -66,7 +67,11 @@ sub AUTOLOAD {
         return wantarray ? @result : $result;
     }
 
-    return $self->{git}->command($called, @_) if $self && $self->{git};
+    return if !$self || !$self->{git};
+
+    return $self->{git}->can($called)
+        ? $self->{git}->$called(@_)
+        : $self->{git}->command($called, @_);
 }
 
 1;

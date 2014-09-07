@@ -87,7 +87,7 @@ sub _alphanum_sort {
 
 sub current {
     # get the git directory
-    my $git_dir = runner("git rev-parse --show-toplevel");
+    my $git_dir = $git->rev_parse("--show-toplevel");
     chomp $git_dir;
 
     # read the HEAD file to find what branch or id we are on
@@ -117,7 +117,7 @@ sub current {
 sub config {
     my ($name, $default) = @_;
     local $SIG{__WARN__} = sub {};
-    my $value = runner("git config $name 2> /dev/null");
+    my $value = eval { $git->config($name) };
     chomp $value;
 
     return $value || $default;
@@ -170,7 +170,7 @@ sub releases {
 
 sub commit_details {
     my ($name, %options) = @_;
-    my ($log) = runner("git rev-list -1 --timestamp $name");
+    my ($log) = $git->rev_list(qw/-1 --timestamp/, $name);
     chomp $log;
     my ($time, $sha) = split /\s+/, $log;
 
@@ -267,10 +267,10 @@ sub runner {
         my $dir = "$ENV{HOME}/.git-workflow";
         mkdir $dir if !-d $dir;
 
-        my $key = runner('git config remote.origin.url');
+        my $key = $git->config('remote.origin.url');
         chomp $key;
         if ( !$key ) {
-            $key = runner("git rev-parse --show-toplevel");
+            $key = $git->rev_parse("--show-toplevel");
             chomp $key;
         }
         $key = _url_encode($key);

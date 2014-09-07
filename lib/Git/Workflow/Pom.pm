@@ -66,7 +66,7 @@ sub get_pom_versions {
                 next BRANCH;
             }
 
-            my $xml = runner("git show $branch:$pom 2> /dev/null");
+            my $xml = $git->show("$branch:$pom");
             chomp $xml;
             next if !$xml;
 
