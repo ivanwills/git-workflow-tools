@@ -8,11 +8,7 @@ package Mock::Git::Workflow::Repository;
 
 use strict;
 use warnings;
-use version;
 use Carp qw/carp croak cluck confess longmess/;
-use Scalar::Util;
-use List::Util;
-#use List::MoreUtils;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/Exporter/;
