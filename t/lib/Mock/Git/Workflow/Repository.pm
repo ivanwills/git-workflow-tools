@@ -9,7 +9,7 @@ package Mock::Git::Workflow::Repository;
 use strict;
 use warnings;
 use version;
-use Carp;
+use Carp qw/carp croak cluck confess longmess/;
 use Scalar::Util;
 use List::Util;
 #use List::MoreUtils;
@@ -47,7 +47,23 @@ sub _add {
 
 our $AUTOLOAD;
 sub AUTOLOAD {
-    return pop @data;
+    shift;
+    my $called =  $AUTOLOAD;
+    $called =~ s/.*:://;
+    $called =~ s/_/-/g;
+
+    my $cmd = "git $called " . (join ' ', @_);
+    die "No data setup for `$cmd`\n\t" if !@data;
+
+    my $return = shift @data;
+    if (wantarray) {
+        #cluck "Returning Mock for `$cmd`\n" . Dumper($return), "\t";
+        return @$return;
+    }
+    else {
+        #cluck "Returning mock for `$cmd`\n" . Dumper($return), "\t";
+        return $return;
+    }
 }
 
 1;
