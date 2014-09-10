@@ -13,7 +13,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
-our $VERSION     = version->new('0.3');
+our $VERSION     = 0.3;
 our @EXPORT_OK   = qw//;
 our %EXPORT_TAGS = ();
 #our @EXPORT      = qw//;
