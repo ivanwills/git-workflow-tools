@@ -18,12 +18,13 @@ our $VERSION = 0.3;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
-    max     => 10,
-    sleep   => 60,
-    verbose => 0,
-    man     => 0,
-    help    => 0,
-    VERSION => 0,
+    max          => 10,
+    sleep        => 60,
+    pull_options => '',
+    verbose      => 0,
+    man          => 0,
+    help         => 0,
+    VERSION      => 0,
 );
 my %actions = (
     show => 1,
@@ -40,7 +41,8 @@ sub main {
         \%option,
         'all|a',
         'branch|b=s',
-        'fetch|F',
+        'pull|p',
+        'pull_options|pull-options|P=s',
         'file|f=s',
         'max|m=i',
         'once|1',
@@ -120,7 +122,7 @@ sub git_state {
         @out = `git rev-list --all -$option{max}`;
     }
     else {
-        `git fetch 2>/dev/null` if $option{fetch};
+        `git pull $option{pull_options} 2>/dev/null` if $option{pull};
         @out = `git log --oneline -$option{max}`;
     }
 
@@ -182,8 +184,10 @@ This documentation refers to git-watch version 0.3
 
  OPTIONS:
   -1 --once     Run once then exit
-  -F --fetch    Before checking if anything has changed do a git fetch
-                This is implied with --all and --remote
+  -p --pull     Before checking if anything has changed do a git pull to the
+                current branch.
+  -P --pull-options[=]flags
+                When using --pull add these options to the pull command
   -f --file[=]regex
                 Watch file any files changing that match "regex"
   -b --branch[=]regex
