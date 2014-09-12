@@ -279,7 +279,7 @@ sub runner {
 
         $settings
             = -f $file
-            ? eval scalar slurp($file)  ## no critic
+            ? do $file
             : {};
 
         if ( $settings->{version} && $settings->{version} > $Git::Workflow::VERSION ) {
