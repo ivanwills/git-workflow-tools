@@ -13,7 +13,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
-our $VERSION     = 0.3;
+our $VERSION     = 0.4;
 our @EXPORT_OK   = qw//;
 our %EXPORT_TAGS = ();
 #our @EXPORT      = qw//;
@@ -72,7 +72,7 @@ Mock::Git::Workflow::Repository - Mock of a git repository
 
 =head1 VERSION
 
-This documentation refers to Mock::Git::Workflow::Repository version 0.3
+This documentation refers to Mock::Git::Workflow::Repository version 0.4
 
 =head1 SYNOPSIS
 

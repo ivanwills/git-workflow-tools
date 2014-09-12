@@ -16,7 +16,7 @@ use Git::Workflow::Repository;
 use Git::Workflow qw/branches runner settings commit_details config/;
 use base qw/Exporter/;
 
-our $VERSION     = 0.3;
+our $VERSION     = 0.4;
 our @EXPORT_OK   = qw/get_pom_versions pom_version next_pom_version/;
 our %EXPORT_TAGS = ();
 our $MAX_AGE     = 60 * 60 * 24 * ( $ENV{GIT_WORKFLOW_MAX_AGE} || config('workflow.max-age', 120) );
@@ -131,7 +131,7 @@ Git::Workflow::Pom - Tools for maven POM files with git
 
 =head1 VERSION
 
-This documentation refers to Git::Workflow::Pom version 0.3
+This documentation refers to Git::Workflow::Pom version 0.4
 
 =head1 SYNOPSIS
 

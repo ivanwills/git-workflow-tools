@@ -16,7 +16,7 @@ use Git::Workflow qw/config release runner/;
 use Git::Workflow::Pom qw/next_pom_version/;
 use Git::Workflow::Repository;
 
-our $VERSION = 0.3;
+our $VERSION = 0.4;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
@@ -133,7 +133,7 @@ git-feature - Create a feature branch from the "current release"
 
 =head1 VERSION
 
-This documentation refers to git-feature version 0.3
+This documentation refers to git-feature version 0.4
 
 =head1 SYNOPSIS
 

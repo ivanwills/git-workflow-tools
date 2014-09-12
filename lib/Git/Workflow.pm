@@ -14,7 +14,7 @@ use English qw/ -no_match_vars /;
 use Git::Workflow::Repository;
 use base qw/Exporter/;
 
-our $VERSION   = 0.3;
+our $VERSION   = 0.4;
 our @EXPORT_OK = qw/
     branches
     children
@@ -311,7 +311,7 @@ sub END {
             print "git $sub\n";
             my $total = 0;
             map {$total += $_} @{ $times{$sub} };
-            printf "    Avg : %0.3fs for %i runs. Total time %0.3fs\n", $total / @{ $times{$sub} }, (scalar @{ $times{$sub} }), $total;
+            printf "    Avg : %0.4fs for %i runs. Total time %0.4fs\n", $total / @{ $times{$sub} }, (scalar @{ $times{$sub} }), $total;
         }
     }
 }
@@ -326,7 +326,7 @@ Git::Workflow - Git workflow tools
 
 =head1 VERSION
 
-This documentation refers to Git::Workflow version 0.3
+This documentation refers to Git::Workflow version 0.4
 
 =head1 SYNOPSIS
 

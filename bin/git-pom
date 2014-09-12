@@ -16,7 +16,7 @@ use FindBin qw/$Bin/;
 use Git::Workflow qw/config runner release/;
 use Git::Workflow::Pom qw/get_pom_versions pom_version next_pom_version/;
 
-our $VERSION = 0.3;
+our $VERSION = 0.4;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
@@ -149,7 +149,7 @@ git-pom - Manage pom.xml file versions
 
 =head1 VERSION
 
-This documentation refers to git-pom version 0.3
+This documentation refers to git-pom version 0.4
 
 =head1 SYNOPSIS
 
