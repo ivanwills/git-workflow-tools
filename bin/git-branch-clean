@@ -12,13 +12,14 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow qw/branches commit_details/;
+use Git::Workflow;
 
 our $VERSION = 0.4;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
+my $workflow = Git::Workflow->new;
 
 my %option = (
-    max_age     => 60 * 60 * 24 * ( $ENV{GIT_WORKFLOW_MAX_AGE} || config('workflow.max', 120) ),
+    max_age     => 60 * 60 * 24 * ( $ENV{GIT_WORKFLOW_MAX_AGE} || $workflow->config('workflow.max', 120) ),
     tag_prefix  => '',
     tag_postfix => '',
     verbose     => 0,
@@ -61,7 +62,7 @@ sub main {
     }
 
     # get the list of branches to look at
-    my @branches = branches($option{remote} ? 'remote' : $option{all} ? 'both' : undef );
+    my @branches = $workflow->branches($option{remote} ? 'remote' : $option{all} ? 'both' : undef );
     my ($total, $deleted) = (0, 0);
     my $max = 0;
 
@@ -71,7 +72,7 @@ sub main {
         next BRANCH if $branch =~ m{^ (?:[^/]+/)? master $}xms;
 
         # get branch details
-        my $details = commit_details($branch, branches => 1);
+        my $details = $workflow->commit_details($branch, branches => 1);
 
         # don't delete young branches even if merged
         next BRANCH if $option{min_age} && $details->{time} > time - $option{min_age} * 60 * 60 * 24;
@@ -86,15 +87,15 @@ sub main {
 
             if ( $option{tag} ) {
                 my $tag = $option{tag_prefix} . $name . $option{tag_suffix};
-                runner(qw/git tag -a -m /, "Converting '$name' to the tag '$tag'", $tag) if !$option{test};
+                $workflow->runner(qw/git tag -a -m /, "Converting '$name' to the tag '$tag'", $tag) if !$option{test};
             }
 
             if ( !$option{test} ) {
                 if ($remote) {
-                    runner(qw/git push/, $remote, ":refs/heads/$name");
+                    $workflow->runner(qw/git push/, $remote, ":refs/heads/$name");
                 }
                 else {
-                    runner(qw/git branch -D/, "$name");
+                    $workflow->runner(qw/git branch -D/, "$name");
                 }
             }
         }

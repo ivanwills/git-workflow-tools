@@ -12,18 +12,17 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow qw/config release runner/;
-use Git::Workflow::Pom qw/next_pom_version/;
-use Git::Workflow::Repository;
+use Git::Workflow::Pom;
 
 our $VERSION = 0.4;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
+my $workflow = Git::Workflow::Pom->new;
 
 my %option = (
-    pom     => config('workflow.pom') || 'pom.xml',
-    local   => config('workflow.pom-local') || undef,
+    pom     => $workflow->config('workflow.pom') || 'pom.xml',
+    local   => $workflow->config('workflow.pom-local') || undef,
     fetch   => 1,
-    url     => config('jira.url'),
+    url     => $workflow->config('jira.url'),
     verbose => 0,
     man     => 0,
     help    => 0,
@@ -72,8 +71,8 @@ sub main {
     }
 
     # do stuff here
-    $Git::Workflow::VERBOSE = $option{verbose};
-    $Git::Workflow::TEST    = $option{test};
+    $workflow->{VERBOSE} = $option{verbose};
+    $workflow->{TEST   } = $option{test};
 
     my ($feature_branch) = shift @ARGV || jira();
     my ($type, $regex);
@@ -86,27 +85,25 @@ sub main {
         $regex = $option{branch};
     }
     elsif ( !$option{tag} && !$option{branch} ) {
-        my $prod = config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
+        my $prod = $workflow->config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
         ($type, $regex) = split /\s*=\s*/, $prod;
     }
 
-    my $git = Git::Workflow::Repository->git();
-
-    $git->fetch() if $option{fetch} && !$option{local};
-    my $release = release($type, $option{local}, $regex);
+    $workflow->git->fetch() if $option{fetch} && !$option{local};
+    my $release = $workflow->release($type, $option{local}, $regex);
 
     # checkout branch
-    $git->checkout( '-b', $feature_branch, '--no-track', $release );
+    $workflow->git->checkout( '-b', $feature_branch, '--no-track', $release );
 
     if ($option{new_pom}) {
-        my $version = next_pom_version($option{pom});
+        my $version = $workflow->next_pom_version($option{pom});
 
-        runner(qw/mvn versions:set/, "–DnewVersion=$version");
+        $workflow->runner(qw/mvn versions:set/, "–DnewVersion=$version");
     }
 
     # push if requested to
     if ($option{push}) {
-        $git->push( qw/-u origin/, $feature_branch );
+        $workflow->git->push( qw/-u origin/, $feature_branch );
     }
 
     return;

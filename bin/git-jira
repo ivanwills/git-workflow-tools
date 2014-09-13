@@ -12,13 +12,14 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow qw/config/;
+use Git::Workflow;
 
 our $VERSION = 0.4;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
+my $workflow = Git::Workflow->new;
 
 my %option = (
-    url     => config('jira.url'),
+    url     => $workflow->config('jira.url'),
     verbose => 0,
     man     => 0,
     help    => 0,
@@ -69,7 +70,7 @@ sub main {
     $jira_re = lc $jira_re;
 
     # check local branches first
-    my @branch = grep {/^(\w+_)?$jira_re(?:\D|$)/} Git::Workflow::branches();
+    my @branch = grep {/^(\w+_)?$jira_re(?:\D|$)/} $workflow->branches();
 
     if (@branch && !$option{remote}) {
         my $branch = which_branch(@branch);
@@ -77,7 +78,7 @@ sub main {
     }
     else {
         # check if there is a remote branch
-        my (@remote_branch) = grep {/^origin\/(\w+_)?$jira_re/} Git::Workflow::branches('remote');
+        my (@remote_branch) = grep {/^origin\/(\w+_)?$jira_re/} $workflow->branches('remote');
         if (@remote_branch) {
             my $remote_branch = which_branch(@remote_branch);
             my $branch = $remote_branch;

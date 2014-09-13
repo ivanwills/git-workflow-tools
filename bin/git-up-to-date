@@ -12,15 +12,16 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow qw/branches config releases runner/;
+use Git::Workflow;
 use Carp qw/cluck/;
 
 our $VERSION = 0.4;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
+my $workflow = Git::Workflow->new;
 
 my %option = (
     format      => 'test',
-    max_history => config('workflow.max-history') || 1,
+    max_history => $workflow->config('workflow.max-history') || 1,
     verbose     => 0,
     man         => 0,
     help        => 0,
@@ -81,17 +82,17 @@ sub main {
         Pod::Usage::pod2usage( -verbose => 1 );
     }
 
-    $Git::Workflow::VERBOSE = $option{verbose};
-    $Git::Workflow::TEST    = $option{test};
+    $workflow->{VERBOSE} = $option{verbose};
+    $workflow->{TEST   } = $option{test};
 
-    runner(qw/git fetch/) if $option{fetch};
+    $workflow->runner(qw/git fetch/) if $option{fetch};
 
     # do stuff here
     if ($option{branch_age}) {
         return branch_age();
     }
 
-    my @releases = releases(%option);
+    my @releases = $workflow->releases(%option);
 
     if ($option{verbose}) {
         my $local = localtime($releases[-1]{time});
@@ -137,7 +138,7 @@ sub do_am_i {
 
     my $bad = 0;
     for my $release (reverse @releases) {
-        my ($ans) = runner("git log $format | grep $release->{sha}");
+        my ($ans) = $workflow->runner("git log $format | grep $release->{sha}");
         chomp $ans if $ans;
         next if $ans;
         $bad++;
@@ -174,7 +175,7 @@ sub do_update_me {
 
 sub branches_contain {
     my @releases = @_;
-    my @branches = branches('both');
+    my @branches = $workflow->branches('both');
     my $format = q/--format=format:'%H %at <%an>%ae'/;
     my @csv;
 
@@ -254,7 +255,7 @@ sub format_json {
     my (undef, $csv, @releases) = @_;
 
     require JSON::XS;
-    my $repo   = config('remote.origin.url');
+    my $repo   = $workflow->config('remote.origin.url');
     my ($name) = $repo =~ m{[/:](.*?)(?:[.]git)?$}xms;
 
     print JSON::XS::encode_json({
@@ -276,7 +277,7 @@ sub format_html {
 
     my $sepperator = "</td><td>";
     my $date       = localtime;
-    my $repo       = config('remote.origin.url');
+    my $repo       = $workflow->config('remote.origin.url');
     print <<"HTML";
 <table>
     <caption>Branch statuses for <i>$repo</i> ($date)</caption>
@@ -321,7 +322,7 @@ sub format_test {
 }
 
 sub branch_status {
-    my @branches = branches('both');
+    my @branches = $workflow->branches('both');
     my $format = q/--format=format:'%H %at <%an>%ae'/;
     my $before = $option{age_limit} || ymd();
     my %bin;

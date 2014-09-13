@@ -13,14 +13,14 @@ use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
-use Git::Workflow qw/config runner release/;
-use Git::Workflow::Pom qw/get_pom_versions pom_version next_pom_version/;
+use Git::Workflow::Pom;
 
 our $VERSION = 0.4;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
+my $workflow = Git::Workflow->new;
 
 my %option = (
-    pom     => config('workflow.pom') || 'pom.xml',
+    pom     => $workflow->config('workflow.pom') || 'pom.xml',
     fetch   => 1,
     verbose => 0,
     man     => 0,
@@ -64,11 +64,11 @@ sub main {
         Pod::Usage::pod2usage( -verbose => 1 );
     }
 
-    $Git::Workflow::VERBOSE = $option{verbose};
-    $Git::Workflow::TEST    = $option{test};
+    $workflow->{VERBOSE} = $option{verbose};
+    $workflow->{TEST   } = $option{test};
 
     # make sure that git is up-to-date
-    runner(qw/git fetch/) if $option{fetch};
+    $workflow->runner(qw/git fetch/) if $option{fetch};
 
     main->$sub_command($option{pom}, @ARGV);
 
@@ -77,8 +77,8 @@ sub main {
 
 sub do_uniq {
     my (undef, $pom) = @_;
-    my $versions  = get_pom_versions($option{pom});
-    my $numerical = my $version = pom_version($pom);
+    my $versions  = $workflow->get_pom_versions($option{pom});
+    my $numerical = my $version = $workflow->pom_version($pom);
     $numerical =~ s/-SNAPSHOT$//xms;
 
     if ( !$versions->{$numerical} || keys %{ $versions->{$numerical} } <= 1 ) {
@@ -96,11 +96,11 @@ sub do_uniq {
 sub do_next {
     my (undef, $pom) = @_;
 
-    my $version = next_pom_version($option{pom});
+    my $version = $workflow->next_pom_version($option{pom});
     print "$version\n";
 
     if ($option{update}) {
-        runner(qw/mvn versions:set/, "–DnewVersion=$version");
+        $workflow->runner(qw/mvn versions:set/, "–DnewVersion=$version");
     }
 
     return;
@@ -108,7 +108,7 @@ sub do_next {
 
 sub do_whos {
     my (undef, $pom, $version) = @_;
-    my $versions = get_pom_versions($option{pom});
+    my $versions = $workflow->get_pom_versions($option{pom});
 
     if (!$version) {
         warn "No version supplied!\n";
@@ -130,13 +130,13 @@ sub do_release {
     my ($type, $regex);
 
     if ( !$option{tag} && !$option{branch} ) {
-        my $prod = config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
+        my $prod = $workflow->config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
         ($type, $regex) = split /\s*=\s*/, $prod;
     }
 
-    my $release = release($type, $option{local}, $regex);
-    my $xml = runner("git show $release:$pom 2> /dev/null");
-    my $version = pom_version($xml);
+    my $release = $workflow->release($type, $option{local}, $regex);
+    my $xml = $workflow->runner("git show $release:$pom 2> /dev/null");
+    my $version = $workflow->pom_version($xml);
 
     print "$release uses $version\n";
 }

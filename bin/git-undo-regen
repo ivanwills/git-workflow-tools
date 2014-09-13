@@ -13,11 +13,12 @@ use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
-use Git::Workflow qw/children slurp runner/;
+use Git::Workflow;
 use lib "$ENV{HOME}/src/VCS-Which/lib";
 
 our $VERSION = 0.4;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
+my $workflow = Git::Workflow->new;
 
 my %option = (
     config  => '.regen-files',
@@ -61,8 +62,8 @@ sub main {
     }
 
     # do stuff here
-    $Git::Workflow::VERBOSE = $option{verbose};
-    $Git::Workflow::TEST    = $option{test};
+    $workflow->{VERBOSE} = $option{verbose};
+    $workflow->{TEST   } = $option{test};
 
     my $regen = regen();
     my $merge = $option{theirs} && !$option{ours} ? '--theirs' : '--ours';
@@ -70,7 +71,7 @@ sub main {
     FILE:
     for my $file ( keys %$regen ) {
         chomp $file;
-        my $status = runner("git status $file");
+        my $status = $workflow->runner("git status $file");
         my (undef, $merge, $name) = split /\n?[#]\s+(both\s+)?modified:\s+/, $status;
 
         if ($name) {
@@ -78,8 +79,8 @@ sub main {
                 warn "git checkout $file\n";
                 next FILE;
             }
-            runner(qw/git checkout/, $file, $merge ? ($merge) : ());
-            runner(qw/git add/, $file) if $merge;
+            $workflow->runner(qw/git checkout/, $file, $merge ? ($merge) : ());
+            $workflow->runner(qw/git add/, $file) if $merge;
         }
     }
 
@@ -87,7 +88,7 @@ sub main {
 }
 
 sub regen {
-    my @regen = map {/^(.*)$/} slurp( $option{config} );
+    my @regen = map {/^(.*)$/} $workflow->slurp( $option{config} );
     my %regen;
 
     while (my $regen = shift @regen) {
@@ -95,7 +96,7 @@ sub regen {
             $regen{$regen} = 1;
         }
         elsif ( -d $regen ) {
-            push @regen, children($regen);
+            push @regen, $workflow->children($regen);
         }
         else {
             push @regen, glob $regen;
