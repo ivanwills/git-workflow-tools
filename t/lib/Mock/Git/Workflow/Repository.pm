@@ -49,7 +49,7 @@ sub AUTOLOAD {
     $called =~ s/_/-/g;
 
     my $cmd = "git $called " . (join ' ', @_);
-    die "No data setup for `$cmd`\n\t" if !@data;
+    confess "No data setup for `$cmd`\n\t" if !@data;
 
     my $return = shift @data;
     if (wantarray) {

@@ -2,15 +2,16 @@
 
 use strict;
 use warnings;
-use Test::More tests => 6 + 1;
-#use Test::NoWarnings;
+use Test::More tests => 7 + 1;
+use Test::NoWarnings;
 use Data::Dumper qw/Dumper/;
 use lib 't/lib';
-use Git::Workflow::Pom qw/get_pom_versions pom_version next_pom_version/;
+use Git::Workflow::Pom;
 use Mock::Git::Workflow::Repository;
 
-$Git::Workflow::Pom::git = Mock::Git::Workflow::Repository->git;
-$Git::Workflow::git = Mock::Git::Workflow::Repository->git;
+my $git = Mock::Git::Workflow::Repository->git;
+Mock::Git::Workflow::Repository->_add(undef);
+my $pom = Git::Workflow::Pom->new( git => $git );
 
 pom();
 next_pom();
@@ -25,7 +26,7 @@ sub pom {
     );
 
     for my $data (@data) {
-        is pom_version($data->[0]), $data->[1], "Get correct POM version"
+        is $pom->pom_version($data->[0]), $data->[1], "Get correct POM version"
             or diag Dumper $data;
     }
 }
@@ -37,7 +38,7 @@ sub next_pom {
     );
 
     for my $data (@data) {
-        is next_pom_version(undef, $data->[0]), $data->[1], "Get $data->[1] as next version"
+        is $pom->next_pom_version(undef, $data->[0]), $data->[1], "Get $data->[1] as next version"
             or diag Dumper $data;
     }
 }
@@ -47,7 +48,6 @@ sub pom_versions {
         [
             [
                 ['* master', '  origin/master', '  origin/veryold'],
-                'http://mock.example.com/test.git',
                 ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'],
                 '<project><version>1.0.0-SNAPSHOT</version></project>',
                 ['1410113842 5ee992acaa81f6c90d9fa7e52898e33b00f6fa90'],
@@ -65,7 +65,7 @@ sub pom_versions {
         for my $mock (@{ $data->[0] }) {
             Mock::Git::Workflow::Repository->_add($mock);
         }
-        is_deeply get_pom_versions('pom.xml'), $data->[1], "Get the correct versions"
+        is_deeply $pom->get_pom_versions('pom.xml'), $data->[1], "Get the correct versions"
             or diag Dumper $data;
     }
 }
