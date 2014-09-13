@@ -327,24 +327,32 @@ This documentation refers to Git::Workflow version 0.4
    use Git::Workflow qw/branches tags/;
 
    # Get all local branches
-   my @branches = branches();
+   my @branches = $self->branches();
    # or
-   @branches = branches('local');
+   @branches = $self->branches('local');
 
    # remote branches
-   @branches = branches('remote');
+   @branches = $self->branches('remote');
 
    # both remote and local branches
-   @branches = branches('both');
+   @branches = $self->branches('both');
 
    # similarly for tags
-   my @tags = tags();
+   my @tags = $self->tags();
 
 =head1 DESCRIPTION
 
 This module contains helper functions for the command line scripts.
 
 =head1 SUBROUTINES/METHODS
+
+=head2 C<new (%params)>
+
+Create a new C<Git::Workflow::Pom> object
+
+=head2 C<git ()>
+
+Get the git repository object
 
 =head2 C<branches ([ $type ])>
 
