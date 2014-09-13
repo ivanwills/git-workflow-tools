@@ -10,7 +10,7 @@ use Git::Workflow::Pom;
 use Mock::Git::Workflow::Repository;
 
 my $git = Mock::Git::Workflow::Repository->git;
-Mock::Git::Workflow::Repository->_add(undef);
+$git->mock_add(undef);
 my $pom = Git::Workflow::Pom->new( git => $git );
 
 pom();
@@ -62,9 +62,7 @@ sub pom_versions {
     );
 
     for my $data (@data) {
-        for my $mock (@{ $data->[0] }) {
-            Mock::Git::Workflow::Repository->_add($mock);
-        }
+        $git->mock_add(@{ $data->[0] });
         is_deeply $pom->get_pom_versions('pom.xml'), $data->[1], "Get the correct versions"
             or diag Dumper $data;
     }
