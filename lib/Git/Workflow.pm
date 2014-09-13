@@ -61,12 +61,12 @@ sub branches {
     }
 
     # assign to or cache
-    $self->{branches}{$type} ||= [
+    $self->{branches}{$type} = [
         sort _alphanum_sort
         map { /^[*]?\s+(?:remotes\/)?(.*?)\s*$/xms }
         grep {!/HEAD/}
         $self->git->branch(@options)
-    ];
+    ] if !$self->{branches}{$type} || !@{ $self->{branches}{$type} };
 
     return @{ $self->{branches}{$type} };
 }
@@ -74,11 +74,11 @@ sub branches {
 sub tags {
     my ($self) = @_;
     # assign to or cache
-    $self->{tags} ||= [
+    $self->{tags} = [
         sort _alphanum_sort
-        map { /^(.*?)\s*$/xms }
+        #map { /^(.*?)\s*$/xms }
         $self->git->tag
-    ];
+    ] if !$self->{tags} || !@{ $self->{tags} };
 
     return @{ $self->{tags} };
 }
@@ -133,10 +133,11 @@ sub match_commits {
 
 sub release {
     my ($self, $tag_or_branch, $local, $search) = @_;
-    my ($release) = reverse grep {/$search/}
-        $tag_or_branch eq 'branch'
+    my @things
+        = $tag_or_branch eq 'branch'
         ? $self->branches($local ? 'local' : 'remote')
         : $self->tags();
+    my ($release) = reverse grep {/$search/} @things;
     chomp $release;
 
     return $release;
