@@ -8,7 +8,7 @@ package Git::Workflow;
 
 use strict;
 use warnings;
-use Carp;
+use Carp qw/carp croak cluck confess longmess/;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use Git::Workflow::Repository qw//;
@@ -49,9 +49,9 @@ sub git { $_[0]->{git} }
 
 sub branches {
     my ($self, $type, $contains) = @_;
+    $type ||= 'local';
     my @options
-        = !defined $type    ? ()
-        : $type eq 'local'  ? ()
+        = $type eq 'local'  ? ()
         : $type eq 'remote' ? ('-r')
         : $type eq 'both'   ? ('-a')
         :                     confess "Unknown type '$type'!\n";
