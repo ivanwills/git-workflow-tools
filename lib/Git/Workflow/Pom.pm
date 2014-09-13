@@ -12,15 +12,26 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use XML::Tiny;
-use Git::Workflow::Repository;
-use Git::Workflow qw/branches runner settings commit_details config/;
-use base qw/Exporter/;
+use Git::Workflow::Repository qw//;
+use Git::Workflow;
+use base qw/Git::Workflow/;
 
 our $VERSION     = 0.4;
 our @EXPORT_OK   = qw/get_pom_versions pom_version next_pom_version/;
 our %EXPORT_TAGS = ();
-our $MAX_AGE     = 60 * 60 * 24 * ( $ENV{GIT_WORKFLOW_MAX_AGE} || config('workflow.max-age', 120) );
-our $git         = Git::Workflow::Repository->git;
+
+sub new {
+    my $caller = shift;
+    my $class  = ref $caller ? ref $caller : $caller;
+    my $self   = Git::Workflow->new(@_);
+    bless $self, $class;
+    $self->{MAX_AGE} = 60 * 60 * 24 * (
+        $ENV{GIT_WORKFLOW_MAX_AGE}
+        || $self->config('workflow.max-age', 120)
+    );
+
+    return $self;
+}
 
 sub _alphanum_sort {
     my $A = $a;
@@ -32,12 +43,12 @@ sub _alphanum_sort {
 }
 
 sub get_pom_versions {
-    my ($pom) = @_;
-    my @branches = branches('both');
-    my $settings = settings();
+    my ($self, $pom) = @_;
+    my @branches = $self->branches('both');
+    my $settings = $self->settings();
     my %versions;
     my $count = 0;
-    my $max_age = $MAX_AGE;
+    my $max_age = $self->{MAX_AGE};
     my $run = !$settings->{max_age} || $settings->{max_age} == $max_age ? 0 : 1;
 
     while (!%versions && $run < 10) {
@@ -49,12 +60,12 @@ sub get_pom_versions {
             # skip branches marked as OLD
             next BRANCH if !$run && $saved->{old};
 
-            my $current = commit_details($branch);
+            my $current = $self->commit_details($branch);
 
             # Skip any branches that are over $MAX_AGE old
             if ( $current->{time} < time - $max_age ) {
                 $saved->{old} = 1;
-                Git::Workflow::save_settings() if $count++ % 20 == 0;
+                $self->save_settings() if $count++ % 20 == 0;
                 next BRANCH;
             }
 
@@ -66,13 +77,13 @@ sub get_pom_versions {
                 next BRANCH;
             }
 
-            my $xml = $git->show("$branch:$pom");
+            my $xml = $self->git->show("$branch:$pom");
             chomp $xml;
             next if !$xml;
 
             $branch =~ s{^origin/}{}xms;
 
-            my $numerical = my $version = pom_version($xml);
+            my $numerical = my $version = $self->pom_version($xml);
             # remove snapshots from the end
             $numerical =~ s/-SNAPSHOT$//xms;
             # remove any extranious text from the front
@@ -84,7 +95,7 @@ sub get_pom_versions {
                 version   => $version,
                 time      => $current->{time},
             };
-            Git::Workflow::save_settings() if $count++ % 20 == 0;
+            $self->save_settings() if $count++ % 20 == 0;
         }
         $max_age *= 2;
         $run++;
@@ -95,7 +106,7 @@ sub get_pom_versions {
 }
 
 sub pom_version {
-    my ($xml) = @_;
+    my ($self, $xml) = @_;
     my $doc = XML::Tiny::parsefile( $xml !~ /\n/ && -f $xml ? $xml : '_TINY_XML_STRING_' . $xml);
 
     for my $elem (@{ $doc->[0]{content} }) {
@@ -108,8 +119,8 @@ sub pom_version {
 }
 
 sub next_pom_version {
-    my ($pom, $versions) = @_;
-    $versions ||= get_pom_versions($pom);
+    my ($self, $pom, $versions) = @_;
+    $versions ||= $self->get_pom_versions($pom);
 
     # sanity check
     die "No POM versions found!" if !%$versions;
@@ -138,17 +149,17 @@ This documentation refers to Git::Workflow::Pom version 0.4
    use Git::Workflow::Pom qw/get_pom_versions pom_version next_pom_version/;
 
    # get all branch POM versions
-   my $versions = get_pom_versions("pom.xml");
+   my $versions = $pom->get_pom_versions("pom.xml");
    # {
    #    1.0 => { "some_branch" => "1.0.0-SNAPSHOT" },
    #    ...
    # }
 
    # extract the version from the POM
-   my $version = pom_version("pom.xml");
+   my $version = $pom->pom_version("pom.xml");
 
    # find the next unused POM version.
-   my $next = next_pom_version("pom.xml");
+   my $next = $pom->next_pom_version("pom.xml");
 
 =head1 DESCRIPTION
 
@@ -157,6 +168,10 @@ This library provides tools for looking at POM files in different branches.
 =head1 SUBROUTINES/METHODS
 
 =over 4
+
+=item C<new (%params)>
+
+Create a new C<Git::Workflow::Pom> object
 
 =item C<get_pom_versions ($pom_file)>
 
