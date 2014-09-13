@@ -17,7 +17,7 @@ use Git::Workflow::Pom;
 
 our $VERSION = 0.4;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
-my $workflow = Git::Workflow->new;
+my $workflow = Git::Workflow::Pom->new;
 
 my %option = (
     pom     => $workflow->config('workflow.pom') || 'pom.xml',
