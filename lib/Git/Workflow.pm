@@ -11,28 +11,10 @@ use warnings;
 use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow::Repository;
+use Git::Workflow::Repository qw//;
 use base qw/Exporter/;
 
 our $VERSION   = 0.4;
-our @EXPORT_OK = qw/
-    branches
-    children
-    config
-    current
-    match_commits
-    release
-    releases
-    runner
-    settings
-    commit_details
-    slurp
-    tags
-/;
-our %EXPORT_TAGS = ();
-our $VERBOSE     = 0;
-our $TEST        = 0;
-our $git         = Git::Workflow::Repository->git;
 
 sub _alphanum_sort {
     no warnings qw/once/;
@@ -44,50 +26,67 @@ sub _alphanum_sort {
     return $A cmp $B;
 }
 
-{
-    my %results;
-    sub branches {
-        my ($type, $contains) = @_;
-        my @options
-            = !defined $type    ? ()
-            : $type eq 'local'  ? ()
-            : $type eq 'remote' ? ('-r')
-            : $type eq 'both'   ? ('-a')
-            :                     confess "Unknown type '$type'!\n";
+sub new {
+    my $caller = shift;
+    my $class  = ref $caller ? ref $caller : $caller;
+    my %param  = @_;
+    my $self   = \%param;
 
-        if ($contains) {
-            push @options, "--contains", $contains;
-        }
+    bless $self, $class;
+    $self->{git}    ||= Git::Workflow::Repository->git;
+    $self->{TEST}     = 0;
+    $self->{VERBOSE}  = 0;
+    $self->{branches} = undef;
+    $self->{tags}     = undef;
+    $self->{settings} = {};
+    $self->{settings_dir} = ($ENV{HOME} || "/tmp/") . '/.git-workflow';
+    mkdir $self->{settings_dir} if !-d $self->{settings_dir};
 
-        # assign to or cache
-        $results{$type} ||= [
-            sort _alphanum_sort
-            map { /^[*]?\s+(?:remotes\/)?(.*?)\s*$/xms }
-            grep {!/HEAD/}
-            $git->branch(@options)
-        ];
-
-        return @{ $results{$type} };
-    }
+    return $self;
 }
 
-{
-    my $result;
-    sub tags {
-        # assign to or cache
-        $result ||= [
-            sort _alphanum_sort
-            map { /^(.*?)\s*$/xms }
-            $git->tag
-        ];
+sub git { $_[0]->{git} }
 
-        return @{ $result };
+sub branches {
+    my ($self, $type, $contains) = @_;
+    my @options
+        = !defined $type    ? ()
+        : $type eq 'local'  ? ()
+        : $type eq 'remote' ? ('-r')
+        : $type eq 'both'   ? ('-a')
+        :                     confess "Unknown type '$type'!\n";
+
+    if ($contains) {
+        push @options, "--contains", $contains;
     }
+
+    # assign to or cache
+    $self->{branches}{$type} ||= [
+        sort _alphanum_sort
+        map { /^[*]?\s+(?:remotes\/)?(.*?)\s*$/xms }
+        grep {!/HEAD/}
+        $self->git->branch(@options)
+    ];
+
+    return @{ $self->{branches}{$type} };
+}
+
+sub tags {
+    my ($self) = @_;
+    # assign to or cache
+    $self->{tags} ||= [
+        sort _alphanum_sort
+        map { /^(.*?)\s*$/xms }
+        $self->git->tag
+    ];
+
+    return @{ $self->{tags} };
 }
 
 sub current {
+    my ($self) = @_;
     # get the git directory
-    my $git_dir = $git->rev_parse("--show-toplevel");
+    my $git_dir = $self->git->rev_parse("--show-toplevel");
     chomp $git_dir;
 
     # read the HEAD file to find what branch or id we are on
@@ -115,36 +114,36 @@ sub current {
 }
 
 sub config {
-    my ($name, $default) = @_;
+    my ($self, $name, $default) = @_;
     local $SIG{__WARN__} = sub {};
-    my $value = eval { $git->config($name) };
+    my $value = eval { $self->git->config($name) };
     chomp $value;
 
     return $value || $default;
 }
 
 sub match_commits {
-    my ($type, $regex, $max) = @_;
+    my ($self, $type, $regex, $max) = @_;
     $max ||= 1;
-    my @commits = grep {/$regex/} $type eq 'tag' ? tags() : branches('both');
+    my @commits = grep {/$regex/} $type eq 'tag' ? $self->tags() : $self->branches('both');
 
     my $oldest = @commits > $max ? -$max : -scalar @commits;
-    return map { commit_details($_, branches => 1) } @commits[ $oldest .. -1 ];
+    return map { $self->commit_details($_, branches => 1) } @commits[ $oldest .. -1 ];
 }
 
 sub release {
-    my ($tag_or_branch, $local, $search) = @_;
+    my ($self, $tag_or_branch, $local, $search) = @_;
     my ($release) = reverse grep {/$search/}
         $tag_or_branch eq 'branch'
-        ? branches($local ? 'local' : 'remote')
-        : tags();
+        ? $self->branches($local ? 'local' : 'remote')
+        : $self->tags();
     chomp $release;
 
     return $release;
 }
 
 sub releases {
-    my %option = @_;
+    my ($self, %option) = @_;
     my ($type, $regex);
     if ($option{tag}) {
         $type = 'tag';
@@ -155,7 +154,7 @@ sub releases {
         $regex = $option{branch};
     }
     elsif ( !$option{tag} && !$option{branch} ) {
-        my $prod = Git::Workflow::config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
+        my $prod = $self->config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
         ($type, $regex) = split /\s*=\s*/, $prod;
         if ( !$regex ) {
             $type = 'branch';
@@ -163,14 +162,14 @@ sub releases {
         }
     }
 
-    my @releases = Git::Workflow::match_commits($type, $regex, $option{max_history});
+    my @releases = $self->match_commits($type, $regex, $option{max_history});
     die "Could not find any historic releases for $type /$regex/!\n" if !@releases;
     return @releases;
 }
 
 sub commit_details {
-    my ($name, %options) = @_;
-    my ($log) = $git->rev_list(qw/-1 --timestamp/, $name);
+    my ($self, $name, %options) = @_;
+    my ($log) = $self->git->rev_list(qw/-1 --timestamp/, $name);
     chomp $log;
     my ($time, $sha) = split /\s+/, $log;
 
@@ -178,16 +177,16 @@ sub commit_details {
         name     => $name,
         sha      => $sha,
         time     => $time,
-        branches => $options{branches} ? { map { $_ => 1 } branches('both', $sha) } : {},
-        files    => $options{files}    ? files_from_sha($sha) : {},
-        user     => $options{user}     ? $git->log(qw/--format=format:%an -1/, $name) : '',
-        email    => $options{user}     ? $git->log(qw/--format=format:%ae -1/, $name) : '',
+        branches => $options{branches} ? { map { $_ => 1 } $self->branches('both', $sha) } : {},
+        files    => $options{files}    ? $self->files_from_sha($sha) : {},
+        user     => $options{user}     ? $self->git->log(qw/--format=format:%an -1/, $name) : '',
+        email    => $options{user}     ? $self->git->log(qw/--format=format:%ae -1/, $name) : '',
     };
 }
 
 sub files_from_sha {
-    my ($sha) = @_;
-    my $show = $git->show('--name-status', $sha);
+    my ($self, $sha) = @_;
+    my $show = $self->git->show('--name-status', $sha);
     $show =~ s/\A.*\n\n//xms;
     my %files;
     for my $file (split /\n/, $show) {
@@ -199,14 +198,14 @@ sub files_from_sha {
 }
 
 sub slurp {
-    my ($file) = @_;
+    my ($self, $file) = @_;
     open my $fh, '<', $file or die "Can't open file '$file' for reading: $!\n";
 
     return wantarray ? <$fh> : do { local $/; <$fh> };
 }
 
 sub spew {
-    my ($file, @out) = @_;
+    my ($self, $file, @out) = @_;
     die "No file passed!" if !$file;
     open my $fh, '>', $file or die "Can't open file '$file' for writing: $!\n";
 
@@ -214,25 +213,24 @@ sub spew {
 }
 
 sub children {
-    my ($dir) = @_;
+    my ($self, $dir) = @_;
     opendir my $dh, $dir or die "Couldn't open directory '$dir' for reading: $!\n";
 
     return grep { $_ ne '.' && $_ ne '..' } readdir $dh;
 }
 
-my %times;
 sub runner {
-    my @cmd = @_;
+    my ($self, @cmd) = @_;
 
-    print join ' ', @cmd, "\n" if $VERBOSE;
-    return if $TEST;
+    print join ' ', @cmd, "\n" if $self->{VERBOSE};
+    return if $self->{TEST};
 
     if (!defined wantarray) {
         if ($ENV{GIT_WORKFLOW_TIMER}) {
             require Time::HiRes;
             my $start = Time::HiRes::time();
             my $ans = system @cmd;
-            push @{ $times{$cmd[1]} }, Time::HiRes::time() - $start;
+            push @{ $self->{times}{$cmd[1]} }, Time::HiRes::time() - $start;
             return $ans;
         }
         return system @cmd;
@@ -251,67 +249,63 @@ sub runner {
             $ans = qx/$cmd[0]/;
         }
         my ($sub) = $cmd[0] =~ /^git \s (\S+) \s/xms;
-        push @{ $times{$sub} }, Time::HiRes::time() - $start;
+        push @{ $self->{times}{$sub} }, Time::HiRes::time() - $start;
         return wantarray ? @ans : $ans;
     }
 
     return qx/$cmd[0]/;
 }
 
-{
-    my ($settings, $file);
-    sub settings {
-        return $settings if $settings;
+sub settings {
+    my ($self) = @_;
+    return $self->{settings} if $self->{settings};
 
-        $ENV{HOME} ||= "/tmp/";
-        my $dir = "$ENV{HOME}/.git-workflow";
-        mkdir $dir if !-d $dir;
-
-        my $key = $git->config('remote.origin.url');
+    my $key = $self->git->config('remote.origin.url');
+    chomp $key;
+    if ( !$key ) {
+        $key = $self->git->rev_parse("--show-toplevel");
         chomp $key;
-        if ( !$key ) {
-            $key = $git->rev_parse("--show-toplevel");
-            chomp $key;
-        }
-        $key = _url_encode($key);
+    }
+    $key = $self->_url_encode($key);
 
-        $file = "$dir/$key";
+    $self->{settings_file} = "$self->{settings_dir}/$key";
 
-        $settings
-            = -f $file
-            ? do $file
-            : {};
+    $self->{settings}
+        = -f $self->{settings_file}
+        ? do $self->{settings_file}
+        : {};
 
-        if ( $settings->{version} && $settings->{version} > $Git::Workflow::VERSION ) {
-            die "Current settings created with newer version than this program!\n";
-        }
-
-        return $settings;
+    if ( $self->{settings}->{version} && $self->{settings}->{version} > $Git::Workflow::VERSION ) {
+        die "Current settings created with newer version than this program!\n";
     }
 
-    sub save_settings {
-        return if !$file;
-        local $Data::Dumper::Indent   = 1;
-        local $Data::Dumper::Sortkeys = 1;
-        $settings->{version} =$Git::Workflow::VERSION;
-        spew($file, 'my ' . Dumper $settings);
-    }
+    return $self->{settings};
+}
+
+sub save_settings {
+    my ($self) = @_;
+    return if !$self->{settings_file};
+    local $Data::Dumper::Indent   = 1;
+    local $Data::Dumper::Sortkeys = 1;
+    $self->{settings}->{version} =$Git::Workflow::VERSION;
+    $self->spew($self->{settings_file}, 'my ' . Dumper $self->{settings});
 }
 
 sub _url_encode {
-    my ($url) = @_;
+    my ($self, $url) = @_;
     $url =~ s/([^-\w.:])/sprintf "%%%x", ord $1/egxms;
     return $url;
 }
 
-sub END {
-    save_settings();
+sub DESTROY {
+    my ($self) = @_;
+    $self->save_settings();
     if ($ENV{GIT_WORKFLOW_TIMER}) {
-        for my $sub (sort keys %times) {
+        for my $sub (sort keys %{$self->{times}}) {
             print "git $sub\n";
             my $total = 0;
-            map {$total += $_} @{ $times{$sub} };
-            printf "    Avg : %0.4fs for %i runs. Total time %0.4fs\n", $total / @{ $times{$sub} }, (scalar @{ $times{$sub} }), $total;
+            map {$total += $_} @{ $self->{times}{$sub} };
+            printf "    Avg : %0.4fs for %i runs. Total time %0.4fs\n", $total / @{ $self->{times}{$sub} }, (scalar @{ $self->{times}{$sub} }), $total;
         }
     }
 }
