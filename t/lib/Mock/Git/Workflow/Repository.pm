@@ -36,9 +36,12 @@ sub git {
 
 our @data;
 
-sub _add {
+sub mock_add {
     my $self = shift;
     push @data, @_;
+}
+sub mock_reset {
+    @data = ();
 }
 
 our $AUTOLOAD;
@@ -94,9 +97,13 @@ Create a new Mock::Git::Workflow::Repository
 
 return the last created Mock::Git::Workflow::Repository
 
-=head2 C<_add (@data)>
+=head2 C<mock_add (@data)>
 
 push data to be returned when methods are called
+
+=head2 C<mock_reset ()>
+
+Clear out any mock data, useful if tests have added too much data
 
 =head1 DIAGNOSTICS
 
