@@ -10,6 +10,7 @@ my $builder = Module::Build->new(
     dist_abstract     => 'Tools to help make git workflows easier',
     requires          => {
         'perl'        => '5.008',
+        'autodie'     => 0,
         'Error'       => 0,
         'Git'         => 0,
         'XML::Tiny'   => 0,
