@@ -15,7 +15,7 @@ use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
 use Git::Workflow::Pom;
 
-our $VERSION = 0.5;
+our $VERSION = 0.6;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 my $workflow = Git::Workflow::Pom->new;
 
@@ -149,7 +149,7 @@ git-pom - Manage pom.xml file versions
 
 =head1 VERSION
 
-This documentation refers to git-pom version 0.5
+This documentation refers to git-pom version 0.6
 
 =head1 SYNOPSIS
 

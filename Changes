@@ -1,6 +1,10 @@
 Revision history for git-workflow-tools
 
+0.6   2014-09-14
+        Fixed test to use correct perl version (Ivan Wills)
+
 0.5   2014-09-14
+        Updated missing dependencies (Ivan Wills)
         Fixed up test data (Ivan Wills)
         Cleaned up (Ivan Wills)
         Improving coverage by using autodie (Ivan Wills)

@@ -15,7 +15,7 @@ use English qw/ -no_match_vars /;
 use Git::Workflow::Repository qw//;
 use base qw/Exporter/;
 
-our $VERSION   = 0.5;
+our $VERSION   = 0.6;
 
 sub _alphanum_sort {
     no warnings qw/once/;
@@ -300,7 +300,7 @@ sub DESTROY {
             print "git $sub\n";
             my $total = 0;
             map {$total += $_} @{ $self->{times}{$sub} };
-            printf "    Avg : %0.5fs for %i runs. Total time %0.5fs\n", $total / @{ $self->{times}{$sub} }, (scalar @{ $self->{times}{$sub} }), $total;
+            printf "    Avg : %0.6fs for %i runs. Total time %0.6fs\n", $total / @{ $self->{times}{$sub} }, (scalar @{ $self->{times}{$sub} }), $total;
         }
     }
 }
@@ -315,7 +315,7 @@ Git::Workflow - Git workflow tools
 
 =head1 VERSION
 
-This documentation refers to Git::Workflow version 0.5
+This documentation refers to Git::Workflow version 0.6
 
 =head1 SYNOPSIS
 

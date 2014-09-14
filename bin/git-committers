@@ -14,7 +14,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use Time::Piece;
 
-our $VERSION = 0.5;
+our $VERSION = 0.6;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
@@ -104,7 +104,7 @@ git-committers - Stats on the number of commits by committer
 
 =head1 VERSION
 
-This documentation refers to git-committers version 0.5
+This documentation refers to git-committers version 0.6
 
 =head1 SYNOPSIS
 

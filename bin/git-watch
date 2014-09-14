@@ -14,7 +14,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use Git::Workflow;
 
-our $VERSION = 0.5;
+our $VERSION = 0.6;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 my $workflow = Git::Workflow->new;
 
@@ -172,7 +172,7 @@ git-watch - Watch for changes in repository up-stream
 
 =head1 VERSION
 
-This documentation refers to git-watch version 0.5
+This documentation refers to git-watch version 0.6
 
 =head1 SYNOPSIS
 

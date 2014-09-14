@@ -13,7 +13,7 @@ use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 
-our $VERSION = 0.5;
+our $VERSION = 0.6;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
@@ -75,7 +75,7 @@ git-cows - checkout whitespace only changed files
 
 =head1 VERSION
 
-This documentation refers to git-cows version 0.5
+This documentation refers to git-cows version 0.6
 
 =head1 SYNOPSIS
 
