@@ -27,10 +27,9 @@ sub _alphanum_sort {
 }
 
 sub new {
-    my $caller = shift;
-    my $class  = ref $caller ? ref $caller : $caller;
-    my %param  = @_;
-    my $self   = \%param;
+    my $class = shift;
+    my %param = @_;
+    my $self  = \%param;
 
     bless $self, $class;
     $self->{git}    ||= Git::Workflow::Repository->git;
@@ -154,7 +153,7 @@ sub releases {
         $type = 'branch';
         $regex = $option{branch};
     }
-    elsif ( !$option{tag} && !$option{branch} ) {
+    else {
         my $prod = $self->config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
         ($type, $regex) = split /\s*=\s*/, $prod;
         if ( !$regex ) {

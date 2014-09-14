@@ -21,9 +21,8 @@ our @EXPORT_OK   = qw/get_pom_versions pom_version next_pom_version/;
 our %EXPORT_TAGS = ();
 
 sub new {
-    my $caller = shift;
-    my $class  = ref $caller ? ref $caller : $caller;
-    my $self   = Git::Workflow->new(@_);
+    my $class = shift;
+    my $self  = Git::Workflow->new(@_);
     bless $self, $class;
     $self->{MAX_AGE} = 60 * 60 * 24 * (
         $ENV{GIT_WORKFLOW_MAX_AGE}
