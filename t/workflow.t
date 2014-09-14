@@ -2,19 +2,19 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8 + 1;
+use Test::More tests => 12 + 1;
 use Test::NoWarnings;
 use Data::Dumper qw/Dumper/;
 use lib 't/lib';
 use Git::Workflow;
 use Mock::Git::Workflow::Repository;
 
+my $pom = Git::Workflow->new();
 my $git = Mock::Git::Workflow::Repository->git;
-my $pom = Git::Workflow->new( git => $git );
+$pom->{git} = $git;
 
 test_branches();
 test_tags();
-test_children();
 test_config();
 test_current();
 test_match_commits();
@@ -27,6 +27,7 @@ test_slurp();
 test_spew();
 test_settings();
 test_save_settings();
+test_url_encode();
 
 sub test_branches {
 }
@@ -54,9 +55,6 @@ sub test_tags {
         is_deeply [$pom->tags()], $data->[1], "Get the sorted tags"
             or diag Dumper [$pom->tags()], $data->[1];
     }
-}
-
-sub test_children {
 }
 
 sub test_config {
@@ -208,6 +206,27 @@ sub test_releases {
                 }
             ],
         ],
+        [
+            [
+                '?',
+                [map {"  $_"} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0}],
+                ['1405968782 55d0295a1227f591afc683dd12e43823cd2e404d'],
+            ],
+            { local => 1 },
+            [
+                {
+                    branches => {
+                        map {$_ => 1} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0},
+                    },
+                    files => {},
+                    user  => '',
+                    time  => '1405968782',
+                    name  => 'origin/master',
+                    email => '',
+                    sha   => '55d0295a1227f591afc683dd12e43823cd2e404d'
+                }
+            ],
+        ],
     );
 
     for my $data (@data) {
@@ -228,6 +247,36 @@ sub test_commit_details {
 }
 
 sub test_files_from_sha {
+    my @data = (
+        [
+            [ <<'SHOW'
+commit 4614a57568bb1889138bfab239d2e82b5b6bc338
+Author: Ivan Wills <ivan.wills@gmail.com>
+Date:   Sun Sep 14 16:54:22 2014 +1000
+
+    Added more tests
+
+A   t/slurp.txt
+M   t/workflow.t
+SHOW
+            ],
+            [qw/4614a57568bb1889138bfab239d2e82b5b6bc338/],
+            {
+                't/slurp.txt'  => 'A',
+                't/workflow.t' => 'M',
+            },
+        ],
+    );
+
+    for my $data (@data) {
+        $git->mock_reset();
+        $git->mock_add(@{ $data->[0] });
+        $pom->{branches} = {};
+        $pom->{tags}     = [];
+        my $ans = $pom->files_from_sha(@{$data->[1]});
+        is_deeply $ans, $data->[2], "Get the commits for $data->[1][0]"
+            or diag Dumper $ans, $data->[2];
+    }
 }
 
 sub test_slurp {
@@ -249,4 +298,15 @@ sub test_settings {
 }
 
 sub test_save_settings {
+}
+
+sub test_url_encode {
+    my @data = (
+        [qw{? %3f}],
+        [qw{: :}],
+    );
+    for my $data (@data) {
+        is $pom->_url_encode($data->[0]), $data->[1], "Encode '$data->[0]' correctly"
+            or diag join "\t", @$data;
+    }
 }

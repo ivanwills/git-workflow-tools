@@ -11,6 +11,7 @@ use Mock::Git::Workflow::Repository;
 
 my $git = Mock::Git::Workflow::Repository->git;
 $git->mock_add(undef);
+$ENV{HOME} = undef;
 my $pom = Git::Workflow::Pom->new( git => $git );
 
 pom();
