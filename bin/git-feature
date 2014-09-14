@@ -14,7 +14,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use Git::Workflow::Pom;
 
-our $VERSION = 0.4;
+our $VERSION = 0.5;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 my $workflow = Git::Workflow::Pom->new;
 
@@ -130,7 +130,7 @@ git-feature - Create a feature branch from the "current release"
 
 =head1 VERSION
 
-This documentation refers to git-feature version 0.4
+This documentation refers to git-feature version 0.5
 
 =head1 SYNOPSIS
 

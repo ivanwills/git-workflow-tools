@@ -14,7 +14,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use Git::Workflow;
 
-our $VERSION = 0.4;
+our $VERSION = 0.5;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 my $workflow = Git::Workflow->new;
 
@@ -135,7 +135,7 @@ git-branch-clean - Clean old branches out of the repository
 
 =head1 VERSION
 
-This documentation refers to git-branch-clean version 0.4
+This documentation refers to git-branch-clean version 0.5
 
 =head1 SYNOPSIS
 

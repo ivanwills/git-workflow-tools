@@ -1,5 +1,29 @@
 Revision history for git-workflow-tools
 
+0.5   2014-09-14
+        Fixed up test data (Ivan Wills)
+        Cleaned up (Ivan Wills)
+        Improving coverage by using autodie (Ivan Wills)
+        testing getting current (Ivan Wills)
+        Simplified new (Ivan Wills)
+        Removed odd command (Ivan Wills)
+        Added more tests (Ivan Wills)
+        Cleaned up unnessesary logic (Ivan Wills)
+        Added more tests (Ivan Wills)
+        Adding more tests (Ivan Wills)
+        Changed to match mock change (Ivan Wills)
+        Cleaned up interface (Ivan Wills)
+        Fixed logic (Ivan Wills)
+        Cleaned up default action selection (Ivan Wills)
+        Fixed loading wrong object (Ivan Wills)
+        Fixed warning (Ivan Wills)
+        Converted all scripts to use new Object versions (Ivan Wills)
+        Fixed tests to use object version (Ivan Wills)
+        Converted POM to being an object (Ivan Wills)
+        Fixed POD (somewhat) (Ivan Wills)
+        Changed from a library of functions to a class with methods (Ivan Wills)
+        Updating for release of version 0.4 (Ivan Wills)
+
 0.4   2014-09-12
         Extended test to include old excluded branches (Ivan Wills)
         Fixed eval using do now (Ivan Wills)
@@ -200,7 +224,6 @@ Revision history for git-workflow-tools
         Fixed build files (Ivan Wills)
         Removed bad lib file name (Ivan Wills)
         New git tools (Ivan Wills)
-        
 
 0.2     2014-07-31
         Fixed VERSION option (Ivan Wills)
