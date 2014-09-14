@@ -8,6 +8,7 @@ package Git::Workflow;
 
 use strict;
 use warnings;
+use autodie;
 use Carp qw/carp croak cluck confess longmess/;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
@@ -35,6 +36,7 @@ sub new {
     $self->{git}    ||= Git::Workflow::Repository->git;
     $self->{TEST}     = 0;
     $self->{VERBOSE}  = 0;
+    $self->{GIT_DIR}  = '.git';
     $self->{branches} = undef;
     $self->{tags}     = undef;
     $self->{settings} = {};
@@ -89,7 +91,7 @@ sub current {
     chomp $git_dir;
 
     # read the HEAD file to find what branch or id we are on
-    open my $fh, '<', "$git_dir/.git/HEAD" or die "Can't open '$git_dir/.git/HEAD' for reading: $!\n";
+    open my $fh, '<', "$git_dir/$self->{GIT_DIR}/HEAD";
     my $head = <$fh>;
     close $fh;
     chomp $head;
@@ -99,7 +101,7 @@ sub current {
     }
 
     # try to identify the commit as it's not a local branch
-    open $fh, '<', "$git_dir/.git/FETCH_HEAD" or die "Can't open '$git_dir/.git/FETCH_HEAD' for reading: $!\n";
+    open $fh, '<', "$git_dir/$self->{GIT_DIR}/FETCH_HEAD";
     while (my $line = <$fh>) {
         next if $line !~ /^$head/;
 
@@ -199,7 +201,7 @@ sub files_from_sha {
 
 sub slurp {
     my ($self, $file) = @_;
-    open my $fh, '<', $file or die "Can't open file '$file' for reading: $!\n";
+    open my $fh, '<', $file;
 
     return wantarray ? <$fh> : do { local $/; <$fh> };
 }
@@ -207,7 +209,7 @@ sub slurp {
 sub spew {
     my ($self, $file, @out) = @_;
     die "No file passed!" if !$file;
-    open my $fh, '>', $file or die "Can't open file '$file' for writing: $!\n";
+    open my $fh, '>', $file;
 
     print $fh @out;
 }
