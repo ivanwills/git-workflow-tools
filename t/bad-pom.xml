@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>au.com.optus.oneportal</groupId>
-  <artifactId>frontend</artifactId>
+  <groupId>com.example</groupId>
+  <artifactId>thing</artifactId>
   <packaging>pom</packaging>
-  <name>OnePortal-FrontEnd</name>
+  <name>Thing</name>
 
   <scm>
-    <connection>scm:git:ssh://isdp-git@git01.syd:OnePortal-FrontEnd</connection>
-    <developerConnection>scm:git:isdp-git@git01.syd:OnePortal-FrontEnd</developerConnection>
-    <url>http://git01.syd/cgit/isdp/OnePortal-FrontEnd</url>
-    <tag>frontend-1.92.2</tag>
+    <connection>scm:git:https://github.com/ivanwills/git-workflow-tools.git</connection>
+    <developerConnection>scm:git:https://github.com/ivanwills/git-workflow-tools.git</developerConnection>
+    <url>https://github.com/ivanwills/git-workflow-tools/</url>
+    <tag>thing-1.92.2</tag>
   </scm>
 </project>
