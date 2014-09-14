@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3 + 1;
+use Test::More tests => 8 + 1;
 use Test::NoWarnings;
 use Data::Dumper qw/Dumper/;
 use lib 't/lib';
@@ -144,6 +144,81 @@ sub test_release {
 }
 
 sub test_releases {
+    my @data = (
+        [
+            [
+                [qw/not-release v3.0 v1.0 v1.1 v2.0/],
+                ['1405968782 55d0295a1227f591afc683dd12e43823cd2e404d'],
+                [map {"  $_"} qw{master origin/master}],
+            ],
+            { tag => '^v\d+(?:[.]\d+)*$' },
+            [
+                {
+                    branches => {
+                        master          => 1,
+                        'origin/master' => 1
+                    },
+                    files => {},
+                    user  => '',
+                    time  => '1405968782',
+                    name  => 'v3.0',
+                    email => '',
+                    sha   => '55d0295a1227f591afc683dd12e43823cd2e404d'
+                }
+            ],
+        ],
+        [
+            [
+                [map {"  $_"} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0}],
+                ['1405968782 55d0295a1227f591afc683dd12e43823cd2e404d'],
+            ],
+            { branch => '^origin/R\d+(?:[.]\d+)*$' },
+            [
+                {
+                    branches => {
+                        map {$_ => 1} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0},
+                    },
+                    files => {},
+                    user  => '',
+                    time  => '1405968782',
+                    name  => 'origin/R3.0',
+                    email => '',
+                    sha   => '55d0295a1227f591afc683dd12e43823cd2e404d'
+                }
+            ],
+        ],
+        [
+            [
+                undef,
+                [map {"  $_"} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0}],
+                ['1405968782 55d0295a1227f591afc683dd12e43823cd2e404d'],
+            ],
+            { local => 1 },
+            [
+                {
+                    branches => {
+                        map {$_ => 1} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0},
+                    },
+                    files => {},
+                    user  => '',
+                    time  => '1405968782',
+                    name  => 'master',
+                    email => '',
+                    sha   => '55d0295a1227f591afc683dd12e43823cd2e404d'
+                }
+            ],
+        ],
+    );
+
+    for my $data (@data) {
+        $git->mock_reset();
+        $git->mock_add(@{ $data->[0] });
+        $pom->{branches} = {};
+        $pom->{tags}     = [];
+        my $ans = [ $pom->releases(%{$data->[1]}) ];
+        is_deeply $ans, $data->[2], "Get the releases"
+            or diag Dumper $ans, $data->[2];
+    }
 }
 
 sub test_runner {
@@ -156,9 +231,18 @@ sub test_files_from_sha {
 }
 
 sub test_slurp {
+    is +(scalar $pom->slurp('t/slurp.txt')), "true\n", 'Can slurp a file';
 }
 
 sub test_spew {
+    SKIP: {
+        skip "Can't wright to directory", 1 if !-w 't';
+        my $file = 't/spew.txt';
+        unlink $file if -f $file;
+        $pom->spew($file, "test");
+        is -s $file, 4, 'Wrote to file';
+        unlink $file;
+    }
 }
 
 sub test_settings {
