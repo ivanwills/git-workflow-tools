@@ -78,7 +78,7 @@ sub test_current {
 
     for my $data (@data) {
         $git->mock_reset();
-        $git->mock_add('t');
+        $git->mock_add('t/data');
         $pom->{branches} = {};
         $pom->{tags}     = [];
         $pom->{GIT_DIR}  = $data->[0];
@@ -305,13 +305,13 @@ SHOW
 }
 
 sub test_slurp {
-    is +(scalar $pom->slurp('t/slurp.txt')), "true\n", 'Can slurp a file';
+    is +(scalar $pom->slurp('t/data/slurp.txt')), "true\n", 'Can slurp a file';
 }
 
 sub test_spew {
     SKIP: {
         skip "Can't wright to directory", 1 if !-w 't';
-        my $file = 't/spew.txt';
+        my $file = 't/data/spew.txt';
         unlink $file if -f $file;
         $pom->spew($file, "test");
         is -s $file, 4, 'Wrote to file';

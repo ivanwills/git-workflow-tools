@@ -28,6 +28,14 @@ t/00-load.t
 t/bad-pom.xml
 t/boilerplate.t
 t/critic.t
+t/data/bad-pom.xml
+t/data/git-branch/FETCH_HEAD
+t/data/git-branch/HEAD
+t/data/git-simple/HEAD
+t/data/git-tag/FETCH_HEAD
+t/data/git-tag/HEAD
+t/data/good-pom.xml
+t/data/slurp.txt
 t/good-pom.xml
 t/kwalitee.t
 t/lib/Mock/Git/Workflow/Repository.pm

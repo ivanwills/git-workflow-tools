@@ -21,8 +21,8 @@ undef $pom;
 
 sub pom {
     my @data = (
-        ['t/good-pom.xml', '1.92.2'],
-        ['t/bad-pom.xml' , undef],
+        ['t/data/good-pom.xml', '1.92.2'],
+        ['t/data/bad-pom.xml' , undef],
         ['<project><version>1.0.0-SNAPSHOT</version></project>', '1.0.0-SNAPSHOT'],
         ["<project>\n\t<version></version>\n</project>", undef],
     );
