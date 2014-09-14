@@ -212,13 +212,6 @@ sub spew {
     print $fh @out;
 }
 
-sub children {
-    my ($self, $dir) = @_;
-    opendir my $dh, $dir or die "Couldn't open directory '$dir' for reading: $!\n";
-
-    return grep { $_ ne '.' && $_ ne '..' } readdir $dh;
-}
-
 sub runner {
     my ($self, @cmd) = @_;
 

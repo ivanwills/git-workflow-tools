@@ -18,7 +18,6 @@ ok( !(system 'perl', "-I $Bin/../lib", '-c', "$Bin/../bin/git-hook-setup"  ), "b
 ok( !(system 'perl', "-I $Bin/../lib", '-c', "$Bin/../bin/git-jira"        ), "bin/git-jira compiles"        );
 ok( !(system 'perl', "-I $Bin/../lib", '-c', "$Bin/../bin/git-pom"         ), "bin/git-pom compiles"         );
 ok( !(system 'perl', "-I $Bin/../lib", '-c', "$Bin/../bin/git-tag-grep"    ), "bin/git-tag-grep compiles"    );
-ok( !(system 'perl', "-I $Bin/../lib", '-c', "$Bin/../bin/git-undo-regen"  ), "bin/git-undo-regen compiles"  );
 ok( !(system 'perl', "-I $Bin/../lib", '-c', "$Bin/../bin/git-up-to-date"  ), "bin/git-up-to-date compiles"  );
 
 diag( "Testing git-workflow-tools, Perl $], $^X" );

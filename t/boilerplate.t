@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 18 + 1;
+use Test::More tests => 17 + 1;
 use Test::NoWarnings;
 
 sub not_in_file_ok {
@@ -68,7 +68,6 @@ module_boilerplate_ok('bin/git-hook-setup');
 module_boilerplate_ok('bin/git-jira');
 module_boilerplate_ok('bin/git-pom');
 module_boilerplate_ok('bin/git-tag-grep');
-module_boilerplate_ok('bin/git-undo-regen');
 module_boilerplate_ok('bin/git-up-to-date');
 module_boilerplate_ok('bin/git-watch');
 module_boilerplate_ok('lib/Git/Workflow.pm');
