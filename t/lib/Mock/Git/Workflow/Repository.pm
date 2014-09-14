@@ -20,10 +20,9 @@ our %EXPORT_TAGS = ();
 my $git;
 
 sub new {
-    my $caller = shift;
-    my $class  = ref $caller ? ref $caller : $caller;
-    my %param  = @_;
-    my $self   = \%param;
+    my $class = shift;
+    my %param = @_;
+    my $self  = \%param;
 
     bless $self, $class;
 

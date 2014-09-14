@@ -22,9 +22,8 @@ our %EXPORT_TAGS = ();
 our $last;
 
 sub new {
-    my $caller = shift;
-    my $class  = ref $caller ? ref $caller : $caller;
-    my $self   = { repository => @_ || undef };
+    my $class = shift;
+    my $self  = { repository => @_ || undef };
     if (!$self->{repository}) {
         my @dir = File::Spec->splitdir( File::Spec->rel2abs( File::Spec->curdir ) );
         while (
