@@ -17,6 +17,7 @@ my $pom = Git::Workflow::Pom->new( git => $git );
 pom();
 next_pom();
 pom_versions();
+undef $pom;
 
 sub pom {
     my @data = (

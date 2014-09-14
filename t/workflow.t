@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 12 + 1;
+use Test::More tests => 15 + 1;
 use Test::NoWarnings;
 use Data::Dumper qw/Dumper/;
 use lib 't/lib';
@@ -61,6 +61,31 @@ sub test_config {
 }
 
 sub test_current {
+    my @data = (
+        [
+            'git-simple',
+            [qw'branch master'],
+        ],
+        [
+            'git-tag',
+            [qw'sha 55d0295a1227f591afc683dd12e43823cd2e404d'],
+        ],
+        [
+            'git-branch',
+            [qw'branch origin/master'],
+        ],
+    );
+
+    for my $data (@data) {
+        $git->mock_reset();
+        $git->mock_add('t');
+        $pom->{branches} = {};
+        $pom->{tags}     = [];
+        $pom->{GIT_DIR}  = $data->[0];
+        my $ans = [$pom->current()];
+        is_deeply $ans, $data->[1], "Get the current"
+            or diag Dumper $ans, $data->[1];
+    }
 }
 
 sub test_match_commits {
