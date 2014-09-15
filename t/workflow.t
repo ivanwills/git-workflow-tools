@@ -194,12 +194,13 @@ sub test_releases {
             [
                 [map {"  $_"} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0}],
                 ['1405968782 55d0295a1227f591afc683dd12e43823cd2e404d'],
+                [map {"  $_"} qw{origin/R1.0 origin/R2.0 origin/R3.0}],
             ],
             { branch => '^origin/R\d+(?:[.]\d+)*$' },
             [
                 {
                     branches => {
-                        map {$_ => 1} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0},
+                        map {$_ => 1} qw{origin/R1.0 origin/R2.0 origin/R3.0},
                     },
                     files => {},
                     user  => '',
@@ -215,12 +216,13 @@ sub test_releases {
                 undef,
                 [map {"  $_"} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0}],
                 ['1405968782 55d0295a1227f591afc683dd12e43823cd2e404d'],
+                [map {"  $_"} qw{master origin/master origin/R1.0 origin/R2.0}],
             ],
             { local => 1 },
             [
                 {
                     branches => {
-                        map {$_ => 1} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0},
+                        map {$_ => 1} qw{master origin/master origin/R1.0 origin/R2.0},
                     },
                     files => {},
                     user  => '',
@@ -236,12 +238,13 @@ sub test_releases {
                 '?',
                 [map {"  $_"} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0}],
                 ['1405968782 55d0295a1227f591afc683dd12e43823cd2e404d'],
+                [map {"  $_"} qw{master origin/master origin/R1.0}],
             ],
             { local => 1 },
             [
                 {
                     branches => {
-                        map {$_ => 1} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0},
+                        map {$_ => 1} qw{master origin/master origin/R1.0},
                     },
                     files => {},
                     user  => '',
