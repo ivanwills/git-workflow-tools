@@ -22,5 +22,5 @@ ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-pom"         ), "bi
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-tag-grep"    ), "bin/git-tag-grep compiles"    );
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-up-to-date"  ), "bin/git-up-to-date compiles"  );
 
-diag( "Testing git-workflow-tools, Perl $], $^X" );
+diag( "Testing App-Git-Workflow, Perl $], $^X" );
 done_testing();

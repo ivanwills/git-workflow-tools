@@ -3,7 +3,7 @@ require 5.008;
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
-  'NAME' => 'git-workflow-tools',
+  'NAME' => 'App-Git-Workflow',
   'VERSION_FROM' => 'lib/Git/Workflow.pm',
   'PREREQ_PM' => {
                    'Error' => 0,

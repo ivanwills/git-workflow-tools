@@ -3,7 +3,7 @@ use warnings;
 use Module::Build;
 
 my $builder = Module::Build->new(
-    module_name       => 'git-workflow-tools',
+    module_name       => 'App-Git-Workflow',
     license           => 'perl',
     dist_author       => 'Ivan Wills <ivan.wills@gmail.com>',
     dist_version_from => 'lib/Git/Workflow.pm',
@@ -24,7 +24,7 @@ my $builder = Module::Build->new(
         'Test::More'       => 0,
         'Test::NoWarnings' => 0,
     },
-    add_to_cleanup     => [ 'git-workflow-tools-*' ],
+    add_to_cleanup     => [ 'App-Git-Workflow-*' ],
     create_makefile_pl => 'traditional',
     create_license     => 1,
     meta_merge => {
