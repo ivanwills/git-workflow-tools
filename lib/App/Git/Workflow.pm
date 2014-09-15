@@ -1,4 +1,4 @@
-package Git::Workflow;
+package App::Git::Workflow;
 
 # Created on: 2014-03-11 22:09:32
 # Create by:  Ivan Wills
@@ -12,7 +12,7 @@ use autodie;
 use Carp qw/carp croak cluck confess longmess/;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow::Repository qw//;
+use App::Git::Workflow::Repository qw//;
 use base qw/Exporter/;
 
 our $VERSION   = 0.6;
@@ -33,7 +33,7 @@ sub new {
     my $self  = \%param;
 
     bless $self, $class;
-    $self->{git}    ||= Git::Workflow::Repository->git;
+    $self->{git}    ||= App::Git::Workflow::Repository->git;
     $self->{TEST}     = 0;
     $self->{VERBOSE}  = 0;
     $self->{GIT_DIR}  = '.git';
@@ -270,7 +270,7 @@ sub settings {
         ? do $self->{settings_file}
         : {};
 
-    if ( $self->{settings}->{version} && $self->{settings}->{version} > $Git::Workflow::VERSION ) {
+    if ( $self->{settings}->{version} && $self->{settings}->{version} > $App::Git::Workflow::VERSION ) {
         die "Current settings created with newer version than this program!\n";
     }
 
@@ -282,7 +282,7 @@ sub save_settings {
     return if !$self->{settings_file};
     local $Data::Dumper::Indent   = 1;
     local $Data::Dumper::Sortkeys = 1;
-    $self->{settings}->{version} =$Git::Workflow::VERSION;
+    $self->{settings}->{version} =$App::Git::Workflow::VERSION;
     $self->spew($self->{settings_file}, 'my ' . Dumper $self->{settings});
 }
 
@@ -311,15 +311,15 @@ __END__
 
 =head1 NAME
 
-Git::Workflow - Git workflow tools
+App::Git::Workflow - Git workflow tools
 
 =head1 VERSION
 
-This documentation refers to Git::Workflow version 0.6
+This documentation refers to App::Git::Workflow version 0.6
 
 =head1 SYNOPSIS
 
-   use Git::Workflow qw/branches tags/;
+   use App::Git::Workflow qw/branches tags/;
 
    # Get all local branches
    my @branches = $self->branches();
@@ -343,7 +343,7 @@ This module contains helper functions for the command line scripts.
 
 =head2 C<new (%params)>
 
-Create a new C<Git::Workflow::Pom> object
+Create a new C<App::Git::Workflow::Pom> object
 
 =head2 C<git ()>
 

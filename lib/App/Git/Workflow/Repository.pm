@@ -1,4 +1,4 @@
-package Git::Workflow::Repository;
+package App::Git::Workflow::Repository;
 
 # Created on: 2014-08-18 06:54:14
 # Create by:  Ivan Wills
@@ -42,7 +42,7 @@ sub new {
 }
 
 sub git {
-    return $last || Git::Workflow::Repository->new;
+    return $last || App::Git::Workflow::Repository->new;
 }
 
 our $AUTOLOAD;
@@ -79,15 +79,15 @@ __END__
 
 =head1 NAME
 
-Git::Workflow::Repository - A basic wrapper around GIT
+App::Git::Workflow::Repository - A basic wrapper around GIT
 
 =head1 VERSION
 
-This documentation refers to Git::Workflow::Repository version 0.6
+This documentation refers to App::Git::Workflow::Repository version 0.6
 
 =head1 SYNOPSIS
 
-   use Git::Workflow::Repository qw/git/;
+   use App::Git::Workflow::Repository qw/git/;
 
    # get the git object based on the current directory
    my $git = git();
@@ -107,11 +107,11 @@ as methods.
 
 =head3 C<new (%options)>
 
-Returns a new Git::Workflow::Repository
+Returns a new App::Git::Workflow::Repository
 
 =head2 C<git ()>
 
-Singleton to get the last created C<Git::Workflow::Repository> object or
+Singleton to get the last created C<App::Git::Workflow::Repository> object or
 create a new one.
 
 =head1 DIAGNOSTICS

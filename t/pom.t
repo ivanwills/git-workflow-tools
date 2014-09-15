@@ -6,13 +6,13 @@ use Test::More tests => 7 + 1;
 use Test::NoWarnings;
 use Data::Dumper qw/Dumper/;
 use lib 't/lib';
-use Git::Workflow::Pom;
-use Mock::Git::Workflow::Repository;
+use App::Git::Workflow::Pom;
+use Mock::App::Git::Workflow::Repository;
 
-my $git = Mock::Git::Workflow::Repository->git;
+my $git = Mock::App::Git::Workflow::Repository->git;
 $git->mock_add(undef);
 $ENV{HOME} = undef;
-my $pom = Git::Workflow::Pom->new( git => $git );
+my $pom = App::Git::Workflow::Pom->new( git => $git );
 
 pom();
 next_pom();

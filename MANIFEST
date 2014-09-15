@@ -15,9 +15,9 @@ Changes
 fatpack.pl
 hooks/commit-msg
 install.pl
-lib/Git/Workflow.pm
-lib/Git/Workflow/Pom.pm
-lib/Git/Workflow/Repository.pm
+lib/App/Git/Workflow.pm
+lib/App/Git/Workflow/Pom.pm
+lib/App/Git/Workflow/Repository.pm
 LICENSE
 Makefile.PL
 MANIFEST
@@ -36,7 +36,7 @@ t/data/git-tag/HEAD
 t/data/good-pom.xml
 t/data/slurp.txt
 t/kwalitee.t
-t/lib/Mock/Git/Workflow/Repository.pm
+t/lib/Mock/App/Git/Workflow/Repository.pm
 t/manifest.t
 t/perlcriticrc
 t/pod-coverage.t

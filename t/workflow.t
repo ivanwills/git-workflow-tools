@@ -6,11 +6,11 @@ use Test::More tests => 15 + 1;
 use Test::NoWarnings;
 use Data::Dumper qw/Dumper/;
 use lib 't/lib';
-use Git::Workflow;
-use Mock::Git::Workflow::Repository;
+use App::Git::Workflow;
+use Mock::App::Git::Workflow::Repository;
 
-my $pom = Git::Workflow->new();
-my $git = Mock::Git::Workflow::Repository->git;
+my $pom = App::Git::Workflow->new();
+my $git = Mock::App::Git::Workflow::Repository->git;
 $pom->{git} = $git;
 
 test_branches();

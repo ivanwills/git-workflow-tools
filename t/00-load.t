@@ -6,9 +6,9 @@ use Test::More;
 use FindBin qw/$Bin/;
 use File::Spec;
 
-use_ok('Git::Workflow');
-use_ok('Git::Workflow::Pom');
-use_ok('Git::Workflow::Repository');
+use_ok('App::Git::Workflow');
+use_ok('App::Git::Workflow::Pom');
+use_ok('App::Git::Workflow::Repository');
 my $perl = File::Spec->rel2abs($^X);
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-branch-clean"), "bin/git-branch-clean compiles");
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-branch-grep" ), "bin/git-branch-grep compiles" );

@@ -13,11 +13,11 @@ use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
-use Git::Workflow::Pom;
+use App::Git::Workflow::Pom;
 
 our $VERSION = 0.6;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
-my $workflow = Git::Workflow::Pom->new;
+my $workflow = App::Git::Workflow::Pom->new;
 
 my %option = (
     pom     => $workflow->config('workflow.pom') || 'pom.xml',

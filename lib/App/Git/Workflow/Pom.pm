@@ -1,4 +1,4 @@
-package Git::Workflow::Pom;
+package App::Git::Workflow::Pom;
 
 # Created on: 2014-08-06 19:04:05
 # Create by:  Ivan Wills
@@ -12,9 +12,9 @@ use Carp;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use XML::Tiny;
-use Git::Workflow::Repository qw//;
-use Git::Workflow;
-use base qw/Git::Workflow/;
+use App::Git::Workflow::Repository qw//;
+use App::Git::Workflow;
+use base qw/App::Git::Workflow/;
 
 our $VERSION     = 0.6;
 our @EXPORT_OK   = qw/get_pom_versions pom_version next_pom_version/;
@@ -22,7 +22,7 @@ our %EXPORT_TAGS = ();
 
 sub new {
     my $class = shift;
-    my $self  = Git::Workflow->new(@_);
+    my $self  = App::Git::Workflow->new(@_);
     bless $self, $class;
     $self->{MAX_AGE} = 60 * 60 * 24 * (
         $ENV{GIT_WORKFLOW_MAX_AGE}
@@ -137,15 +137,15 @@ __END__
 
 =head1 NAME
 
-Git::Workflow::Pom - Tools for maven POM files with git
+App::Git::Workflow::Pom - Tools for maven POM files with git
 
 =head1 VERSION
 
-This documentation refers to Git::Workflow::Pom version 0.6
+This documentation refers to App::Git::Workflow::Pom version 0.6
 
 =head1 SYNOPSIS
 
-   use Git::Workflow::Pom qw/get_pom_versions pom_version next_pom_version/;
+   use App::Git::Workflow::Pom qw/get_pom_versions pom_version next_pom_version/;
 
    # get all branch POM versions
    my $versions = $pom->get_pom_versions("pom.xml");
@@ -170,7 +170,7 @@ This library provides tools for looking at POM files in different branches.
 
 =item C<new (%params)>
 
-Create a new C<Git::Workflow::Pom> object
+Create a new C<App::Git::Workflow::Pom> object
 
 =item C<get_pom_versions ($pom_file)>
 

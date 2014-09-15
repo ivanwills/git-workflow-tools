@@ -1,4 +1,4 @@
-package Mock::Git::Workflow::Repository;
+package Mock::App::Git::Workflow::Repository;
 
 # Created on: 2014-09-05 04:34:42
 # Create by:  Ivan Wills
@@ -70,15 +70,15 @@ __END__
 
 =head1 NAME
 
-Mock::Git::Workflow::Repository - Mock of a git repository
+Mock::App::Git::Workflow::Repository - Mock of a git repository
 
 =head1 VERSION
 
-This documentation refers to Mock::Git::Workflow::Repository version 0.6
+This documentation refers to Mock::App::Git::Workflow::Repository version 0.6
 
 =head1 SYNOPSIS
 
-   use Mock::Git::Workflow::Repository;
+   use Mock::App::Git::Workflow::Repository;
 
    # Brief but working code example(s) here showing the most common usage(s)
    # This section will be as far as many users bother reading, so make it as
@@ -90,11 +90,11 @@ This documentation refers to Mock::Git::Workflow::Repository version 0.6
 
 =head2 C<new ()>
 
-Create a new Mock::Git::Workflow::Repository
+Create a new Mock::App::Git::Workflow::Repository
 
 =head2 C<git ()>
 
-return the last created Mock::Git::Workflow::Repository
+return the last created Mock::App::Git::Workflow::Repository
 
 =head2 C<mock_add (@data)>
 

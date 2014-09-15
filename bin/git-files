@@ -12,11 +12,11 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
-use Git::Workflow;
+use App::Git::Workflow;
 
 our $VERSION = 0.6;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
-my $workflow = Git::Workflow->new;
+my $workflow = App::Git::Workflow->new;
 
 my %option = (
     age     => 28,

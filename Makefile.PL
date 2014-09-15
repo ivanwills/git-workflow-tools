@@ -4,7 +4,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile
 (
   'NAME' => 'App-Git-Workflow',
-  'VERSION_FROM' => 'lib/Git/Workflow.pm',
+  'VERSION_FROM' => 'lib/App/Git/Workflow.pm',
   'PREREQ_PM' => {
                    'Error' => 0,
                    'Git' => 0,
