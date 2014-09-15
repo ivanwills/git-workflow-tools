@@ -21,7 +21,7 @@ my $workflow = Git::Workflow->new;
 my %option = (
     max_age     => 60 * 60 * 24 * ( $ENV{GIT_WORKFLOW_MAX_AGE} || $workflow->config('workflow.max', 120) ),
     tag_prefix  => '',
-    tag_postfix => '',
+    tag_suffix => '',
     verbose     => 0,
     man         => 0,
     help        => 0,
@@ -42,7 +42,7 @@ sub main {
         'min_age|min-age|n=i',
         'tag|t!',
         'tag_prefix|tag-prefix|p=s',
-        'tag_postfix|tag-postfix|q=s',
+        'tag_suffix|tag-suffix|s=s',
         'test!',
         'verbose|v+',
         'man',
@@ -153,7 +153,7 @@ This documentation refers to git-branch-clean version 0.6
   -t --tag      Create tags of the same name as the branch
   -p --tag-prefix[=]str
                 When converting a branch to a tag prepend it with "str"
-  -p --tag-postfix[=]str
+  -s --tag-suffix[=]str
                 When converting a branch to a tag apend it with "str"
      --test     Don't actually delete branches just report on what branches
                 would be deleted.
@@ -169,7 +169,7 @@ C<git-branch-clean> deletes branches merged to master (but not newer than
 C<--min-age> days). Optionally also deleting branches that haven't been
 modified more than C<--max-age> days. When deleting branches they can be
 converted to tags (C<--tag>) with optional an prefix (C<--tag-prefix>) and/or
-an optional postfix (C<--tag-postfix>) added.
+an optional suffix (C<--tag-suffix>) added.
 
 =head1 SUBROUTINES/METHODS
 
