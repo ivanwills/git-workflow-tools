@@ -59,6 +59,7 @@ sub branches {
 
     if ($contains) {
         push @options, "--contains", $contains;
+        $type .= $contains;
     }
 
     # assign to or cache
