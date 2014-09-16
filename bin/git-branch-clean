@@ -19,13 +19,14 @@ my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 my $workflow = App::Git::Workflow->new;
 
 my %option = (
-    max_age     => 60 * 60 * 24 * ( $ENV{GIT_WORKFLOW_MAX_AGE} || $workflow->config('workflow.max', 120) ),
-    tag_prefix  => '',
+    exclude    => [],
+    max_age    => 60 * 60 * 24 * ( $ENV{GIT_WORKFLOW_MAX_AGE} || $workflow->config('workflow.max', 120) ),
+    tag_prefix => '',
     tag_suffix => '',
-    verbose     => 0,
-    man         => 0,
-    help        => 0,
-    VERSION     => 0,
+    verbose    => 0,
+    man        => 0,
+    help       => 0,
+    VERSION    => 0,
 );
 
 main();
@@ -38,6 +39,8 @@ sub main {
         \%option,
         'remote|r',
         'all|a',
+        'exclude|e=s@',
+        'exclude_file|exclude-file|f=s',
         'max_age|max-age|m=i',
         'min_age|min-age|n=i',
         'tag|t!',
@@ -62,14 +65,25 @@ sub main {
     }
 
     # get the list of branches to look at
+    my $max      = 0;
     my @branches = $workflow->branches($option{remote} ? 'remote' : $option{all} ? 'both' : undef );
+    my @excludes = @{ $option{exclude} };
     my ($total, $deleted) = (0, 0);
-    my $max = 0;
+
+    if ($option{exclude_file}) {
+        for my $exclude (file($option{exclude_file})->slurp) {
+            chomp $exclude;
+            next if !$exclude;
+            next if $exclude =~ /^\s*(?:[#].*)$/xms;
+            push @excludes, $exclude;
+        }
+    }
 
     BRANCH:
     for my $branch (@branches) {
         # skip master branches
         next BRANCH if $branch =~ m{^ (?:[^/]+/)? master $}xms;
+        next BRANCH if grep {$branch =~ /$_/} @excludes;
 
         # get branch details
         my $details = $workflow->commit_details($branch, branches => 1);
@@ -150,6 +164,12 @@ This documentation refers to git-branch-clean version 0.6
   -n --min-age[=]days
                 Leave branches this number of days or new alone even if merged
                 to master. (default 7 days)
+  -e --exclude[=]regex
+                Regular expression to exclude specific branches from deletion.
+                You can specify --exclude multiple times for more control.
+     --exclude-file[=]file
+                A file of exclude regular expressions, blank lines and lines
+                starting with a hash (#) are ignored.
   -t --tag      Create tags of the same name as the branch
   -p --tag-prefix[=]str
                 When converting a branch to a tag prepend it with "str"
