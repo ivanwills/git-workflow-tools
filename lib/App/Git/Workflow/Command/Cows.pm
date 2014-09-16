@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+package App::Git::Workflow::Command::Cows;
 
 # Created on: 2014-03-11 20:58:59
 # Create by:  Ivan Wills
@@ -8,9 +8,61 @@
 
 use strict;
 use warnings;
-use App::Git::Workflow::Command::Cows;
+use Getopt::Long;
+use Pod::Usage ();
+use Data::Dumper qw/Dumper/;
+use English qw/ -no_match_vars /;
 
-App::Git::Workflow::Command::Cows->run();
+our $VERSION = 0.6;
+my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
+
+my %option = (
+    verbose => 0,
+    man     => 0,
+    help    => 0,
+    VERSION => 0,
+);
+
+sub run {
+
+    Getopt::Long::Configure('bundling');
+    GetOptions(
+        \%option,
+        'quiet|q',
+        'verbose|v+',
+        'man',
+        'help',
+        'VERSION!',
+    ) or Pod::Usage::pod2usage(2);
+
+    if ( $option{'VERSION'} ) {
+        print "$name Version = $VERSION\n";
+        exit 1;
+    }
+    elsif ( $option{'man'} ) {
+        Pod::Usage::pod2usage( -verbose => 2 );
+    }
+    elsif ( $option{'help'} ) {
+        Pod::Usage::pod2usage( -verbose => 1 );
+    }
+
+    # do stuff here
+    my @files = map { /^#\s+modified:\s+(.*)\n/ }
+        grep { /^#\s+modified:\s+/ }
+        `git status`;
+
+    for my $file (@files) {
+        my $diff = `git diff --ignore-all-space $file`;
+        chomp $diff;
+
+        if ( !$diff ) {
+            warn "\t$file\n" unless $option{quiet};
+            system 'git', 'checkout', $file;
+        }
+    }
+
+    return;
+}
 
 __DATA__
 

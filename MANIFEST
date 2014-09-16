@@ -16,6 +16,7 @@ fatpack.pl
 hooks/commit-msg
 install.pl
 lib/App/Git/Workflow.pm
+lib/App/Git/Workflow/Command/Cows.pm
 lib/App/Git/Workflow/Pom.pm
 lib/App/Git/Workflow/Repository.pm
 LICENSE
