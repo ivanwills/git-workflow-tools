@@ -86,15 +86,21 @@ sub main {
         next BRANCH if grep {$branch =~ /$_/} @excludes;
 
         # get branch details
-        my $details = $workflow->commit_details($branch, branches => 1);
+        my $details = $workflow->commit_details($branch, branches => 0);
 
         # don't delete young branches even if merged
-        next BRANCH if $option{min_age} && $details->{time} > time - $option{min_age} * 60 * 60 * 24;
+        next BRANCH if too_young_to_die($details);
 
         $max = $details->{time} if $max < $details->{time};
+        my $too_old = too_old($details);
+        my $in_master;
 
-        if ( in_master($details) || too_old($details) ) {
-            warn "deleting branch $branch\n";
+        if (!$too_old) {
+            $in_master = in_master($details);
+        }
+
+        if ( $in_master || $too_old ) {
+            warn 'deleting ' . ($in_master ? 'merged' : 'old') . " branch $branch\n";
             $deleted++;
 
             my ($remote, $name) = $branch =~ m{/} ? split m{/}, $branch, 2 : (undef, $branch);
@@ -124,9 +130,11 @@ sub main {
 sub in_master {
     my ($details) = @_;
 
-    return 1 if $details->{branches}{master};
+    my %branches = map { $_ => 1 } $workflow->branches('both', $details->{sha});
 
-    for my $branch (keys %{ $details->{branches} }) {
+    return 1 if $branches{master} || $branches{'origin/master'};
+
+    for my $branch (keys %branches) {
         return 1 if $branch =~ m{^ (?:[^/]+/)? master$}xms;
     }
 
@@ -139,6 +147,14 @@ sub too_old {
     return if !$option{max_age};
 
     return time - $option{max_age} * 60 * 60 * 24 > $details->{time};
+}
+
+sub too_young_to_die {
+    my ($details) = @_;
+
+    return if !$option{min_age};
+
+    return time - $option{min_age} * 60 * 60 * 24 < $details->{time};
 }
 
 __DATA__
