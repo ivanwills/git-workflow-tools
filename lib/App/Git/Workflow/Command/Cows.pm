@@ -12,8 +12,10 @@ use Getopt::Long;
 use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
+use App::Git::Workflow;
 
 our $VERSION = 0.6;
+our $git     = App::Git::Workflow->new;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
@@ -37,7 +39,7 @@ sub run {
 
     if ( $option{'VERSION'} ) {
         print "$name Version = $VERSION\n";
-        exit 1;
+        return 1;
     }
     elsif ( $option{'man'} ) {
         Pod::Usage::pod2usage( -verbose => 2 );
@@ -49,15 +51,15 @@ sub run {
     # do stuff here
     my @files = map { /^#\s+modified:\s+(.*)\n/ }
         grep { /^#\s+modified:\s+/ }
-        `git status`;
+        $git->status;
 
     for my $file (@files) {
-        my $diff = `git diff --ignore-all-space $file`;
+        my $diff = $git->diff('--ignore-all-space', $file);
         chomp $diff;
 
         if ( !$diff ) {
             warn "\t$file\n" unless $option{quiet};
-            system 'git', 'checkout', $file;
+            $git->checkout($file);
         }
     }
 
