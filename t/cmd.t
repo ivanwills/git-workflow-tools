@@ -48,6 +48,15 @@ sub options {
             qr/Test/xms,
             { man => 1 },
         ],
+        [
+            # @ARGV
+            [qw/--unknown/],
+            # Mock Git
+            [],
+            # STDOUT
+            qr/\AUsage:\n     Stuff\n\n\Z/,
+            {},
+        ],
         #[
         #    # @ARGV
         #    [qw/--VERSION/],

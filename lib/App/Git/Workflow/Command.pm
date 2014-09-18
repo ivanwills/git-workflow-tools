@@ -28,6 +28,7 @@ sub get_options {
     Getopt::Long::Configure('bundling');
     GetOptions(
         $option,
+        @options,
         'verbose|v+',
         'man',
         'help',
