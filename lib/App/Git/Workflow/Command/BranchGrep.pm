@@ -1,4 +1,4 @@
-package App::Git::Workflow::Command::TagGrep;
+package App::Git::Workflow::Command::BranchGrep;
 
 # Created on: 2014-03-11 20:58:59
 # Create by:  Ivan Wills
@@ -20,13 +20,18 @@ our %option;
 sub run {
     get_options(
         \%option,
+        'remote|r',
+        'all|a',
         'insensitive|i',
     );
 
     $ARGV[0] ||= '';
+    my @options;
+    push @options, '-r' if $option{remote};
+    push @options, '-a' if $option{all};
     my $grep = $option{insensitive} ? "(?^i:$ARGV[0])" : $ARGV[0];
 
-    print join "\n", sort {_sorter()} grep {/$grep/} $workflow->git->tag;
+    print join "\n", sort {_sorter()} grep {/$grep/} $workflow->git->branch(@options);
     print "\n";
 }
 
@@ -45,29 +50,31 @@ __DATA__
 
 =head1 NAME
 
-git-tag-grep - grep tags
+git-branch-grep - grep for branch names
 
 =head1 VERSION
 
-This documentation refers to git-tag-grep version 0.6
+This documentation refers to git-branch-grep version 0.6
 
 =head1 SYNOPSIS
 
-   git-tag-grep [option] regex
+   git-branch-grep [--remote|-r|--all|-a] regex
 
  OPTIONS:
   regex         grep's perl (-P) regular expression
+  -r --remote   List all remote branches
+  -a --all      List all branches
 
   -v --verbose  Show more detailed option
      --VERSION  Prints the version information
      --help     Prints this help information
-     --man      Prints the full documentation for git-tag-grep
+     --man      Prints the full documentation for git-branch-grep
 
 =head1 DESCRIPTION
 
 Short hand for running
 
-C<git tag | grep -P 'regex'>
+C<git branch (-r|-a)? | grep -P 'regex'>
 
 =head1 SUBROUTINES/METHODS
 

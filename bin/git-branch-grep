@@ -8,79 +8,9 @@
 
 use strict;
 use warnings;
-use Getopt::Long;
-use Pod::Usage ();
-use Data::Dumper qw/Dumper/;
-use English qw/ -no_match_vars /;
+use App::Git::Workflow::Command::BranchGrep;
 
-our $VERSION = 0.6;
-my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
-
-my %option = (
-    verbose => 0,
-    man     => 0,
-    help    => 0,
-    VERSION => 0,
-);
-
-main();
-exit 0;
-
-sub main {
-
-    Getopt::Long::Configure('bundling');
-    GetOptions(
-        \%option,
-        'remote|r',
-        'all|a',
-        'sort|s',
-        'insensitive|i',
-        'context|C=i',
-        'before|B=i',
-        'after|A=i',
-        'verbose|v+',
-        'man',
-        'help',
-        'VERSION!',
-    ) or Pod::Usage::pod2usage(2);
-
-    if ( $option{'VERSION'} ) {
-        print "$name Version = $VERSION\n";
-        exit 1;
-    }
-    elsif ( $option{'man'} ) {
-        Pod::Usage::pod2usage( -verbose => 2 );
-    }
-    elsif ( $option{'help'} ) {
-        Pod::Usage::pod2usage( -verbose => 1 );
-    }
-
-    # do stuff here
-    my @options;
-    push @options, '-r' if $option{remote};
-    push @options, '-a' if $option{all};
-    my $cmd = join ' ', qw/git branch/, @options;
-    my @grep_options;
-    push @grep_options, '-i'                  if $option{insensitive};
-    push @grep_options, "-C $option{context}" if $option{context};
-    push @grep_options, "-B $option{before}"  if $option{before};
-    push @grep_options, "-A $option{after}"   if $option{after};
-    my $grep = join ' ', @grep_options;
-
-    print "$cmd | grep -P $grep '$ARGV[0]'\n" if $option{verbose} || $option{test};
-    return exec "$cmd | grep -P $grep '$ARGV[0]'" if !$option{sort};
-
-    print sort {sorter()} `$cmd | grep -P $grep '$ARGV[0]'`;
-}
-
-sub sorter {
-    no warnings;
-    my $A = $a;
-    my $B = $b;
-    $A =~ s/(\d+)/sprintf "%06d", $1/egxms;
-    $B =~ s/(\d+)/sprintf "%06d", $1/egxms;
-    $A cmp $B;
-}
+App::Git::Workflow::Command::BranchGrep->run();
 
 __DATA__
 
