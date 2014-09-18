@@ -8,9 +8,6 @@ package App::Git::Workflow::Command::TagGrep;
 
 use strict;
 use warnings;
-use Getopt::Long;
-use Pod::Usage ();
-use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use App::Git::Workflow;
 use App::Git::Workflow::Command qw/get_options/;
@@ -23,25 +20,14 @@ our %option;
 sub run {
     get_options(
         \%option,
-        'sort|s',
         'insensitive|i',
-        'context|C=i',
-        'before|B=i',
-        'after|A=i',
     );
 
     my $cmd = join ' ', qw/git tag/;
-    my @grep_options;
-    push @grep_options, '-i'                  if $option{insensitive};
-    push @grep_options, "-C $option{context}" if $option{context};
-    push @grep_options, "-B $option{before}"  if $option{before};
-    push @grep_options, "-A $option{after}"   if $option{after};
-    my $grep = join ' ', @grep_options;
+    my $grep = $option{insensitive} ? "(?^i:$ARGV[0])" : $ARGV[0] || '';
 
-    print "$cmd | grep -P $grep '$ARGV[0]'\n" if $option{verbose} || $option{test};
-    return exec "$cmd | grep -P $grep '$ARGV[0]' | sort -n" if !$option{sort};
-
-    print sort {_sorter()} `$cmd | grep -P $grep '$ARGV[0]'`;
+    print join "\n", sort {_sorter()} grep {/$grep/} $workflow->git->tag;
+    print "\n";
 }
 
 sub _sorter {
