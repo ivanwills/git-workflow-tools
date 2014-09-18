@@ -10,6 +10,7 @@ use_ok('App::Git::Workflow');
 use_ok('App::Git::Workflow::Pom');
 use_ok('App::Git::Workflow::Repository');
 use_ok('App::Git::Workflow::Command::Cows');
+use_ok('App::Git::Workflow::Command::TagGrep');
 my $perl = File::Spec->rel2abs($^X);
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-branch-clean"), "bin/git-branch-clean compiles");
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-branch-grep" ), "bin/git-branch-grep compiles" );

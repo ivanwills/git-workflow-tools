@@ -8,6 +8,8 @@ package App::Git::Workflow::Command::Cows;
 
 use strict;
 use warnings;
+use Getopt::Long;
+use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use App::Git::Workflow;

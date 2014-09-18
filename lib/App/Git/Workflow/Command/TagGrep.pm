@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+package App::Git::Workflow::Command::TagGrep;
 
 # Created on: 2014-03-11 20:58:59
 # Create by:  Ivan Wills
@@ -8,9 +8,52 @@
 
 use strict;
 use warnings;
-use App::Git::Workflow::Command::TagGrep;
+use Getopt::Long;
+use Pod::Usage ();
+use Data::Dumper qw/Dumper/;
+use English qw/ -no_match_vars /;
+use App::Git::Workflow;
+use App::Git::Workflow::Command qw/get_options/;
 
-App::Git::Workflow::Command::TagGrep->run();
+our $VERSION  = 0.6;
+our $workflow = App::Git::Workflow->new;
+our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
+our %option;
+
+sub run {
+    get_options(
+        \%option,
+        'sort|s',
+        'insensitive|i',
+        'context|C=i',
+        'before|B=i',
+        'after|A=i',
+    );
+
+    my $cmd = join ' ', qw/git tag/;
+    my @grep_options;
+    push @grep_options, '-i'                  if $option{insensitive};
+    push @grep_options, "-C $option{context}" if $option{context};
+    push @grep_options, "-B $option{before}"  if $option{before};
+    push @grep_options, "-A $option{after}"   if $option{after};
+    my $grep = join ' ', @grep_options;
+
+    print "$cmd | grep -P $grep '$ARGV[0]'\n" if $option{verbose} || $option{test};
+    return exec "$cmd | grep -P $grep '$ARGV[0]' | sort -n" if !$option{sort};
+
+    print sort {_sorter()} `$cmd | grep -P $grep '$ARGV[0]'`;
+}
+
+sub _sorter {
+    no warnings;
+    my $A = $a;
+    my $B = $b;
+    $A =~ s/(\d+)/sprintf "%06d", $1/egxms;
+    $B =~ s/(\d+)/sprintf "%06d", $1/egxms;
+    $A cmp $B;
+}
+
+1;
 
 __DATA__
 
@@ -41,6 +84,10 @@ Short hand for running
 C<git tag | grep -P 'regex'>
 
 =head1 SUBROUTINES/METHODS
+
+=head2 C<run ()>
+
+Executes the git workflow command
 
 =head1 DIAGNOSTICS
 
