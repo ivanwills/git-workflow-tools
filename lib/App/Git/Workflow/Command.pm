@@ -16,10 +16,14 @@ use base qw/Exporter/;
 
 our $VERSION   = 0.6;
 our @EXPORT_OK = qw/get_options/;
+our %p2u_extra;
 
 sub get_options {
     my ($option, @options) = @_;
     my ($caller_package) = caller;
+    $caller_package .= '.pm';
+    $caller_package =~ s{::}{/}g;
+    $caller_package = $INC{$caller_package};
 
     Getopt::Long::Configure('bundling');
     GetOptions(
@@ -31,22 +35,27 @@ sub get_options {
     ) or Pod::Usage::pod2usage(
         -verbose => 1,
         -input   => $caller_package,
+        %p2u_extra,
     );
 
     if ( $option->{'VERSION'} ) {
-        print "${caller_package}::name Version = $VERSION\n";
+        my $name = "${caller_package}::name";
+        no strict qw/refs/; ## no critic
+        print "${$name} Version = $VERSION\n";
         return 1;
     }
     elsif ( $option->{'man'} ) {
         Pod::Usage::pod2usage(
             -verbose => 2,
             -input   => $caller_package,
+            %p2u_extra,
         ),
     }
     elsif ( $option->{'help'} ) {
         Pod::Usage::pod2usage(
             -verbose => 1,
             -input   => $caller_package,
+            %p2u_extra,
         ),
     }
 
