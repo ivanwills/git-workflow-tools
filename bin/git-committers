@@ -8,93 +8,9 @@
 
 use strict;
 use warnings;
-use Getopt::Long;
-use Pod::Usage ();
-use Data::Dumper qw/Dumper/;
-use English qw/ -no_match_vars /;
-use Time::Piece;
+use App::Git::Workflow::Command::Committers;
 
-our $VERSION = 0.6;
-my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
-
-my %option = (
-    period  => 'day',
-    verbose => 0,
-    man     => 0,
-    help    => 0,
-    VERSION => 0,
-);
-
-main();
-exit 0;
-
-sub main {
-
-    Getopt::Long::Configure('bundling');
-    GetOptions(
-        \%option,
-        'date|d=s',
-        'period|p=s',
-        'merges|m!',
-        'verbose|v+',
-        'man',
-        'help',
-        'VERSION!',
-    ) or Pod::Usage::pod2usage(2);
-
-    if ( $option{'VERSION'} ) {
-        print "$name Version = $VERSION\n";
-        exit 1;
-    }
-    elsif ( $option{'man'} ) {
-        Pod::Usage::pod2usage( -verbose => 2 );
-    }
-    elsif ( $option{'help'} ) {
-        Pod::Usage::pod2usage( -verbose => 1 );
-    }
-
-    # do stuff here
-    my %users;
-    my $commits = 0;
-    my $date = $option{date};
-
-    if (!$date) {
-        my $now = localtime;
-        my $period
-            = $option{period} eq 'day'   ? 1
-            : $option{period} eq 'week'  ? 7
-            : $option{period} eq 'month' ? 30
-            : $option{period} eq 'year'  ? 365
-            :                              1;
-        $date
-            = $now->wday == 1 ? localtime(time - 3 * $period * 24 * 60 * 60)->ymd
-            : $now->wday == 7 ? localtime(time - 2 * $period * 24 * 60 * 60)->ymd
-            :                   localtime(time - 1 * $period * 24 * 60 * 60)->ymd;
-    }
-
-    open my $branches, '-|', 'git branch -r' or die "Can't read branches: $!\n";
-    my $merges = $option{merges} ? '' : '--no-merges';
-
-    while (my $branch = <$branches>) {
-        warn qq{git log --format=format:"%h %an" $merges --since=$date $branch} if $option{verbose};
-        chomp $branch;
-        open my $logs, '-|', qq{git log --format=format:"%h %an" $merges --since=$date $branch} or die "Can't read logs: $!\n";
-        while (my $log = <$logs>) {
-            chomp $log;
-            my ($hash, $name) = split /\s/, $log, 2;
-            $users{$name}{$hash} = 1;
-            $commits++;
-        }
-    }
-
-    print map {sprintf "% 4d $_\n", $users{$_}}
-        reverse sort {$users{$a} <=> $users{$b}}
-        map { $users{$_} = scalar keys %{$users{$_}}; $_ }
-        keys %users;
-    print "Total commits = $commits\n";
-
-    return;
-}
+App::Git::Workflow::Command::Committers->run();
 
 __DATA__
 

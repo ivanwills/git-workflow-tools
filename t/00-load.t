@@ -10,6 +10,7 @@ use_ok('App::Git::Workflow');
 use_ok('App::Git::Workflow::Pom');
 use_ok('App::Git::Workflow::Repository');
 use_ok('App::Git::Workflow::Command::Cows');
+use_ok('App::Git::Workflow::Command::Committers');
 use_ok('App::Git::Workflow::Command::TagGrep');
 use_ok('App::Git::Workflow::Command::BranchGrep');
 my $perl = File::Spec->rel2abs($^X);
