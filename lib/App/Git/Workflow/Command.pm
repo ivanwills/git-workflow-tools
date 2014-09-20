@@ -37,30 +37,32 @@ sub get_options {
         -verbose => 1,
         -input   => $caller_package,
         %p2u_extra,
-    );
+    ) and return;
 
     if ( $option->{'VERSION'} ) {
         my $name = "${caller_package}::name";
         no strict qw/refs/; ## no critic
         print "${$name} Version = $VERSION\n";
-        return 1;
+        return;
     }
     elsif ( $option->{'man'} ) {
         Pod::Usage::pod2usage(
             -verbose => 2,
             -input   => $caller_package,
             %p2u_extra,
-        ),
+        );
+        return;
     }
     elsif ( $option->{'help'} ) {
         Pod::Usage::pod2usage(
             -verbose => 1,
             -input   => $caller_package,
             %p2u_extra,
-        ),
+        );
+        return;
     }
 
-    return;
+    return 1;
 }
 
 1;

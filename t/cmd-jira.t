@@ -33,6 +33,20 @@ sub run {
             qr/\ANo \s JIRA \s specified!\n/xms,
             {help => 1},
         ],
+        [
+            # @ARGV
+            [qw/ABC-123/],
+            # Mock Git
+            [
+                [map {"  $_"} qw/master abc_123/],
+                [map {"  $_"} qw{origin/master origin/abc_123}],
+            ],
+            # STDOUT
+            qr//,
+            # STDERR
+            qr//xms,
+            {},
+        ],
     );
 
     for my $data (@data) {
