@@ -151,6 +151,20 @@ sub run {
             option => {},
             name   => 'Find local branches (choose 2)',
         },
+        {
+            ARGV => [qw/ABC-123/],
+            mock => [
+                [map {"  $_"} qw/master abc_123 abc_123_v2/],
+                undef,
+            ],
+            STD => {
+                OUT => qr/^$/,
+                ERR => qr/^Unknown \s branch!$/xms,
+                IN  => "3\n",
+            },
+            option => {},
+            name   => 'Find local branches (choose 2)',
+        },
     );
 
     for my $data (@data) {

@@ -95,7 +95,10 @@ sub which_branch {
     my $ans = <STDIN>;
     chomp $ans;
     $ans--;
-    die "Bad answer!\n" if !$branches[$ans];
+    if (!$branches[$ans]) {
+        warn "\nUnknown branch!\n";
+        return undef;
+    }
 
     return $branches[$ans];
 }
