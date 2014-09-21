@@ -24,9 +24,7 @@ sub run {
     }
     get_options(
         \%option,
-        'all|a',
         'list|l',
-        'remote|r',
         'quiet|q!',
         'url|u=s',
         'user|U=s',
@@ -40,9 +38,11 @@ sub run {
     # check local branches first
     my @branch = grep {/^(\w+_)?$jira_re(?:\D|$)/} $workflow->branches();
 
-    if (@branch && !$option{remote}) {
+    if (@branch) {
         my $branch = which_branch(@branch);
+        return if !defined $branch;
         $workflow->git->checkout($branch);
+        print "Switched to branch '$branch'\n" if !$option{quiet};
     }
     else {
         # check if there is a remote branch
@@ -52,6 +52,7 @@ sub run {
             my $branch = $remote_branch;
             $branch =~ s{^origin/}{};
             $workflow->git->checkout('-b', $branch, '--track', $remote_branch);
+            print "Switched to branch '$branch'\n" if !$option{quiet};
         }
         elsif (!$option{quiet}) {
             if ( $option{url} && eval { require JIRA::REST } ) {
@@ -83,7 +84,7 @@ sub which_branch {
 
     if ($option{list}) {
         print +( join "\n", @branches ), "\n";
-        exit 0;
+        return undef;
     }
     return $branches[0] if @branches == 1;
 
@@ -117,10 +118,10 @@ This documentation refers to git-jira version 0.6
 
  OPTIONS:
   JIRAID        A Jira format id
-  -r --remote   Look in remote branches for the Jira branch
-  -a --all      Look everywhere?
   -u --url[=]URL
                 Use URL as the JIRA instance for looking up summaries.
+  -l --list     Just list found branch(es) don't checkout
+  -q --quiet    Don't inform how to create missing branch
 
   -v --verbose  Show more detailed option
      --VERSION  Prints the version information
