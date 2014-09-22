@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 22 + 1;
+use Test::More tests => 23 + 1;
 use Test::NoWarnings;
 
 sub not_in_file_ok {
@@ -76,5 +76,6 @@ module_boilerplate_ok('lib/App/Git/Workflow/Repository.pm');
 module_boilerplate_ok('lib/App/Git/Workflow/Command/Cows.pm');
 module_boilerplate_ok('lib/App/Git/Workflow/Command/Committers.pm');
 module_boilerplate_ok('lib/App/Git/Workflow/Command/BranchGrep.pm');
+module_boilerplate_ok('lib/App/Git/Workflow/Command/BranchClean.pm');
 module_boilerplate_ok('lib/App/Git/Workflow/Command/Jira.pm');
 module_boilerplate_ok('lib/App/Git/Workflow/Command/TagGrep.pm');

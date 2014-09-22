@@ -17,6 +17,7 @@ hooks/commit-msg
 install.pl
 lib/App/Git/Workflow.pm
 lib/App/Git/Workflow/Command.pm
+lib/App/Git/Workflow/Command/BranchClean.pm
 lib/App/Git/Workflow/Command/BranchGrep.pm
 lib/App/Git/Workflow/Command/Committers.pm
 lib/App/Git/Workflow/Command/Cows.pm
@@ -32,6 +33,7 @@ META.yml
 README
 t/00-load.t
 t/boilerplate.t
+t/cmd-branch-clean.t
 t/cmd-branch-grep.t
 t/cmd-committers.t
 t/cmd-cows.t
