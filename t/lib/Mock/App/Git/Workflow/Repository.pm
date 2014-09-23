@@ -51,7 +51,10 @@ sub AUTOLOAD {
     $called =~ s/_/-/g;
 
     my $cmd = "git $called " . (join ' ', @_);
-    confess "No data setup for `$cmd`\n\t" if !@{ $self->{data} };
+    if ( !@{ $self->{data} } ) {
+        confess "No data setup for `$cmd`\n\t# ".(join "\n\t# ", @{ $self->{ran} })."\n\t";
+    }
+    push @{ $self->{ran} }, $cmd;
 
     my $return = shift @{ $self->{data} };
     if (wantarray) {

@@ -24,7 +24,7 @@ our @EXPORT_OK   = qw/command_ok/;
 our %EXPORT_TAGS = ();
 our $workflow    = 'App::Git::Workflow';
 
-my $git = Mock::App::Git::Workflow::Repository->git;
+our $git = Mock::App::Git::Workflow::Repository->git;
 %App::Git::Workflow::Command::p2u_extra = ( -exitval => 'NOEXIT', );
 
 sub command_ok ($$) {  ## no critic
@@ -33,8 +33,13 @@ sub command_ok ($$) {  ## no critic
         no strict qw/refs/;  ## no critic
 
         # initialise
+        $git->{ran} = [];
         %{"${module}::option"} = ();
         ${"${module}::workflow"} = $workflow->new(git => $git);
+        if ($data->{workflow}) {
+            ${"${module}::workflow"}->{$_} = $data->{workflow}{$_} for keys %{ $data->{workflow} };
+        }
+
         local @ARGV = @{ $data->{ARGV} };
         local %ENV = %ENV;
         if ($data->{ENV}) {
