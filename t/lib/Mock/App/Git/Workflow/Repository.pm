@@ -23,6 +23,7 @@ sub new {
     my $class = shift;
     my %param = @_;
     my $self  = \%param;
+    $self->{data} = [];
 
     bless $self, $class;
 
@@ -33,27 +34,26 @@ sub git {
     return $git || __PACKAGE__->new;
 }
 
-our @data;
-
 sub mock_add {
     my $self = shift;
-    push @data, @_;
+    push @{ $self->{data} }, @_;
 }
 sub mock_reset {
-    @data = ();
+    my $self = shift;
+    @{ $self->{data} } = ();
 }
 
 our $AUTOLOAD;
 sub AUTOLOAD {
-    shift;
+    my $self = shift;
     my $called =  $AUTOLOAD;
     $called =~ s/.*:://;
     $called =~ s/_/-/g;
 
     my $cmd = "git $called " . (join ' ', @_);
-    confess "No data setup for `$cmd`\n\t" if !@data;
+    confess "No data setup for `$cmd`\n\t" if !@{ $self->{data} };
 
-    my $return = shift @data;
+    my $return = shift @{ $self->{data} };
     if (wantarray) {
         #cluck "Returning Mock for `$cmd`\n" . Dumper($return), "\t";
         return @$return;

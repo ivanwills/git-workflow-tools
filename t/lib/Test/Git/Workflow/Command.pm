@@ -56,6 +56,8 @@ sub command_ok ($$) {  ## no critic
             or diag Dumper $stderr, $data->{STD}{ERR};
         is_deeply \%{"${module}::option"}, $data->{option}, 'Options set correctly'
             or diag Dumper \%{"${module}::option"}, $data->{option};
+        ok !@{ $git->{data} }, "All data setup is used"
+            or diag Dumper $git->{data};
     };
 }
 
