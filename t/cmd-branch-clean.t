@@ -40,6 +40,7 @@ sub run {
         {
             ARGV => [qw{--unknown}],
             mock => [
+                undef,
             ],
             STD => {
                 OUT => qr//,

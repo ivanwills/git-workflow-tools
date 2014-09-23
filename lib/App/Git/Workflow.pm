@@ -117,9 +117,7 @@ sub current {
 
 sub config {
     my ($self, $name, $default) = @_;
-    local $SIG{__WARN__} = sub {};
-    my $value = eval { $self->git->config($name) };
-    chomp $value;
+    my $value = $self->git->config($name);
 
     return $value || $default;
 }
