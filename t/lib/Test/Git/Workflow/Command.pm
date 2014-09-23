@@ -52,21 +52,21 @@ sub command_ok ($$) {  ## no critic
         ## Tests
         # STDOUT
         if ( !ref $data->{STD}{OUT} ) {
-            is $stdout, $data->{STD}{OUT}, "STDOUT Ran $data->{name} \"git branch-clean " . (join ' ', @{ $data->{ARGV} }) .'"'
+            is $stdout, $data->{STD}{OUT}, "STDOUT $data->{name} run"
                 or diag Dumper $stdout, $data->{STD}{OUT};
         }
         elsif ( ref $data->{STD}{OUT} eq 'Regexp' ) {
-            like $stdout, $data->{STD}{OUT}, "STDOUT Ran $data->{name} \"git branch-clean " . (join ' ', @{ $data->{ARGV} }) .'"'
+            like $stdout, $data->{STD}{OUT}, "STDOUT $data->{name} run"
                 or diag Dumper $stdout, $data->{STD}{OUT};
         }
 
         # STDERR
-        if ( !ref $data->{STD}{OUT} ) {
-            is $stderr, $data->{STD}{ERR}, "STDERR Ran $data->{name} \"git branch-clean " . (join ' ', @{ $data->{ARGV} }) .'"'
+        if ( !ref $data->{STD}{ERR} ) {
+            is $stderr, $data->{STD}{ERR}, "STDERR $data->{name} run"
                 or diag Dumper $stderr, $data->{STD}{ERR};
         }
-        elsif ( ref $data->{STD}{OUT} eq 'Regexp' ) {
-            like $stderr, $data->{STD}{ERR}, "STDERR Ran $data->{name} \"git branch-clean " . (join ' ', @{ $data->{ARGV} }) .'"'
+        elsif ( ref $data->{STD}{ERR} eq 'Regexp' ) {
+            like $stderr, $data->{STD}{ERR}, "STDERR $data->{name} run"
                 or diag Dumper $stderr, $data->{STD}{ERR};
         }
 
