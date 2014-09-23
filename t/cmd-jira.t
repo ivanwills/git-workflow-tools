@@ -1,19 +1,13 @@
 #!/usr/bin/perl
 
-BEGIN { $ENV{TESTING} = 1 }
-
 use strict;
 use warnings;
 use Test::More;
-use Data::Dumper qw/Dumper/;
-use Capture::Tiny qw/capture/;
 use App::Git::Workflow::Command::Jira;
 use lib 't/lib';
-use Mock::App::Git::Workflow::Repository;
+use Test::Git::Workflow::Command;
 
 our $name = 'test';
-my $git = Mock::App::Git::Workflow::Repository->git;
-%App::Git::Workflow::Command::p2u_extra = ( -exitval => 'NOEXIT', );
 
 run();
 done_testing();
@@ -155,7 +149,6 @@ sub run {
             ARGV => [qw/ABC-123/],
             mock => [
                 [map {"  $_"} qw/master abc_123 abc_123_v2/],
-                undef,
             ],
             STD => {
                 OUT => qr/^$/,
@@ -168,20 +161,6 @@ sub run {
     );
 
     for my $data (@data) {
-        %App::Git::Workflow::Command::Jira::option = ();
-        $App::Git::Workflow::Command::Jira::workflow = App::Git::Workflow::Pom->new(git => $git);
-        @ARGV = @{ $data->{ARGV} };
-        $git->mock_reset();
-        $git->mock_add(@{ $data->{mock} });
-        my $stdin;
-        $data->{STD}{IN} ||= '';
-        open $stdin, '<', \$data->{STD}{IN};
-        my ($stdout, $stderr) = capture { local *STDIN = $stdin; App::Git::Workflow::Command::Jira->run() };
-        like $stdout, $data->{STD}{OUT}, "STDOUT Ran $data->{name} \"git jira " . (join ' ', @{ $data->{ARGV} }) .'"'
-            or diag Dumper $stdout, $data->{STD}{OUT};
-        like $stderr, $data->{STD}{ERR}, "STDERR Ran $data->{name} \"git jira " . (join ' ', @{ $data->{ARGV} }) .'"'
-            or diag Dumper $stderr, $data->{STD}{ERR};
-        is_deeply \%App::Git::Workflow::Command::Jira::option, $data->{option}, 'Options set correctly'
-            or diag Dumper \%App::Git::Workflow::Command::Jira::option, $data->{option};
+        command_ok('App::Git::Workflow::Command::Jira', $data);
     }
 }
