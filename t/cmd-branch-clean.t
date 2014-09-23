@@ -3,15 +3,11 @@
 use strict;
 use warnings;
 use Test::More;
-use Data::Dumper qw/Dumper/;
-use Capture::Tiny qw/capture/;
 use App::Git::Workflow::Command::BranchClean;
 use lib 't/lib';
-use Mock::App::Git::Workflow::Repository;
+use Test::Git::Workflow::Command;
 
 our $name = 'test';
-my $git = Mock::App::Git::Workflow::Repository->git;
-%App::Git::Workflow::Command::p2u_extra = ( -exitval => 'NOEXIT', );
 
 run();
 done_testing();
@@ -55,7 +51,7 @@ sub run {
                 tag_prefix => '',
                 tag_suffix => '',
             },
-            name   => 'default',
+            name   => 'unknown argument',
         },
         {
             ARGV => [qw{--remote}],
@@ -79,7 +75,7 @@ sub run {
                 tag_suffix => '',
                 remote     => 1,
             },
-            name   => 'default',
+            name   => 'delete remote branches',
         },
         {
             ARGV => [qw{--all --min-age 10 --max-age 30}],
@@ -104,7 +100,7 @@ sub run {
                 tag_suffix => '',
                 all        => 1,
             },
-            name   => 'default',
+            name   => 'delete only very old or old merged branches',
         },
         {
             ARGV => [qw{--all --min-age 10 --max-age 0}],
@@ -131,7 +127,7 @@ sub run {
                 tag_suffix => '',
                 all        => 1,
             },
-            name   => 'default',
+            name   => 'delete only old and merged branches',
         },
         {
             ARGV => [qw{--exclude-file t/data/excludes.txt}],
@@ -153,7 +149,7 @@ sub run {
                 tag_suffix => '',
                 exclude_file => 't/data/excludes.txt',
             },
-            name   => 'default',
+            name   => 'don\'t deleete excluded branches',
         },
         {
             ARGV => [qw{--tag}],
@@ -176,19 +172,21 @@ sub run {
                 tag_suffix => '',
                 tag        => 1,
             },
-            name   => 'default',
+            name   => 'tag deleted branches',
         },
         {
             ARGV => [qw{--tag --test}],
             mock => [
                 undef,
-                [map {"  $_"} qw{master feature}],
+                [map {"  $_"} qw{master feature project_master}],
                 [(time - 60*60*24*50) . ' 1111111111111111111111111111111111111111'],
-                [map {"  $_"} qw{master}],
+                [map {"  $_"} qw{feature project_master}],
+                [(time - 60*60*24*5) . ' 2222222222222222222222222222222222222222'],
+                [map {"  $_"} qw{project_master}],
             ],
             STD => {
                 OUT => qr//,
-                ERR => qr/Deleted \s 1 \s of \s 1 \s branches/xms,
+                ERR => qr/Deleted \s 0 \s of \s 2 \s branches/xms,
             },
             option => {
                 exclude => [],
@@ -198,29 +196,11 @@ sub run {
                 tag        => 1,
                 test       => 1,
             },
-            name   => 'default',
+            name   => 'test deleting with out deleting anything',
         },
     );
 
     for my $data (@data) {
-        %App::Git::Workflow::Command::BranchClean::option = ();
-        $App::Git::Workflow::Command::BranchClean::workflow = App::Git::Workflow->new(git => $git);
-        @ARGV = @{ $data->{ARGV} };
-        local %ENV = %ENV;
-        if ($data->{ENV}) {
-            $ENV{$_} = $data->{ENV}{$_} for keys %{ $data->{ENV} };
-        }
-        $git->mock_reset();
-        $git->mock_add(@{ $data->{mock} });
-        my $stdin;
-        $data->{STD}{IN} ||= '';
-        open $stdin, '<', \$data->{STD}{IN};
-        my ($stdout, $stderr) = capture { local *STDIN = $stdin; App::Git::Workflow::Command::BranchClean->run() };
-        like $stdout, $data->{STD}{OUT}, "STDOUT Ran $data->{name} \"git branch-clean " . (join ' ', @{ $data->{ARGV} }) .'"'
-            or diag Dumper $stdout, $data->{STD}{OUT};
-        like $stderr, $data->{STD}{ERR}, "STDERR Ran $data->{name} \"git branch-clean " . (join ' ', @{ $data->{ARGV} }) .'"'
-            or diag Dumper $stderr, $data->{STD}{ERR};
-        is_deeply \%App::Git::Workflow::Command::BranchClean::option, $data->{option}, 'Options set correctly'
-            or diag Dumper \%App::Git::Workflow::Command::BranchClean::option, $data->{option};
+        command_ok('App::Git::Workflow::Command::BranchClean', $data);
     }
 }

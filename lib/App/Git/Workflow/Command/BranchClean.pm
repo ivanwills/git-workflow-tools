@@ -106,13 +106,7 @@ sub in_master {
 
     my %branches = map { $_ => 1 } $workflow->branches('both', $details->{sha});
 
-    return 1 if $branches{master} || $branches{'origin/master'};
-
-    for my $branch (keys %branches) {
-        return 1 if $branch =~ m{^ (?:[^/]+/)? master$}xms;
-    }
-
-    return;
+    return $branches{master} || $branches{'origin/master'};
 }
 
 sub too_old {
