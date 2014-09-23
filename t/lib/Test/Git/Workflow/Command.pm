@@ -49,11 +49,27 @@ sub command_ok ($$) {  ## no critic
         # run the code
         my ($stdout, $stderr) = capture { local *STDIN = $stdin; $module->run() };
 
-        # test
-        like $stdout, $data->{STD}{OUT}, "STDOUT Ran $data->{name} \"git branch-clean " . (join ' ', @{ $data->{ARGV} }) .'"'
-            or diag Dumper $stdout, $data->{STD}{OUT};
-        like $stderr, $data->{STD}{ERR}, "STDERR Ran $data->{name} \"git branch-clean " . (join ' ', @{ $data->{ARGV} }) .'"'
-            or diag Dumper $stderr, $data->{STD}{ERR};
+        ## Tests
+        # STDOUT
+        if ( !ref $data->{STD}{OUT} ) {
+            is $stdout, $data->{STD}{OUT}, "STDOUT Ran $data->{name} \"git branch-clean " . (join ' ', @{ $data->{ARGV} }) .'"'
+                or diag Dumper $stdout, $data->{STD}{OUT};
+        }
+        elsif ( ref $data->{STD}{OUT} eq 'Regexp' ) {
+            like $stdout, $data->{STD}{OUT}, "STDOUT Ran $data->{name} \"git branch-clean " . (join ' ', @{ $data->{ARGV} }) .'"'
+                or diag Dumper $stdout, $data->{STD}{OUT};
+        }
+
+        # STDERR
+        if ( !ref $data->{STD}{OUT} ) {
+            is $stderr, $data->{STD}{ERR}, "STDERR Ran $data->{name} \"git branch-clean " . (join ' ', @{ $data->{ARGV} }) .'"'
+                or diag Dumper $stderr, $data->{STD}{ERR};
+        }
+        elsif ( ref $data->{STD}{OUT} eq 'Regexp' ) {
+            like $stderr, $data->{STD}{ERR}, "STDERR Ran $data->{name} \"git branch-clean " . (join ' ', @{ $data->{ARGV} }) .'"'
+                or diag Dumper $stderr, $data->{STD}{ERR};
+        }
+
         is_deeply \%{"${module}::option"}, $data->{option}, 'Options set correctly'
             or diag Dumper \%{"${module}::option"}, $data->{option};
         ok !@{ $git->{data} }, "All data setup is used"
