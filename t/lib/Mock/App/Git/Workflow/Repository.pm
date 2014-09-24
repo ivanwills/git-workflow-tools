@@ -52,7 +52,7 @@ sub AUTOLOAD {
 
     my $cmd = "git $called " . (join ' ', @_);
     if ( !@{ $self->{data} } ) {
-        confess "No data setup for `$cmd`\n\t# ".(join "\n\t# ", @{ $self->{ran} })."\n\t";
+        confess "No data setup for `$cmd`\n\t# ".(join "\n\t# ", reverse @{ $self->{ran} })."\n\t";
     }
     push @{ $self->{ran} }, $cmd;
 
