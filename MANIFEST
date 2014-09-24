@@ -25,6 +25,7 @@ lib/App/Git/Workflow/Command/Feature.pm
 lib/App/Git/Workflow/Command/Files.pm
 lib/App/Git/Workflow/Command/Jira.pm
 lib/App/Git/Workflow/Command/TagGrep.pm
+lib/App/Git/Workflow/Command/Watch.pm
 lib/App/Git/Workflow/Pom.pm
 lib/App/Git/Workflow/Repository.pm
 LICENSE
@@ -43,6 +44,7 @@ t/cmd-feature.t
 t/cmd-files.t
 t/cmd-jira.t
 t/cmd-tag-grep.t
+t/cmd-watch.t
 t/cmd.t
 t/critic.t
 t/data/bad-pom.xml

@@ -17,6 +17,7 @@ use_ok('App::Git::Workflow::Command::Feature');
 use_ok('App::Git::Workflow::Command::Files');
 use_ok('App::Git::Workflow::Command::Jira');
 use_ok('App::Git::Workflow::Command::TagGrep');
+use_ok('App::Git::Workflow::Command::Watch');
 my $perl = File::Spec->rel2abs($^X);
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-branch-clean"), "bin/git-branch-clean compiles");
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-branch-grep" ), "bin/git-branch-grep compiles" );

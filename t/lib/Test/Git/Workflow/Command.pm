@@ -57,7 +57,7 @@ sub command_ok ($$) {  ## no critic
 
         ## Tests
         if ($error) {
-            die $error if !$data->{error};
+            die $error, $stderr if !$data->{error};
             is $error, $data->{error}, "Error matches"
                 or diag Dumper $error, $data->{error};
         }
