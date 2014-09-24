@@ -13,6 +13,7 @@ use_ok('App::Git::Workflow::Command::BranchClean');
 use_ok('App::Git::Workflow::Command::BranchGrep');
 use_ok('App::Git::Workflow::Command::Committers');
 use_ok('App::Git::Workflow::Command::Cows');
+use_ok('App::Git::Workflow::Command::Feature');
 use_ok('App::Git::Workflow::Command::Files');
 use_ok('App::Git::Workflow::Command::Jira');
 use_ok('App::Git::Workflow::Command::TagGrep');

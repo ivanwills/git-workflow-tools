@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+package App::Git::Workflow::Command::Feature;
 
 # Created on: 2014-03-11 21:17:31
 # Create by:  Ivan Wills
@@ -8,9 +8,96 @@
 
 use strict;
 use warnings;
-use App::Git::Workflow::Command::Feature;
+use English qw/ -no_match_vars /;
+use App::Git::Workflow::Pom;
+use App::Git::Workflow::Command qw/get_options/;
 
-App::Git::Workflow::Command::Feature->run();
+our $VERSION  = 0.6;
+our $workflow = App::Git::Workflow::Pom->new;
+our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
+our %option;
+
+sub run {
+    %option = (
+        pom     => $workflow->config('workflow.pom') || 'pom.xml',
+        local   => $workflow->config('workflow.pom-local'),
+        fetch   => 1,
+        url     => $workflow->config('jira.url'),
+    );
+    get_options(
+        \%option,
+        'tag|t=s',
+        'branch|b=s',
+        'local|l!',
+        'pom|x=s',
+        'url|u=s',
+        'user|U=s',
+        'pass|password|P=s',
+        'jira|j=s',
+        'fetch|f!',
+        'new_pom|new-pom|n!',
+        'push|p',
+        'test|t',
+    ) or return;
+
+    # do stuff here
+    $workflow->{VERBOSE} = $option{verbose};
+    $workflow->{TEST   } = $option{test};
+
+    my ($feature_branch) = @ARGV ? shift @ARGV : jira();
+    my ($type, $regex);
+    if ($option{tag}) {
+        $type = 'tag';
+        $regex = $option{tag};
+    }
+    elsif ($option{branch}) {
+        $type = 'branch';
+        $regex = $option{branch};
+    }
+    else {
+        my $default = $workflow->config('workflow.prod');
+        my $prod
+            = $default       ? $default
+            : $option{local} ? 'branch=^master$'
+            :                  'branch=^origin/master$';
+        ($type, $regex) = split /\s*=\s*/, $prod;
+    }
+
+    $workflow->git->fetch() if $option{fetch};
+    my $release = $workflow->release($type, $option{local}, $regex);
+
+    # checkout branch
+    print "Created $feature_branch\n" if $option{verbose};
+    $workflow->git->checkout( '-b', $feature_branch, '--no-track', $release );
+
+    if ($option{new_pom}) {
+        my $version = $workflow->next_pom_version($option{pom});
+
+        $workflow->runner(qw/mvn versions:set/, "–DnewVersion=$version");
+    }
+
+    # push if requested to
+    if ($option{push}) {
+        $workflow->git->push( qw/-u origin/, $feature_branch );
+    }
+
+    return;
+}
+
+sub jira {
+    die "No JIRA specified!\n"     if !$option{jira};
+    die "No JIRA url specified!\n" if !$option{url};
+    require JIRA::REST;
+
+    my $jira_rest = JIRA::REST->new($option{url}, $option{user}, $option{pass});
+    my $issue     = $jira_rest->GET("/issue/$option{jira}");
+    my $branch    = lc "$option{jira} $issue->{fields}{summary}";
+    $branch =~ s/[ !?-]+/_/gxms;
+
+    return $branch;
+}
+
+1;
 
 __DATA__
 
@@ -72,6 +159,14 @@ default before branching to further ensure the latest version of code is
 available.
 
 =head1 SUBROUTINES/METHODS
+
+=head2 C<run ()>
+
+Executes the git workflow command
+
+=head2 C<jira ()>
+
+Create a branch name form the JIRA summary
 
 =head1 DIAGNOSTICS
 
