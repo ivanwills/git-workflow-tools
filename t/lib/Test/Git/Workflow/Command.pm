@@ -52,9 +52,16 @@ sub command_ok ($$) {  ## no critic
         open $stdin, '<', \$data->{STD}{IN};
 
         # run the code
-        my ($stdout, $stderr) = capture { local *STDIN = $stdin; $module->run() };
+        my $error;
+        my ($stdout, $stderr) = capture { local *STDIN = $stdin; eval { $module->run() }; $error = $@; };
 
         ## Tests
+        if ($error) {
+            die $error if !$data->{error};
+            is $error, $data->{error}, "Error matches"
+                or diag Dumper $error, $data->{error};
+        }
+
         # STDOUT
         if ( !ref $data->{STD}{OUT} ) {
             is $stdout, $data->{STD}{OUT}, "STDOUT $data->{name} run"
