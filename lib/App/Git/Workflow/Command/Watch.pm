@@ -50,7 +50,7 @@ sub run {
         my ($id, @rest) = git_state();
         print {*STDERR} '.' if $option{verbose};
 
-        if ( !$last || $last ne $id ) {
+        if ( $last ne $id ) {
             $once++;
             my $changes = changes($last, $id, @rest);
 

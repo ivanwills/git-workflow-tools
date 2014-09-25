@@ -274,8 +274,9 @@ STDOUT
             name   => 'Default',
         },
         {
-            ARGV => [qw{echo --once --sleep 0}],
+            ARGV => [qw{echo --once --sleep 0 --pull}],
             mock => [
+                undef,
                 [
                     '9999999 Message9',
                     '8888888 Message8',
@@ -288,6 +289,7 @@ STDOUT
                     '1111111 Message1',
                     '0000000 Message0',
                 ],
+                undef,
                 [
                     'aaaaaaa Message10',
                     '9999999 Message9',
@@ -325,11 +327,12 @@ SHOW
                 sleep    => 0,
                 pull_cmd => 'pull',
                 once     => 1,
+                pull     => 1,
             },
             name   => 'Default',
         },
         {
-            ARGV => [qw{--remote --once --sleep 0}],
+            ARGV => [qw{--remote --once --sleep 0 --file 3 --branch other}],
             mock => [
                 undef,
                 [
@@ -341,6 +344,7 @@ SHOW
                 ],
                 undef,
                 [
+                    '6666666666666666666666666666666666666666',
                     '5555555555555555555555555555555555555555',
                     '4444444444444444444444444444444444444444',
                     '3333333333333333333333333333333333333333',
@@ -348,6 +352,19 @@ SHOW
                     '1111111111111111111111111111111111111111',
                     '0000000000000000000000000000000000000000',
                 ],
+                [time . ' 6666666666666666666666666666666666666666'],
+                [map {"  $_"} qw/master other/],
+                <<'SHOW',
+commit 6666666666666666666666666666666666666666
+Author: Some One <some.one@example.com>
+Date:   Wed Sep 24 18:17:18 2014 +1000
+
+    Message10
+
+M   file3
+SHOW
+                ['Some One'],
+                ['some.one@example.com'],
                 [time . ' 5555555555555555555555555555555555555555'],
                 ["  master"],
                 <<'SHOW',
@@ -365,10 +382,10 @@ SHOW
             ],
             STD => {
                 OUT => <<'STDOUT',
-5555555555555555555555555555555555555555
-  Branches: master
-  Files:    file1, file2
-  Users:    Ivan Wills
+6666666666666666666666666666666666666666
+  Branches: master, other
+  Files:    file1, file2, file3
+  Users:    Ivan Wills, Some One
 
 STDOUT
                 ERR => '',
@@ -378,7 +395,206 @@ STDOUT
                 sleep    => 0,
                 pull_cmd => 'pull',
                 once     => 1,
-                remote    => 1,
+                remote   => 1,
+                file     => 3,
+                branch   => 'other'
+            },
+            name   => 'Default',
+        },
+        {
+            ARGV => [qw{--remote --once --sleep 0 --branch other}],
+            mock => [
+                undef,
+                [
+                    '4444444444444444444444444444444444444444',
+                    '3333333333333333333333333333333333333333',
+                    '2222222222222222222222222222222222222222',
+                    '1111111111111111111111111111111111111111',
+                    '0000000000000000000000000000000000000000',
+                ],
+                undef,
+                [
+                    '6666666666666666666666666666666666666666',
+                    '5555555555555555555555555555555555555555',
+                    '4444444444444444444444444444444444444444',
+                    '3333333333333333333333333333333333333333',
+                    '2222222222222222222222222222222222222222',
+                    '1111111111111111111111111111111111111111',
+                    '0000000000000000000000000000000000000000',
+                ],
+                [time . ' 6666666666666666666666666666666666666666'],
+                [map {"  $_"} qw/master ~ther/],
+                <<'SHOW',
+commit 6666666666666666666666666666666666666666
+Author: Some One <some.one@example.com>
+Date:   Wed Sep 24 18:17:18 2014 +1000
+
+    Message10
+
+M   file3
+SHOW
+                ['Some One'],
+                ['some.one@example.com'],
+                [time . ' 5555555555555555555555555555555555555555'],
+                ["  master"],
+                <<'SHOW',
+commit 5555555555555555555555555555555555555555
+Author: Ivan Wills <ivan.wills@gmail.com>
+Date:   Wed Sep 24 18:16:18 2014 +1000
+
+    Message10
+
+M   file1
+M   file2
+SHOW
+                ['Ivan Wills'],
+                ['ivan.wills@example.com'],
+            ],
+            STD => {
+                OUT => '',
+                ERR => '',
+            },
+            option => {
+                max      => 10,
+                sleep    => 0,
+                pull_cmd => 'pull',
+                once     => 1,
+                remote   => 1,
+                branch   => 'other'
+            },
+            name   => 'Default',
+        },
+        {
+            ARGV => [qw{--all --once --sleep 0 --file qwerty.txt --branch other}],
+            mock => [
+                undef,
+                [
+                    '4444444444444444444444444444444444444444',
+                    '3333333333333333333333333333333333333333',
+                    '2222222222222222222222222222222222222222',
+                    '1111111111111111111111111111111111111111',
+                    '0000000000000000000000000000000000000000',
+                ],
+                undef,
+                [
+                    '6666666666666666666666666666666666666666',
+                    '5555555555555555555555555555555555555555',
+                    '4444444444444444444444444444444444444444',
+                    '3333333333333333333333333333333333333333',
+                    '2222222222222222222222222222222222222222',
+                    '1111111111111111111111111111111111111111',
+                    '0000000000000000000000000000000000000000',
+                ],
+                [time . ' 6666666666666666666666666666666666666666'],
+                [map {"  $_"} qw/master other/],
+                <<'SHOW',
+commit 6666666666666666666666666666666666666666
+Author: Some One <some.one@example.com>
+Date:   Wed Sep 24 18:17:18 2014 +1000
+
+    Message10
+
+M   file3
+SHOW
+                ['Some One'],
+                ['some.one@example.com'],
+                [time . ' 5555555555555555555555555555555555555555'],
+                ["  master"],
+                <<'SHOW',
+commit 5555555555555555555555555555555555555555
+Author: Ivan Wills <ivan.wills@gmail.com>
+Date:   Wed Sep 24 18:16:18 2014 +1000
+
+    Message10
+
+M   file1
+M   file2
+SHOW
+                ['Ivan Wills'],
+                ['ivan.wills@example.com'],
+            ],
+            STD => {
+                OUT => <<'STDOUT',
+6666666666666666666666666666666666666666
+  Branches: master, other
+  Files:    file1, file2, file3
+  Users:    Ivan Wills, Some One
+
+STDOUT
+                ERR => '',
+            },
+            option => {
+                max      => 10,
+                sleep    => 0,
+                pull_cmd => 'pull',
+                once     => 1,
+                all      => 1,
+                file     => 'qwerty.txt',
+                branch   => 'other'
+            },
+            name   => 'Default',
+        },
+        {
+            ARGV => [qw{--remote --once --sleep 0 --file qwerty.txt --branch no-found}],
+            mock => [
+                undef,
+                [
+                    '4444444444444444444444444444444444444444',
+                    '3333333333333333333333333333333333333333',
+                    '2222222222222222222222222222222222222222',
+                    '1111111111111111111111111111111111111111',
+                    '0000000000000000000000000000000000000000',
+                ],
+                undef,
+                [
+                    '6666666666666666666666666666666666666666',
+                    '5555555555555555555555555555555555555555',
+                    '4444444444444444444444444444444444444444',
+                    '3333333333333333333333333333333333333333',
+                    '2222222222222222222222222222222222222222',
+                    '1111111111111111111111111111111111111111',
+                    '0000000000000000000000000000000000000000',
+                ],
+                [time . ' 6666666666666666666666666666666666666666'],
+                [map {"  $_"} qw/master other/],
+                <<'SHOW',
+commit 6666666666666666666666666666666666666666
+Author: Some One <some.one@example.com>
+Date:   Wed Sep 24 18:17:18 2014 +1000
+
+    Message10
+
+M   file3
+SHOW
+                ['Some One'],
+                ['some.one@example.com'],
+                [time . ' 5555555555555555555555555555555555555555'],
+                ["  master"],
+                <<'SHOW',
+commit 5555555555555555555555555555555555555555
+Author: Ivan Wills <ivan.wills@gmail.com>
+Date:   Wed Sep 24 18:16:18 2014 +1000
+
+    Message10
+
+M   file1
+M   file2
+SHOW
+                ['Ivan Wills'],
+                ['ivan.wills@example.com'],
+            ],
+            STD => {
+                OUT => '',
+                ERR => '',
+            },
+            option => {
+                max      => 10,
+                sleep    => 0,
+                pull_cmd => 'pull',
+                once     => 1,
+                remote   => 1,
+                file     => 'qwerty.txt',
+                branch   => 'no-found'
             },
             name   => 'Default',
         },
