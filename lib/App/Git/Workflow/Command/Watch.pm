@@ -37,7 +37,7 @@ sub run {
         'max|m=i',
         'once|1',
         'quiet|q',
-        'remote|r=s',
+        'remote|r',
         'sleep|s=i',
     );
 
