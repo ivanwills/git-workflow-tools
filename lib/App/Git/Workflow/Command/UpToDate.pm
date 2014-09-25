@@ -17,16 +17,11 @@ our $VERSION  = 0.6;
 our $workflow = App::Git::Workflow->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
-my %known_actions = (
-    'am-i'      => 1,
-    show        => 1,
-    current     => 1,
-    'update-me' => 1,
-);
+our %p2u_extra;
 
 sub run {
     my $self = shift;
-    my %option = (
+    %option = (
         format      => 'test',
         max_history => $workflow->config('workflow.max-history') || 1,
     );
@@ -48,16 +43,23 @@ sub run {
         'fix|x',
     ) or return;
 
-    my $action = shift @ARGV || 'am-i';
+    my $action = shift @ARGV || 'am_i';
     my $format = 'format_' . $option{format};
 
-    if ( !$known_actions{$action} ) {
+    $action =~ s/-/_/g;
+    $action = "do_$action";
+
+    if ( !$self->can($action) ) {
+        $action =~ s/^do_//;
+        $action =~ s/_/-/;
         warn "Unknown action '$action'!\n";
-        Pod::Usage::pod2usage( -verbose => 1 );
+        Pod::Usage::pod2usage( %p2u_extra, -verbose => 1 );
+        return 1;
     }
-    elsif ( $action eq 'show' && !$self->can($format) ) {
+    elsif ( $action eq 'do_show' && !$self->can($format) ) {
         warn "Unknown format '$option{format}'!\n";
-        Pod::Usage::pod2usage( -verbose => 1 );
+        Pod::Usage::pod2usage( %p2u_extra, -verbose => 1 );
+        return 1;
     }
 
     $workflow->{VERBOSE} = $option{verbose};
@@ -85,10 +87,7 @@ Now    : $now ($time)
 DETAILS
     }
 
-    $option{all} = 1 if $option{format} eq 'test';
-
-    $action =~ s/-/_/g;
-    $action = "do_$action";
+    $option{all} = 1 if $action eq 'do_show' && $option{format} eq 'test';
 
     $self->$action(@releases);
 
@@ -290,12 +289,11 @@ sub format_test {
     my (undef, $csv, @releases) = @_;
 
     require Test::More;
-    Test::More->import( tests => scalar @$csv );
+    Test::More->import();
     for my $row (@$csv) {
         is( $row->[0], $releases[-1]{name}, $row->[1] . ' is upto date')
             or note("Release is $row->[3] days old");
     }
-    Test::More::done_testing();
 
     return;
 }

@@ -15,6 +15,7 @@ use base qw/Exporter/;
 use Test::More;
 use Capture::Tiny qw/capture/;
 use Data::Dumper qw/Dumper/;
+use Test::MockTime qw/restore_time set_fixed_time/;
 use App::Git::Workflow;
 use Mock::App::Git::Workflow::Repository;
 
@@ -51,6 +52,10 @@ sub command_ok ($$) {  ## no critic
         $data->{STD}{IN} ||= '';
         open $stdin, '<', \$data->{STD}{IN};
 
+        if ($data->{time}) {
+            set_fixed_time($data->{time});
+        }
+
         # run the code
         my $error;
         my ($stdout, $stderr) = capture { local *STDIN = $stdin; eval { $module->run() }; $error = $@; };
@@ -86,6 +91,10 @@ sub command_ok ($$) {  ## no critic
             or diag Dumper \%{"${module}::option"}, $data->{option};
         ok !@{ $git->{data} }, "All data setup is used"
             or diag Dumper $git->{data};
+
+        if ($data->{time}) {
+            restore_time();
+        }
     };
 }
 
