@@ -17,6 +17,7 @@ use_ok('App::Git::Workflow::Command::Feature');
 use_ok('App::Git::Workflow::Command::Files');
 use_ok('App::Git::Workflow::Command::Jira');
 use_ok('App::Git::Workflow::Command::TagGrep');
+use_ok('App::Git::Workflow::Command::UpToDate');
 use_ok('App::Git::Workflow::Command::Watch');
 my $perl = File::Spec->rel2abs($^X);
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-branch-clean"), "bin/git-branch-clean compiles");
@@ -30,6 +31,7 @@ ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-jira"        ), "bi
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-pom"         ), "bin/git-pom compiles"         );
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-tag-grep"    ), "bin/git-tag-grep compiles"    );
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-up-to-date"  ), "bin/git-up-to-date compiles"  );
+ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-watch"       ), "bin/git-watch compiles"       );
 
 diag( "Testing App-Git-Workflow, Perl $], $^X" );
 done_testing();
