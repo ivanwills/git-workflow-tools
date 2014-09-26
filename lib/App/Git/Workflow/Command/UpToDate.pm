@@ -65,7 +65,7 @@ sub run {
     $workflow->{VERBOSE} = $option{verbose};
     $workflow->{TEST   } = $option{test};
 
-    $workflow->runner(qw/git fetch/) if $option{fetch};
+    $workflow->git->fetch if $option{fetch};
 
     # do stuff here
     if ($option{branch_age}) {
@@ -115,7 +115,7 @@ sub do_am_i {
 
     my $bad = 0;
     for my $release (reverse @releases) {
-        my ($ans) = $workflow->runner("git log $format | grep $release->{sha}");
+        my ($ans) = grep {/$release->{sha}/} $workflow->git->log($format);
         chomp $ans if $ans;
         next if $ans;
         $bad++;

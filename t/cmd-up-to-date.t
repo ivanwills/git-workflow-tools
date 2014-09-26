@@ -23,6 +23,10 @@ sub run {
                 [map {"  $_"} qw{master origin/master}],
                 ['1411637048 0000000000000000000000000000000000000000'],
                 [map {"  $_"} qw{master origin/master}],
+                [
+                    '0ecce8ba6c1417606a1cd80e5cbcbd59e913b9ff 1411038810 <Ivan Wills>ivan.wills@gmail.com',
+                    '6b9fe18c23d956aa31cfb8a3b89cdb2acc76c241 1411036117 <Ivan Wills>ivan.wills@gmail.com',
+                ]
             ],
             STD => {
                 OUT => '',
@@ -42,6 +46,10 @@ sub run {
                 [map {"  $_"} qw{master origin/master}],
                 ['1411637048 0000000000000000000000000000000000000000'],
                 [map {"  $_"} qw{master origin/master}],
+                [
+                    '0ecce8ba6c1417606a1cd80e5cbcbd59e913b9ff 1411038810 <Ivan Wills>ivan.wills@gmail.com',
+                    '6b9fe18c23d956aa31cfb8a3b89cdb2acc76c241 1411036117 <Ivan Wills>ivan.wills@gmail.com',
+                ]
             ],
             STD => {
                 OUT => '',
@@ -199,8 +207,9 @@ sub run {
             name   => 'Show test',
         },
         {
-            ARGV => [qw/show --format html/],
+            ARGV => [qw/show --format html --fetch/],
             mock => [
+                undef,
                 undef,
                 undef,
                 [map {"  $_"} qw{master origin/master}],
@@ -229,6 +238,7 @@ sub run {
             option => {
                 format      => 'html',
                 max_history => 1,
+                fetch       => 1,
             },
             name   => 'Show test',
         },
