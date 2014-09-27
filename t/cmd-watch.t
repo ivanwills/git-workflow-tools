@@ -194,12 +194,12 @@ SHOW
             STD => {
                 OUT => <<'STDOUT',
 aaaaaaa @ Thu Sep 25 07:04:49 2014
-  Branches:
+  Branches: 
     master
-  Files:
+  Files:    
     file1
     file2
-  Users:
+  Users:    
     Ivan Wills
 
 STDOUT
@@ -596,7 +596,6 @@ SHOW
                 file     => 'qwerty.txt',
                 branch   => 'no-found'
             },
-            ARGV => [qw{--remote --once --sleep 0 --file qwerty.txt --branch no-found}],
             name   => 'show remote file qwerty.txt and branch that doesn\'t exist',
         },
     );
