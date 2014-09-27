@@ -85,7 +85,7 @@ STDOUT
                 pull_cmd => 'pull',
                 once     => 1,
             },
-            name   => 'Default',
+            name   => 'Default (show)',
         },
         {
             ARGV => [qw{show --once --sleep 0}],
@@ -146,7 +146,7 @@ STDOUT
                 pull_cmd => 'pull',
                 once     => 1,
             },
-            name   => 'Default',
+            name   => 'Default show',
         },
         {
             ARGV => [qw{show --once --sleep 0 --verbose}],
@@ -194,12 +194,12 @@ SHOW
             STD => {
                 OUT => <<'STDOUT',
 aaaaaaa @ Thu Sep 25 07:04:49 2014
-  Branches: 
+  Branches:
     master
-  Files:    
+  Files:
     file1
     file2
-  Users:    
+  Users:
     Ivan Wills
 
 STDOUT
@@ -212,7 +212,7 @@ STDOUT
                 once     => 1,
                 verbose  => 1,
             },
-            name   => 'Default',
+            name   => 'Show verbose',
         },
         {
             ARGV => [qw{show --once --sleep 0 --verbose --quiet}],
@@ -271,7 +271,7 @@ STDOUT
                 verbose  => 1,
                 quiet    => 1,
             },
-            name   => 'Default',
+            name   => 'Show verbose and quiet',
         },
         {
             ARGV => [qw{echo --once --sleep 0 --pull}],
@@ -329,7 +329,7 @@ SHOW
                 once     => 1,
                 pull     => 1,
             },
-            name   => 'Default',
+            name   => 'Show with echo and pull',
         },
         {
             ARGV => [qw{--remote --once --sleep 0 --file 3 --branch other}],
@@ -399,7 +399,7 @@ STDOUT
                 file     => 3,
                 branch   => 'other'
             },
-            name   => 'Default',
+            name   => 'show remote with 3 files and other branch',
         },
         {
             ARGV => [qw{--remote --once --sleep 0 --branch other}],
@@ -462,7 +462,7 @@ SHOW
                 remote   => 1,
                 branch   => 'other'
             },
-            name   => 'Default',
+            name   => 'show remote and other branch',
         },
         {
             ARGV => [qw{--all --once --sleep 0 --file qwerty.txt --branch other}],
@@ -532,7 +532,7 @@ STDOUT
                 file     => 'qwerty.txt',
                 branch   => 'other'
             },
-            name   => 'Default',
+            name   => 'show all with file qwerty.txt and branch other',
         },
         {
             ARGV => [qw{--remote --once --sleep 0 --file qwerty.txt --branch no-found}],
@@ -596,7 +596,8 @@ SHOW
                 file     => 'qwerty.txt',
                 branch   => 'no-found'
             },
-            name   => 'Default',
+            ARGV => [qw{--remote --once --sleep 0 --file qwerty.txt --branch no-found}],
+            name   => 'show remote file qwerty.txt and branch that doesn\'t exist',
         },
     );
 
