@@ -220,32 +220,10 @@ sub runner {
     return if $self->{TEST};
 
     if (!defined wantarray) {
-        if ($ENV{GIT_WORKFLOW_TIMER}) {
-            require Time::HiRes;
-            my $start = Time::HiRes::time();
-            my $ans = system @cmd;
-            push @{ $self->{times}{$cmd[1]} }, Time::HiRes::time() - $start;
-            return $ans;
-        }
         return system @cmd;
     }
 
     carp "Too many arguments!\n" if @cmd != 1;
-
-    if ($ENV{GIT_WORKFLOW_TIMER}) {
-        require Time::HiRes;
-        my $start = Time::HiRes::time();
-        my (@ans, $ans);
-        if (wantarray) {
-            @ans = qx/$cmd[0]/;
-        }
-        else {
-            $ans = qx/$cmd[0]/;
-        }
-        my ($sub) = $cmd[0] =~ /^git \s (\S+) \s/xms;
-        push @{ $self->{times}{$sub} }, Time::HiRes::time() - $start;
-        return wantarray ? @ans : $ans;
-    }
 
     return qx/$cmd[0]/;
 }
@@ -294,14 +272,6 @@ sub _url_encode {
 sub DESTROY {
     my ($self) = @_;
     $self->save_settings();
-    if ($ENV{GIT_WORKFLOW_TIMER}) {
-        for my $sub (sort keys %{$self->{times}}) {
-            print "git $sub\n";
-            my $total = 0;
-            map {$total += $_} @{ $self->{times}{$sub} };
-            printf "    Avg : %0.6fs for %i runs. Total time %0.6fs\n", $total / @{ $self->{times}{$sub} }, (scalar @{ $self->{times}{$sub} }), $total;
-        }
-    }
 }
 
 1;
