@@ -51,7 +51,7 @@ sub get_pom_versions {
 
     while (!%versions && $run < 10) {
         BRANCH:
-        for my $branch (@branches) {
+        for my $branch (sort @branches) {
             $settings->{pom_versions}{$branch} ||= {};
             my $saved = $settings->{pom_versions}{$branch};
 

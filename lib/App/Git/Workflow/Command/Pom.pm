@@ -21,8 +21,8 @@ our %p2u_extra;
 sub run {
     my ($self) = @_;
     %option = (
-        pom     => $workflow->config('workflow.pom') || 'pom.xml',
-        fetch   => 1,
+        pom   => $workflow->config('workflow.pom', 'pom.xml'),
+        fetch => 1,
     );
     get_options(
         \%option,
