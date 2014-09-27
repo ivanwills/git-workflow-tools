@@ -14,7 +14,6 @@ use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 use Test::More;
 use Capture::Tiny qw/capture/;
-use Data::Dumper qw/Dumper/;
 use Test::MockTime qw/restore_time set_fixed_time/;
 use App::Git::Workflow;
 use Mock::App::Git::Workflow::Repository;
@@ -32,6 +31,11 @@ sub command_ok ($$) {  ## no critic
     my ($module, $data) = @_;
     subtest $data->{name} => sub {
         no strict qw/refs/;  ## no critic
+
+        if ($data->{skip} && $data->{skip}->()) {
+            plan skip_all => "Skipping $data->{name}";
+            return;
+        }
 
         # initialise
         $git->{ran} = [];
@@ -64,33 +68,45 @@ sub command_ok ($$) {  ## no critic
         if ($error) {
             die $error, $stderr if !$data->{error};
             is $error, $data->{error}, "Error matches"
-                or diag Dumper $error, $data->{error};
+                or diag explain $error, $data->{error};
         }
 
         # STDOUT
         if ( !ref $data->{STD}{OUT} ) {
             is $stdout, $data->{STD}{OUT}, "STDOUT $data->{name} run"
-                or diag Dumper $stdout, $data->{STD}{OUT};
+                or diag explain $stdout, $data->{STD}{OUT};
         }
         elsif ( ref $data->{STD}{OUT} eq 'Regexp' ) {
             like $stdout, $data->{STD}{OUT}, "STDOUT $data->{name} run"
-                or diag Dumper $stdout, $data->{STD}{OUT};
+                or diag explain $stdout, $data->{STD}{OUT};
+        }
+        elsif ( ref $data->{STD}{OUT} eq 'HASH' ) {
+            #chomp $stdout;
+            my $actual   = $data->{STD}{OUT_PRE} ? eval { $data->{STD}{OUT_PRE}->($stdout) } : $stdout;
+            #diag explain [$stdout, $data, $@] if $@;
+            is_deeply $actual, $data->{STD}{OUT}, "STDOUT $data->{name} run"
+                or diag explain $actual, $data->{STD}{OUT};
         }
 
         # STDERR
         if ( !ref $data->{STD}{ERR} ) {
             is $stderr, $data->{STD}{ERR}, "STDERR $data->{name} run"
-                or diag Dumper $stderr, $data->{STD}{ERR};
+                or diag explain $stderr, $data->{STD}{ERR};
         }
         elsif ( ref $data->{STD}{ERR} eq 'Regexp' ) {
             like $stderr, $data->{STD}{ERR}, "STDERR $data->{name} run"
-                or diag Dumper $stderr, $data->{STD}{ERR};
+                or diag explain $stderr, $data->{STD}{ERR};
+        }
+        elsif ( ref $data->{STD}{ERR} eq 'HASH' ) {
+            my $actual   = $data->{STD}{ERR_PRE} ? $data->{STD}{ERR_PRE}->($stdout) : $stdout;
+            is_deeply $actual, $data->{STD}{ERR}, "STDERR $data->{name} run"
+                or diag explain $actual, $data->{STD}{ERR};
         }
 
         is_deeply \%{"${module}::option"}, $data->{option}, 'Options set correctly'
-            or diag Dumper \%{"${module}::option"}, $data->{option};
+            or diag explain \%{"${module}::option"}, $data->{option};
         ok !@{ $git->{data} }, "All data setup is used"
-            or diag Dumper $git->{data};
+            or diag explain $git->{data};
 
         if ($data->{time}) {
             restore_time();
