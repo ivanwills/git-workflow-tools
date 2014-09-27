@@ -20,6 +20,7 @@ sub run {
                 undef,
                 undef,
                 undef,
+                undef,
             ],
             STD => {
                 OUT => '',
@@ -37,6 +38,7 @@ sub run {
         {
             ARGV => [],
             mock => [
+                undef,
                 'a/pom.xml',
                 undef,
                 undef,
@@ -57,6 +59,7 @@ sub run {
         {
             ARGV => [qw{feature_1}],
             mock => [
+                undef,
                 undef,
                 undef,
                 undef,
@@ -83,6 +86,7 @@ sub run {
                 undef,
                 undef,
                 undef,
+                undef,
                 'branch=release',
                 undef,
                 [map {"  $_"} qw{origin/master origin/release}],
@@ -104,6 +108,7 @@ sub run {
         {
             ARGV => [qw{feature_1 --push}],
             mock => [
+                undef,
                 undef,
                 undef,
                 undef,
@@ -132,6 +137,7 @@ sub run {
                 undef,
                 undef,
                 undef,
+                undef,
                 'branch=release',
                 [map {"  $_"} qw{origin/master origin/release}],
                 undef,
@@ -156,6 +162,7 @@ sub run {
                 undef,
                 undef,
                 undef,
+                undef,
                 [qw{v1 v2 release}],
                 undef,
             ],
@@ -175,6 +182,7 @@ sub run {
         {
             ARGV => [qw{feature_1 --branch release}],
             mock => [
+                undef,
                 undef,
                 undef,
                 undef,
@@ -203,6 +211,7 @@ sub run {
                 undef,
                 undef,
                 undef,
+                undef,
                 [map {"  $_"} qw{master release}],
                 undef,
             ],
@@ -222,6 +231,7 @@ sub run {
         {
             ARGV => [qw{feature_1}],
             mock => [
+                undef,
                 undef,
                 undef,
                 undef,

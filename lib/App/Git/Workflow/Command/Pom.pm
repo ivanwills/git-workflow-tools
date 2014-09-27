@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+package App::Git::Workflow::Command::Pom;
 
 # Created on: 2014-03-19 17:18:17
 # Create by:  Ivan Wills
@@ -8,9 +8,120 @@
 
 use strict;
 use warnings;
-use App::Git::Workflow::Command::Pom;
+use English qw/ -no_match_vars /;
+use App::Git::Workflow::Pom;
+use App::Git::Workflow::Command qw/get_options/;
 
-App::Git::Workflow::Command::Pom->run();
+our $VERSION = 0.6;
+our $workflow = App::Git::Workflow->new;
+our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
+our %option;
+our %p2u_extra;
+
+sub run {
+    my ($self) = @_;
+    %option = (
+        pom     => $workflow->config('workflow.pom') || 'pom.xml',
+        fetch   => 1,
+    );
+    get_options(
+        \%option,
+        'pom|P=s',
+        'update|u!',
+        'fetch|f!',
+        'tag|t=s',
+        'branch|b=s',
+        'local|l!',
+        'verbose|v+',
+        'man',
+        'help',
+        'VERSION!',
+    ) or return;
+    my $sub_command = @ARGV ? "do_$ARGV[0]" : "do_uniq";
+
+    if ( !$self->can($sub_command) ) {
+        warn "Unknown sub command '$sub_command'!\n";
+        Pod::Usage::pod2usage( %p2u_extra, -verbose => 1 );
+    }
+
+    $workflow->{VERBOSE} = $option{verbose};
+    $workflow->{TEST   } = $option{test};
+
+    # make sure that git is up-to-date
+    $workflow->git->fetch if $option{fetch};
+
+    $self->$sub_command($option{pom}, @ARGV);
+
+    return;
+}
+
+sub do_uniq {
+    my (undef, $pom) = @_;
+    my $versions  = $workflow->get_pom_versions($option{pom});
+    my $numerical = my $version = $workflow->pom_version($pom);
+    $numerical =~ s/-SNAPSHOT$//xms;
+
+    if ( !$versions->{$numerical} || keys %{ $versions->{$numerical} } <= 1 ) {
+        print "POM Version $version is unique\n";
+    }
+    else {
+        warn "Following branches are using version $numerical\n";
+        warn "\t", join "\n\t", (sort keys %{ $versions->{$numerical} }), "\n";
+        return scalar keys %{ $versions->{$numerical} };
+    }
+
+    return;
+}
+
+sub do_next {
+    my (undef, $pom) = @_;
+
+    my $version = $workflow->next_pom_version($option{pom});
+    print "$version\n";
+
+    if ($option{update}) {
+        system(qw/mvn versions:set/, "–DnewVersion=$version");
+    }
+
+    return;
+}
+
+sub do_whos {
+    my (undef, $pom, $version) = @_;
+    my $versions = $workflow->get_pom_versions($option{pom});
+
+    if (!$version) {
+        warn "No version supplied!\n";
+        Pod::Usage::pod2usage( %p2u_extra, -verbose => 1 );
+    }
+
+    $version =~ s/-SNAPSHOT$//;
+
+    my $version_re = $version =~ /^\d+[.]\d+[.]\d+/ ? qr/^$version$/ : qr/^$version[.]\d+$/;
+    my %versions = map {%{ $versions->{$_} }} grep {/$version_re/} keys %{ $versions };
+
+    print join '', map {"$_\t$versions{$_}\n"} sort keys %versions;
+
+    return;
+}
+
+sub do_release {
+    my (undef, $pom) = @_;
+    my ($type, $regex);
+
+    if ( !$option{tag} && !$option{branch} ) {
+        my $prod = $workflow->config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
+        ($type, $regex) = split /\s*=\s*/, $prod;
+    }
+
+    my $release = $workflow->release($type, $option{local}, $regex);
+    my $xml = $workflow->git->show("$release:$pom");
+    my $version = $workflow->pom_version($xml);
+
+    print "$release uses $version\n";
+}
+
+1;
 
 __DATA__
 
@@ -73,6 +184,16 @@ Find which branch or branches use a POM version number.
 =back
 
 =head1 SUBROUTINES/METHODS
+
+Executes the git workflow command
+
+=head2 C<do_release ()>
+
+=head2 C<do_whos ()>
+
+=head2 C<do_next ()>
+
+=head2 C<do_uniq ()>
 
 =head1 DIAGNOSTICS
 
