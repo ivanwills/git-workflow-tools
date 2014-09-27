@@ -318,7 +318,7 @@ sub run {
                    ],
                    release => 'origin/master',
                    repository => 'http://example.com/example.git',
-                   release_date => 'Thu Sep 25 19:24:08 2014',
+                   release_date => ''.localtime(1411637048),
                    name => '//example.com/example'
                 },
                 OUT_PRE => sub { JSON::decode_json($_[0]) },
