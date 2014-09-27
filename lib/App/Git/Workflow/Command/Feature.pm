@@ -37,7 +37,6 @@ sub run {
         'fetch|f!',
         'new_pom|new-pom|n!',
         'push|p',
-        'test|t',
     ) or return;
 
     # do stuff here
