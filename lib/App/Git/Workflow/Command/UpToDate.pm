@@ -32,14 +32,11 @@ sub run {
         'local|l!',
         'format|f=s',
         'quick|q!',
-        'cgit|c=s',
         'include|i=s',
         'exclude|e=s',
         'all',
         'max_history|max-history|m=i',
         'fetch|F',
-        'branch_status|branch-status|s',
-        'age_limit|age-limit|a=s',
         'fix|x',
     ) or return;
 
@@ -146,7 +143,8 @@ sub do_current {
 
 sub do_update_me {
     my (undef, @releases) = @_;
-    print "Current prod \"$releases[0]{name}\"\n";
+    print "Merging \"$releases[0]{name}\"\n";
+    $workflow->git->merge($releases[0]{name});
 
     return;
 }
@@ -273,10 +271,6 @@ HTML
         my ($name, $email) = $row->[2] =~ /^<([^>]+)>(.*)$/;
         $row->[0] = $row->[0] eq $releases[-1]{name} ? $row->[0] : qq{<span class="old">$row->[0]</span>};
         $row->[2] = $row->[0] eq $releases[-1]{name} ? $name : qq{<a href="mailto:$email?subject=$row->[1]%20is%20out%20of%20date">$name</a>};
-        if ($option{cgit}) {
-            my ($branch) = $row->[1] =~ m{^(?:[^/]+/)?(.+)$}xms;
-            $row->[1] = qq[<a href="$option{cgit}/log/?h=$branch" title="cgit log">$branch</a>];
-        }
         print "<tr class=\"age_$row->[4]\"><td>" . (join $sepperator, @$row[0..3]), "</td></tr>\n";
     }
 
@@ -296,43 +290,6 @@ sub format_test {
     }
 
     return;
-}
-
-sub branch_status {
-    my @branches = $workflow->branches('both');
-    my $format = q/--format=format:'%H %at <%an>%ae'/;
-    my $before = $option{age_limit} || ymd();
-    my %bin;
-
-    BRANCH:
-    for my $branch (@branches) {
-        open my $pipe, '-|', "git log $format -n 1 '$branch'";
-        my ($first, $author, $found);
-
-        my $log = <$pipe>;
-        chomp $log;
-        my ($sha, $time, $user) = split /\s+/, $log, 3;
-        $time = ymd($time);
-
-        # skip branches that have been modified after before
-        next BRANCH if $time gt $before;
-        printf "%-70s %-99s %s\n", $branch, $user, $time, $time gt $before;
-        $bin{$time}++;
-    }
-    #print join "\n", map {"$_\t$bin{$_}"} sort keys %bin;
-    #print "\n";
-
-    return;
-}
-
-sub ymb {
-    my ($time) = @_;
-    $time ||= time;
-    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime $time;
-    $year += 1900;
-    $mon++;
-
-    return sprintf "%04d-%02d-%02d", $year, $mon, $mday;
 }
 
 1;
@@ -374,8 +331,6 @@ This documentation refers to git-up-to-date version 0.6
                       * csv  - Comma seperated values formatted output
                       * tab  - Tab seperated values formatted output
   -q --quick        Print to STDERR the statuses as they are found (no formatting)
-  -c --cgit[=]url   When using --format=html this creates a link to the cgit
-                    log page for the branch
   -i --include[=]regexp
                     Include only "neweer" branches that match this regexp
   -e --exclude[=]regexp
@@ -441,10 +396,6 @@ Executes the git workflow command
 =head2 C<format_html ()>
 
 =head2 C<format_test ()>
-
-=head2 C<branch_status ()>
-
-=head2 C<ymb ()>
 
 
 =head1 DIAGNOSTICS

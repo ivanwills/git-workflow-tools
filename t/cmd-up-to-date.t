@@ -26,7 +26,7 @@ sub run {
                 [
                     '0ecce8ba6c1417606a1cd80e5cbcbd59e913b9ff 1411038810 <Ivan Wills>ivan.wills@gmail.com',
                     '6b9fe18c23d956aa31cfb8a3b89cdb2acc76c241 1411036117 <Ivan Wills>ivan.wills@gmail.com',
-                ]
+                ],
             ],
             STD => {
                 OUT => '',
@@ -49,7 +49,7 @@ sub run {
                 [
                     '0ecce8ba6c1417606a1cd80e5cbcbd59e913b9ff 1411038810 <Ivan Wills>ivan.wills@gmail.com',
                     '6b9fe18c23d956aa31cfb8a3b89cdb2acc76c241 1411036117 <Ivan Wills>ivan.wills@gmail.com',
-                ]
+                ],
             ],
             STD => {
                 OUT => '',
@@ -60,6 +60,54 @@ sub run {
                 max_history => 1,
             },
             name   => 'am-i',
+        },
+        {
+            ARGV => [qw/am-i --fix/],
+            mock => [
+                undef,
+                undef,
+                [map {"  $_"} qw{master origin/master}],
+                ['1411637048 0000000000000000000000000000000000000000'],
+                [map {"  $_"} qw{master origin/master}],
+                [
+                    '0ecce8ba6c1417606a1cd80e5cbcbd59e913b9ff 1411038810 <Ivan Wills>ivan.wills@gmail.com',
+                    '6b9fe18c23d956aa31cfb8a3b89cdb2acc76c241 1411036117 <Ivan Wills>ivan.wills@gmail.com',
+                ],
+                undef,
+            ],
+            STD => {
+                OUT => '',
+                ERR => "Missing release origin/master!\n",
+            },
+            option => {
+                format      => 'test',
+                max_history => 1,
+                fix         => 1,
+            },
+            name   => 'am-i',
+        },
+        {
+            ARGV => [qw/am-i/],
+            mock => [
+                undef,
+                undef,
+                [map {"  $_"} qw{master origin/master}],
+                ['1411637048 0000000000000000000000000000000000000000'],
+                [map {"  $_"} qw{master origin/master}],
+                [
+                    '0ecce8ba6c1417606a1cd80e5cbcbd59e913b9ff 1411038810 <Ivan Wills>ivan.wills@gmail.com',
+                    '0000000000000000000000000000000000000000 1411637048 <Ivan Wills>ivan.wills@gmail.com',
+                ],
+            ],
+            STD => {
+                OUT => "Up to date\n",
+                ERR => '',
+            },
+            option => {
+                format      => 'test',
+                max_history => 1,
+            },
+            name   => 'am-i good',
         },
         {
             ARGV => [qw/--quiet/],
@@ -281,7 +329,46 @@ sub run {
                 max_history => 1,
             },
             name   => 'Show json',
-            skip   => sub { $JSON::VERSION },
+            skip   => sub { !eval { require JSON; }; },
+        },
+        {
+            ARGV => [qw{current}],
+            mock => [
+                undef,
+                undef,
+                [map {"  $_"} qw{master origin/master}],
+                ['1411637048 0000000000000000000000000000000000000000'],
+                [map {"  $_"} qw{master origin/master}],
+            ],
+            STD => {
+                OUT => qq{Current prod "origin/master"\n},
+                ERR => '',
+            },
+            option => {
+                format      => 'test',
+                max_history => 1,
+            },
+            name   => 'current',
+        },
+        {
+            ARGV => [qw{update-me}],
+            mock => [
+                undef,
+                undef,
+                [map {"  $_"} qw{master origin/master}],
+                ['1411637048 0000000000000000000000000000000000000000'],
+                [map {"  $_"} qw{master origin/master}],
+                undef,
+            ],
+            STD => {
+                OUT => qq{Merging "origin/master"\n},
+                ERR => '',
+            },
+            option => {
+                format      => 'test',
+                max_history => 1,
+            },
+            name   => 'current',
         },
     );
 
