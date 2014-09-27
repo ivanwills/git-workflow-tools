@@ -8,7 +8,7 @@ package App::Git::Workflow::Pom;
 
 use strict;
 use warnings;
-use Carp;
+use Carp qw/carp croak cluck confess longmess/;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use XML::Tiny;
@@ -16,9 +16,7 @@ use App::Git::Workflow::Repository qw//;
 use App::Git::Workflow;
 use base qw/App::Git::Workflow/;
 
-our $VERSION     = 0.6;
-our @EXPORT_OK   = qw/get_pom_versions pom_version next_pom_version/;
-our %EXPORT_TAGS = ();
+our $VERSION = 0.6;
 
 sub new {
     my $class = shift;
@@ -26,7 +24,8 @@ sub new {
     bless $self, $class;
     $self->{MAX_AGE} = 60 * 60 * 24 * (
         $ENV{GIT_WORKFLOW_MAX_AGE}
-        || $self->config('workflow.max-age', 120)
+        || $self->git->config('workflow.max-age')
+        || 120
     );
 
     return $self;
@@ -106,6 +105,7 @@ sub get_pom_versions {
 
 sub pom_version {
     my ($self, $xml) = @_;
+
     my $doc = XML::Tiny::parsefile( $xml !~ /\n/ && -f $xml ? $xml : '_TINY_XML_STRING_' . $xml);
 
     for my $elem (@{ $doc->[0]{content} }) {

@@ -8,13 +8,13 @@ package Test::Git::Workflow::Command;
 
 use strict;
 use warnings;
-use version;
 use Carp;
 use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 use Test::More;
 use Capture::Tiny qw/capture/;
 use Test::MockTime qw/restore_time set_fixed_time/;
+use Test::Mock::Cmd 'system' => sub { return 0; };
 use App::Git::Workflow;
 use Mock::App::Git::Workflow::Repository;
 
@@ -38,6 +38,9 @@ sub command_ok ($$) {  ## no critic
         }
 
         # initialise
+        $git->mock_reset();
+        $git->mock_add(@{ $data->{mock} });
+
         $git->{ran} = [];
         %{"${module}::option"} = ();
         ${"${module}::workflow"} = $workflow->new(git => $git);
@@ -50,8 +53,6 @@ sub command_ok ($$) {  ## no critic
         if ($data->{ENV}) {
             $ENV{$_} = $data->{ENV}{$_} for keys %{ $data->{ENV} };
         }
-        $git->mock_reset();
-        $git->mock_add(@{ $data->{mock} });
         my $stdin;
         $data->{STD}{IN} ||= '';
         open $stdin, '<', \$data->{STD}{IN};
@@ -66,7 +67,7 @@ sub command_ok ($$) {  ## no critic
 
         ## Tests
         if ($error) {
-            die $error, $stderr if !$data->{error};
+            #die $error, $stderr if !$data->{error};
             is $error, $data->{error}, "Error matches"
                 or diag explain $error, $data->{error};
         }
