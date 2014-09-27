@@ -232,11 +232,11 @@ sub format_csv {
 sub format_json {
     my (undef, $csv, @releases) = @_;
 
-    require JSON::XS;
+    require JSON;
     my $repo   = $workflow->config('remote.origin.url');
     my ($name) = $repo =~ m{[/:](.*?)(?:[.]git)?$}xms;
 
-    print JSON::XS::encode_json({
+    print JSON::encode_json({
         repository   => $repo,
         name         => $name,
         release      => $releases[-1]{name},

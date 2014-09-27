@@ -18,7 +18,8 @@ my $builder = Module::Build->new(
         'Time::Piece' => 0,
     },
     recommends => {
-        'JSON::XS'    => '2.34',
+        'JSON'       => '2.0',
+        'JIRA::REST' => 0,
     },
     build_requires => {
         'Test::More'       => 0,

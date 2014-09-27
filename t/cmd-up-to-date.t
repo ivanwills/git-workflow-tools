@@ -36,7 +36,7 @@ sub run {
                 format      => 'test',
                 max_history => 1,
             },
-            name   => 'Default',
+            name   => 'Default am-i',
         },
         {
             ARGV => [qw/am-i/],
@@ -59,7 +59,7 @@ sub run {
                 format      => 'test',
                 max_history => 1,
             },
-            name   => 'Default',
+            name   => 'am-i',
         },
         {
             ARGV => [qw/--quiet/],
@@ -74,7 +74,7 @@ sub run {
                 format      => 'test',
                 max_history => 30,
             },
-            name   => 'Default',
+            name   => 'Default --quiet',
         },
         {
             ARGV => [qw/unknown/],
@@ -89,7 +89,7 @@ sub run {
                 format      => 'test',
                 max_history => 1,
             },
-            name   => 'Default',
+            name   => 'Bad param',
         },
         {
             ARGV => [qw/show --format unknown /],
@@ -104,7 +104,7 @@ sub run {
                 format      => 'unknown',
                 max_history => 1,
             },
-            name   => 'Default',
+            name   => 'show --format unknown',
         },
         {
             ARGV => [qw/show/],
@@ -164,7 +164,7 @@ sub run {
                 format      => 'text',
                 max_history => 1,
             },
-            name   => 'Show test',
+            name   => 'Show text',
         },
         {
             ARGV => [qw/show --format csv/],
@@ -184,7 +184,7 @@ sub run {
                 format      => 'csv',
                 max_history => 1,
             },
-            name   => 'Show test',
+            name   => 'Show csv',
         },
         {
             ARGV => [qw/show --format tab/],
@@ -204,7 +204,7 @@ sub run {
                 format      => 'tab',
                 max_history => 1,
             },
-            name   => 'Show test',
+            name   => 'Show tab',
         },
         {
             ARGV => [qw/show --format html --fetch/],
@@ -240,7 +240,48 @@ sub run {
                 max_history => 1,
                 fetch       => 1,
             },
-            name   => 'Show test',
+            name   => 'Show html',
+        },
+        {
+            ARGV => [qw/show --format json/],
+            mock => [
+                undef,
+                undef,
+                [map {"  $_"} qw{master origin/master}],
+                ['1411637048 0000000000000000000000000000000000000000'],
+                [map {"  $_"} qw{master origin/master}],
+                'http://example.com/example.git',
+            ],
+            STD => {
+                OUT => {
+                   branches => [
+                      {
+                         last_author => '<Ivan Wills>ivan.wills@gmail.com',
+                         release_age => 0,
+                         name => 'master',
+                         status => 'origin/master'
+                      },
+                      {
+                         release_age => 0,
+                         name => 'origin/master',
+                         status => 'origin/master',
+                         last_author => '<Ivan Wills>ivan.wills@gmail.com'
+                      }
+                   ],
+                   release => 'origin/master',
+                   repository => 'http://example.com/example.git',
+                   release_date => 'Thu Sep 25 19:24:08 2014',
+                   name => '//example.com/example'
+                },
+                OUT_PRE => sub { JSON::decode_json($_[0]) },
+                ERR => '',
+            },
+            option => {
+                format      => 'json',
+                max_history => 1,
+            },
+            name   => 'Show json',
+            skip   => sub { $JSON::VERSION },
         },
     );
 
