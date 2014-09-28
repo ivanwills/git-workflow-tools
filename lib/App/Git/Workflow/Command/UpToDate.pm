@@ -397,6 +397,7 @@ Executes the git workflow command
 
 =head2 C<format_test ()>
 
+=head2 C<format_tab ()>
 
 =head1 DIAGNOSTICS
 

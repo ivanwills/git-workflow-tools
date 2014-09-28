@@ -6,9 +6,11 @@ WriteMakefile
   'NAME' => 'App-Git-Workflow',
   'VERSION_FROM' => 'lib/App/Git/Workflow.pm',
   'PREREQ_PM' => {
+                   'Capture::Tiny' => 0,
                    'Error' => 0,
                    'Git' => 0,
                    'Path::Class' => 0,
+                   'Test::MockTime' => 0,
                    'Test::More' => 0,
                    'Test::NoWarnings' => 0,
                    'Time::Piece' => 0,

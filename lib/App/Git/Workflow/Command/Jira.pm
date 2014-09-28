@@ -84,7 +84,7 @@ sub which_branch {
 
     if ($option{list}) {
         print +( join "\n", @branches ), "\n";
-        return undef;
+        return;
     }
     return $branches[0] if @branches == 1;
 
@@ -97,7 +97,7 @@ sub which_branch {
     $ans--;
     if (!$branches[$ans]) {
         warn "\nUnknown branch!\n";
-        return undef;
+        return;
     }
 
     return $branches[$ans];
