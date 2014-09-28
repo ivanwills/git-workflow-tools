@@ -13,7 +13,7 @@ use App::Git::Workflow::Pom;
 use App::Git::Workflow::Command qw/get_options/;
 
 our $VERSION = 0.6;
-our $workflow = App::Git::Workflow->new;
+our $workflow = App::Git::Workflow::Pom->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
 our %p2u_extra;
@@ -33,11 +33,12 @@ sub run {
         'branch|b=s',
         'local|l!',
     ) or return;
-    my $sub_command = @ARGV ? "do_$ARGV[0]" : "do_uniq";
+    my $sub_command = @ARGV ? 'do_' . shift @ARGV : "do_uniq";
 
     if ( !$self->can($sub_command) ) {
         warn "Unknown sub command '$sub_command'!\n";
         Pod::Usage::pod2usage( %p2u_extra, -verbose => 1 );
+        return 1;
     }
 
     $workflow->{VERBOSE} = $option{verbose};
@@ -84,37 +85,23 @@ sub do_next {
 
 sub do_whos {
     my (undef, $pom, $version) = @_;
-    my $versions = $workflow->get_pom_versions($option{pom});
 
     if (!$version) {
         warn "No version supplied!\n";
         Pod::Usage::pod2usage( %p2u_extra, -verbose => 1 );
+        return 1;
     }
 
     $version =~ s/-SNAPSHOT$//;
 
-    my $version_re = $version =~ /^\d+[.]\d+[.]\d+/ ? qr/^$version$/ : qr/^$version[.]\d+$/;
+    my $versions = $workflow->get_pom_versions($option{pom});
+
+    my $version_re = $version =~ /^\d+[.]\d+[.]\d+/ ? qr/^$version$/ : qr/$version/;
     my %versions = map {%{ $versions->{$_} }} grep {/$version_re/} keys %{ $versions };
 
-    print join '', map {"$_\t$versions{$_}\n"} sort keys %versions;
+    print map {"$_\t$versions{$_}\n"} sort keys %versions;
 
     return;
-}
-
-sub do_release {
-    my (undef, $pom) = @_;
-    my ($type, $regex);
-
-    if ( !$option{tag} && !$option{branch} ) {
-        my $prod = $workflow->config('workflow.prod') || ( $option{local} ? 'branch=^master$' : 'branch=^origin/master$' );
-        ($type, $regex) = split /\s*=\s*/, $prod;
-    }
-
-    my $release = $workflow->release($type, $option{local}, $regex);
-    my $xml = $workflow->git->show("$release:$pom");
-    my $version = $workflow->pom_version($xml);
-
-    print "$release uses $version\n";
 }
 
 1;
@@ -134,13 +121,11 @@ This documentation refers to git-pom version 0.6
    git-pom [uniq] [option]
    git-pom next [--update|-u]
    git-pom whos version [option]
-   git-pom release [(-t|--tag) release_tag_re|(-b|--branch) relase_branch_re] [-l|--local]
 
  SUB-COMMAND:
   uniq          Confirm that the current branch is the only branch using it's version
   next          Calculates the next available version number
   whos          Which branch uses the pom version "version"
-  release       Display the currently used POM version in the current release
 
  OPTIONS:
   -u --update   Update to next version (used with next)
@@ -181,9 +166,9 @@ Find which branch or branches use a POM version number.
 
 =head1 SUBROUTINES/METHODS
 
-Executes the git workflow command
+=head2 C<run ()>
 
-=head2 C<do_release ()>
+Executes the git workflow command
 
 =head2 C<do_whos ()>
 

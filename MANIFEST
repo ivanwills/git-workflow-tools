@@ -64,6 +64,7 @@ t/data/git-simple/HEAD
 t/data/git-tag/FETCH_HEAD
 t/data/git-tag/HEAD
 t/data/good-pom.xml
+t/data/pom-bad.xml
 t/data/pom.xml
 t/data/slurp.txt
 t/kwalitee.t

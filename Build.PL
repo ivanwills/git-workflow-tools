@@ -23,7 +23,6 @@ my $builder = Module::Build->new(
     },
     build_requires => {
         'Capture::Tiny'    => 0,
-        'Test::Mock::Cmd'  => 0,
         'Test::MockTime'   => 0,
         'Test::More'       => 0,
         'Test::NoWarnings' => 0,

@@ -14,7 +14,6 @@ use base qw/Exporter/;
 use Test::More;
 use Capture::Tiny qw/capture/;
 use Test::MockTime qw/restore_time set_fixed_time/;
-use Test::Mock::Cmd 'system' => sub { return 0; };
 use App::Git::Workflow;
 use Mock::App::Git::Workflow::Repository;
 
