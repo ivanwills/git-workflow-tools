@@ -268,6 +268,7 @@ sub format_html {
 HTML
 
     for my $row (@$csv) {
+        next if !$row && !$row->[2];
         my ($name, $email) = $row->[2] =~ /^<([^>]+)>(.*)$/;
         $row->[0] = $row->[0] eq $releases[-1]{name} ? $row->[0] : qq{<span class="old">$row->[0]</span>};
         $row->[2] = $row->[0] eq $releases[-1]{name} ? $name : qq{<a href="mailto:$email?subject=$row->[1]%20is%20out%20of%20date">$name</a>};
