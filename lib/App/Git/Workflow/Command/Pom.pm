@@ -32,10 +32,6 @@ sub run {
         'tag|t=s',
         'branch|b=s',
         'local|l!',
-        'verbose|v+',
-        'man',
-        'help',
-        'VERSION!',
     ) or return;
     my $sub_command = @ARGV ? "do_$ARGV[0]" : "do_uniq";
 

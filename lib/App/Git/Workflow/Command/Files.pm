@@ -23,12 +23,8 @@ sub run {
     );
     get_options(
         \%option,
-        'verbose|v+',
         'since|s=s',
         'age|a=i',
-        'man',
-        'help',
-        'VERSION!',
     ) or return;
 
     # do stuff here
