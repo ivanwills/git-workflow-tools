@@ -323,7 +323,7 @@ This documentation refers to git-up-to-date version 0.6
   -b --branch[=]str Similarly a branch that other branches with newer commits must
                     contain (Default origin/master)
   -l --local        Shorthand for --branch '^master$'
-  -f --format[=](test|text|html|csv|tab)
+  -f --format[=](test|text|html|csv|tab|json)
                     Set the out put format
                       * test - TAP test formatted output (default)
                       * text - Simple formatted text
