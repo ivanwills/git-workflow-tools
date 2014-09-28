@@ -13,6 +13,7 @@ run();
 done_testing();
 
 sub run {
+    my $localdate = localtime 1411592689;
     my @data = (
         {
             ARGV => [qw{--once --sleep 0}],
@@ -192,8 +193,8 @@ SHOW
                 ['ivan.wills@example.com'],
             ],
             STD => {
-                OUT => <<'STDOUT',
-aaaaaaa @ Thu Sep 25 07:04:49 2014
+                OUT => <<"STDOUT",
+aaaaaaa @ $localdate
   Branches: 
     master
   Files:    
@@ -258,8 +259,8 @@ SHOW
                 ['ivan.wills@example.com'],
             ],
             STD => {
-                OUT => <<'STDOUT',
-aaaaaaa @ Thu Sep 25 07:04:49 2014
+                OUT => <<"STDOUT",
+aaaaaaa @ $localdate
 STDOUT
                 ERR => '.',
             },
