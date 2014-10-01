@@ -68,6 +68,12 @@ sub AUTOLOAD {
 
     return if !$self || !$self->{git};
 
+    warn "running : " . (
+        $self->{git}->can($called)
+        ? "git->$called(@_)"
+        : "git->command($called, @_)"
+    ) . "\n" if $ENV{GW_VERBOSE};
+
     return $self->{git}->can($called)
         ? $self->{git}->$called(@_)
         : $self->{git}->command($called, @_);
