@@ -28,10 +28,11 @@ sub new {
         my @dir = File::Spec->splitdir( File::Spec->rel2abs( File::Spec->curdir ) );
         while (
             @dir > 1
-            && ! -d ( $self->{repository} = File::Spec->catdir(@dir, '.git') )
+            && ! -d File::Spec->catdir(@dir, '.git')
         ) {
             pop @dir;
         }
+        $self->{repository} = File::Spec->catdir(@dir);
         die "Couldn't find the git repository!\n" if !-d $self->{repository};
     }
     $self->{git} = Git->repository(Directory => $self->{repository});
