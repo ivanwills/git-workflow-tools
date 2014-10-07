@@ -25,14 +25,14 @@ sub run {
     %option = (
         max      => 10,
         sleep    => 60,
-        pull_cmd => 'pull',
+        pull_options => '',
     );
     get_options(
         \%option,
         'all|a',
         'branch|b=s',
         'pull|p',
-        'pull_cmd|pull-cmd|P=s',
+        'pull_options|pull-options|P=s',
         'file|f=s',
         'max|m=i',
         'once|1',
@@ -98,8 +98,7 @@ sub git_state {
         @out = $workflow->git->rev_list('--all', "-$option{max}");
     }
     else {
-        my $pull = $option{pull_cmd};
-        $workflow->git->$pull if $option{pull};
+        $workflow->git->pull(split /\s+/, $option{pull_options}) if $option{pull};
         @out = $workflow->git->log('--oneline', "-$option{max}");
     }
 

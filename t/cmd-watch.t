@@ -83,7 +83,7 @@ STDOUT
             option => {
                 max      => 10,
                 sleep    => 0,
-                pull_cmd => 'pull',
+                pull_options => '',
                 once     => 1,
             },
             name   => 'Default (show)',
@@ -144,7 +144,7 @@ STDOUT
             option => {
                 max      => 10,
                 sleep    => 0,
-                pull_cmd => 'pull',
+                pull_options => '',
                 once     => 1,
             },
             name   => 'Default show',
@@ -209,7 +209,7 @@ STDOUT
             option => {
                 max      => 10,
                 sleep    => 0,
-                pull_cmd => 'pull',
+                pull_options => '',
                 once     => 1,
                 verbose  => 1,
             },
@@ -267,7 +267,7 @@ STDOUT
             option => {
                 max      => 10,
                 sleep    => 0,
-                pull_cmd => 'pull',
+                pull_options => '',
                 once     => 1,
                 verbose  => 1,
                 quiet    => 1,
@@ -326,7 +326,7 @@ SHOW
             option => {
                 max      => 10,
                 sleep    => 0,
-                pull_cmd => 'pull',
+                pull_options => '',
                 once     => 1,
                 pull     => 1,
             },
@@ -394,7 +394,7 @@ STDOUT
             option => {
                 max      => 10,
                 sleep    => 0,
-                pull_cmd => 'pull',
+                pull_options => '',
                 once     => 1,
                 remote   => 1,
                 file     => 3,
@@ -458,7 +458,7 @@ SHOW
             option => {
                 max      => 10,
                 sleep    => 0,
-                pull_cmd => 'pull',
+                pull_options => '',
                 once     => 1,
                 remote   => 1,
                 branch   => 'other'
@@ -527,7 +527,7 @@ STDOUT
             option => {
                 max      => 10,
                 sleep    => 0,
-                pull_cmd => 'pull',
+                pull_options => '',
                 once     => 1,
                 all      => 1,
                 file     => 'qwerty.txt',
@@ -591,7 +591,7 @@ SHOW
             option => {
                 max      => 10,
                 sleep    => 0,
-                pull_cmd => 'pull',
+                pull_options => '',
                 once     => 1,
                 remote   => 1,
                 file     => 'qwerty.txt',
