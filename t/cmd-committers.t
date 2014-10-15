@@ -81,16 +81,14 @@ sub run {
         },
         {
             ARGV => [qw/--period date/],
-            mock => [
-                ['master'],
-                ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'],
-            ],
+            mock => [],
             STD => {
-                OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
+                OUT => '',
                 ERR => '',
             },
+            error  => "Unknown period 'date' please choose one of day, week, month or year\n",
             option => { period => 'date' },
-            name   => 'Bad date (uese day)',
+            name   => 'Bad date (use day)',
         },
         {
             ARGV => [qw/--date 2014-09-19/],

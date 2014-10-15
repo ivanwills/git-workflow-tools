@@ -42,7 +42,7 @@ sub run {
             : $option{period} eq 'week'  ? 7
             : $option{period} eq 'month' ? 30
             : $option{period} eq 'year'  ? 365
-            :                              1;
+            :                              die "Unknown period '$option{period}' please choose one of day, week, month or year\n";
         $date
             = $now->wday == 1 ? localtime(time - 3 * $period * 24 * 60 * 60)->ymd
             : $now->wday == 7 ? localtime(time - 2 * $period * 24 * 60 * 60)->ymd
