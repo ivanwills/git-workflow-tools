@@ -17,7 +17,7 @@ use Test::MockTime qw/restore_time set_fixed_time/;
 use App::Git::Workflow;
 use Mock::App::Git::Workflow::Repository;
 
-our $VERSION     = 0.7;
+our $VERSION     = 0.8;
 our @EXPORT      = qw/command_ok/;
 our @EXPORT_OK   = qw/command_ok/;
 our %EXPORT_TAGS = ();
@@ -125,7 +125,7 @@ Test::Git::Workflow::Command - <One-line description of module's purpose>
 
 =head1 VERSION
 
-This documentation refers to Test::Git::Workflow::Command version 0.7
+This documentation refers to Test::Git::Workflow::Command version 0.8
 
 
 =head1 SYNOPSIS

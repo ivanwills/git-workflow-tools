@@ -1,5 +1,15 @@
 Revision history for git-workflow-tools
 
+0.8   2014-10-20
+        Fixed committers to be informative when an unknown period is passed, test changed to match (Ivan Wills)
+        Fixed watche's pull issue (Ivan Wills)
+        Fixed adding ".git" to the repository as Git.pm seems to not want it (Ivan Wills)
+        Added some debugging helper code (Ivan Wills)
+        Added check for non existant row (Ivan Wills)
+        Updating for release of version 0.7 (Ivan Wills)
+        Fixed renamed build object (Ivan Wills)
+        Fixed various tests (Ivan Wills)
+
 0.7   2014-09-28
         Got better code coverage removed poorly thought out code (Ivan Wills)
         Changed to calculate localtime rather than hard code it (Ivan Wills)
