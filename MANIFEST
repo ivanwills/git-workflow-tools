@@ -30,6 +30,8 @@ lib/App/Git/Workflow/Command/UpToDate.pm
 lib/App/Git/Workflow/Command/Watch.pm
 lib/App/Git/Workflow/Pom.pm
 lib/App/Git/Workflow/Repository.pm
+lib/Mock/App/Git/Workflow/Repository.pm
+lib/Test/Git/Workflow/Command.pm
 LICENSE
 Makefile.PL
 MANIFEST
