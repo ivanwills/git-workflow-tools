@@ -70,8 +70,6 @@ t/data/pom-bad.xml
 t/data/pom.xml
 t/data/slurp.txt
 t/kwalitee.t
-t/lib/Mock/App/Git/Workflow/Repository.pm
-t/lib/Test/Git/Workflow/Command.pm
 t/manifest.t
 t/perlcriticrc
 t/pod-coverage.t
