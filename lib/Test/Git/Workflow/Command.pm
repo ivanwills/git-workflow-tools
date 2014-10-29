@@ -121,54 +121,67 @@ __END__
 
 =head1 NAME
 
-Test::Git::Workflow::Command - <One-line description of module's purpose>
+Test::Git::Workflow::Command - Test Git::Workflow::Command::* files
 
 =head1 VERSION
 
 This documentation refers to Test::Git::Workflow::Command version 0.8
 
-
 =head1 SYNOPSIS
 
    use Test::Git::Workflow::Command;
 
-   # Brief but working code example(s) here showing the most common usage(s)
-   # This section will be as far as many users bother reading, so make it as
-   # educational and exemplary as possible.
-
+   command_ok('Test::Git::Workflow::Command::SomeCommand', {...});
 
 =head1 DESCRIPTION
 
-A full description of the module and its features.
-
-May include numerous subsections (i.e., =head2, =head3, etc.).
-
+Helper module to test L<Git::Worflow::Commands>s
 
 =head1 SUBROUTINES/METHODS
 
-A separate section listing the public components of the module's interface.
+=head3 C<command_ok ( $module, $data )>
 
-These normally consist of either subroutines that may be exported, or methods
-that may be called on objects belonging to the classes that the module
-provides.
+Tests C<$module> with the supplied <C$data>
 
-Name the section accordingly.
+C<$data> keys
 
-In an object-oriented module, this section should begin with a sentence (of the
-form "An object of this class represents ...") to give the reader a high-level
-context to help them understand the methods that are subsequently described.
+=over 4
 
+=item ARGV
 
-=head3 C<new ( $search, )>
+The commands command line input
 
-Param: C<$search> - type (detail) - description
+=item mock
 
-Return: Test::Git::Workflow::Command -
+The mock data to supply to the L<Mock::App::Git::Workflow::Repository> object
 
-Description:
+=item STD
 
-=cut
+=over 4
 
+=item IN
+
+STDIN
+
+=item OUT
+
+STDOUT
+
+=item ERR
+
+STDERR
+
+=back
+
+=item option
+
+What the C<%option>s hash should contain at the end of everything
+
+=item name
+
+Name of the test
+
+=back
 
 =head1 DIAGNOSTICS
 
