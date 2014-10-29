@@ -38,5 +38,7 @@ add_stopwords(qw/
     xml
     uniq
     whos
+    ARGV
+    STD
 /);
 all_pod_files_spelling_ok();
