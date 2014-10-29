@@ -21,6 +21,9 @@ use_ok('App::Git::Workflow::Command::UpToDate');
 use_ok('App::Git::Workflow::Command::Watch');
 use_ok('App::Git::Workflow::Pom');
 use_ok('App::Git::Workflow::Repository');
+use_ok('Test::Git::Workflow::Command');
+use_ok('Mock::App::Git::Workflow::Repository');
+
 my $perl = File::Spec->rel2abs($^X);
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-branch-clean"), "bin/git-branch-clean compiles");
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-branch-grep" ), "bin/git-branch-grep compiles" );
