@@ -33,7 +33,7 @@ sub new {
     my $self  = \%param;
 
     bless $self, $class;
-    $self->{git}    ||= App::Git::Workflow::Repository->git;
+
     $self->{TEST}     = 0;
     $self->{VERBOSE}  = 0;
     $self->{GIT_DIR}  = '.git';
@@ -46,7 +46,7 @@ sub new {
     return $self;
 }
 
-sub git { $_[0]->{git} }
+sub git { $_[0]->{git} ||= App::Git::Workflow::Repository->git; }
 
 sub branches {
     my ($self, $type, $contains) = @_;

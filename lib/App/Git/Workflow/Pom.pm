@@ -22,11 +22,6 @@ sub new {
     my $class = shift;
     my $self  = App::Git::Workflow->new(@_);
     bless $self, $class;
-    $self->{MAX_AGE} = 60 * 60 * 24 * (
-        $ENV{GIT_WORKFLOW_MAX_AGE}
-        || $self->git->config('workflow.max-age')
-        || 120
-    );
 
     return $self;
 }
@@ -40,13 +35,22 @@ sub _alphanum_sort {
     return $A cmp $B;
 }
 
+sub _max_age {
+    my ($self) = @_;
+    return $self->{MAX_AGE} ||= 60 * 60 * 24 * (
+        $ENV{GIT_WORKFLOW_MAX_AGE}
+        || $self->git->config('workflow.max-age')
+        || 120
+    );
+}
+
 sub get_pom_versions {
     my ($self, $pom) = @_;
     my @branches = $self->branches('both');
     my $settings = $self->settings();
     my %versions;
     my $count = 0;
-    my $max_age = $self->{MAX_AGE};
+    my $max_age = $self->_max_age;
     my $run = !$settings->{max_age} || $settings->{max_age} == $max_age ? 0 : 1;
 
     while (!%versions && $run < 10) {
