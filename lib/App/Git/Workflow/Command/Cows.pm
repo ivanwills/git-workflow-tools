@@ -15,7 +15,7 @@ use English qw/ -no_match_vars /;
 use App::Git::Workflow;
 use App::Git::Workflow::Command qw/get_options/;
 
-our $VERSION  = 0.9;
+our $VERSION  = 0.11;
 our $workflow = App::Git::Workflow->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
@@ -53,7 +53,7 @@ git-cows - checkout whitespace only changed files
 
 =head1 VERSION
 
-This documentation refers to git-cows version 0.9
+This documentation refers to git-cows version 0.11
 
 =head1 SYNOPSIS
 

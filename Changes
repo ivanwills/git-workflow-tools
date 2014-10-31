@@ -1,5 +1,17 @@
 Revision history for git-workflow-tools
 
+0.11   2014-10-31
+        #1 Updated bug tracker url (Ivan Wills)
+        Fixed test mock data order (Ivan Wills)
+        Fixed test mock data order (Ivan Wills)
+        fixed order change of mock due to lib order changes (Ivan Wills)
+        Reorganised calls so that require/use tests pass (Ivan Wills)
+        Updating for release of version 0.9 (Ivan Wills)
+        fixed boilerplate (Ivan Wills)
+        Added default tests for new files (Ivan Wills)
+        Added extra spelling skip words (Ivan Wills)
+        Revert "Added missing modules" (Ivan Wills)
+
 0.9   2014-10-29
         fixed boilerplate (Ivan Wills)
         Added default tests for new files (Ivan Wills)
