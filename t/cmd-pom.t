@@ -19,10 +19,10 @@ sub run {
         {
             ARGV => [qw{}],
             mock => [
-                undef,
                 't/data/pom.xml',
                 undef,
                 [map {"  $_"} qw{master origin/master}],
+                undef,
                 ['1411800388 0000000000000000000000000000000000000000'],
                 "<project>\n\t<version>1.0.0-SNAPSHOT</version>\n</project>\n",
                 ['1411800388 0000000000000000000000000000000000000000'],
@@ -41,10 +41,10 @@ sub run {
         {
             ARGV => [qw{uniq}],
             mock => [
-                undef,
                 't/data/pom.xml',
                 undef,
                 [map {"  $_"} qw{master origin/master other bad_version}],
+                undef,
                 ['1411800388 0000000000000000000000000000000000000000'],
                 "<project>\n\t<version>SNAPSHOT</version>\n</project>\n",
                 ['1411800388 0000000000000000000000000000000000000000'],
@@ -67,10 +67,10 @@ sub run {
         {
             ARGV => [qw{uniq}],
             mock => [
-                undef,
                 't/data/pom-bad.xml',
                 undef,
                 [map {"  $_"} qw{master origin/master other bad_version}],
+                undef,
                 ['1411800388 0000000000000000000000000000000000000000'],
                 "<project>\n\t<version>VERSION</version>\n</project>\n",
                 ['1411800388 0000000000000000000000000000000000000000'],
@@ -94,10 +94,10 @@ sub run {
         {
             ARGV => [qw{next}],
             mock => [
-                undef,
                 't/data/pom.xml',
                 undef,
                 [map {"  $_"} qw{master origin/master}],
+                undef,
                 ['1411800388 0000000000000000000000000000000000000000'],
                 "<project>\n\t<version>1.0.0-SNAPSHOT</version>\n</project>\n",
                 ['1411800388 0000000000000000000000000000000000000000'],
@@ -116,10 +116,10 @@ sub run {
         {
             ARGV => [qw{next --update}],
             mock => [
-                undef,
                 't/data/pom.xml',
                 undef,
                 [map {"  $_"} qw{master origin/master}],
+                undef,
                 ['1411800388 0000000000000000000000000000000000000000'],
                 "<project>\n\t<version>1.0.0-SNAPSHOT</version>\n</project>\n",
                 ['1411800388 0000000000000000000000000000000000000000'],
@@ -140,10 +140,10 @@ sub run {
         {
             ARGV => [qw{whos 2.0.0}],
             mock => [
-                undef,
                 't/data/pom.xml',
                 undef,
                 [map {"  $_"} qw{master origin/master other}],
+                undef,
                 ['1411800388 0000000000000000000000000000000000000000'],
                 "<project>\n\t<version>1.0.0-SNAPSHOT</version>\n</project>\n",
                 ['1411800388 0000000000000000000000000000000000000000'],
@@ -164,7 +164,6 @@ sub run {
         {
             ARGV => [qw{whos}],
             mock => [
-                undef,
                 't/data/pom.xml',
                 undef,
             ],
@@ -181,10 +180,10 @@ sub run {
         {
             ARGV => [qw{whos 1}],
             mock => [
-                undef,
                 't/data/pom.xml',
                 undef,
                 [map {"  $_"} qw{master origin/master other}],
+                undef,
                 ['1411800388 0000000000000000000000000000000000000000'],
                 "<project>\n\t<version>1.0.0-SNAPSHOT</version>\n</project>\n",
                 ['1411800388 0000000000000000000000000000000000000000'],
