@@ -50,6 +50,7 @@ sub pom_versions {
         [
             [
                 ['* master', '  origin/master', '  origin/veryold'],
+                undef,
                 ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'],
                 '<project><version>1.0.0-SNAPSHOT</version></project>',
                 ['1410113842 5ee992acaa81f6c90d9fa7e52898e33b00f6fa90'],
@@ -63,6 +64,7 @@ sub pom_versions {
         ]
     );
 
+    $git->mock_reset();
     for my $data (@data) {
         $git->mock_add(@{ $data->[0] });
         is_deeply $pom->get_pom_versions('pom.xml'), $data->[1], "Get the correct versions"
