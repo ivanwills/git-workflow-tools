@@ -34,7 +34,7 @@ my $builder = Module::Build->new(
     meta_merge => {
         resources => {
             repository => 'git://github.com/ivanwills/git-workflow-tools.git',
-            bugtracker => 'http://rt.cpan.org/NoAuth/Bugs.html?Dist=git-workflow-tools',
+            bugtracker => 'https://github.com/ivanwills/git-workflow-tools/issues',
         },
     },
 );
