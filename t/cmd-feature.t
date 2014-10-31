@@ -20,7 +20,6 @@ sub run {
                 undef,
                 undef,
                 undef,
-                undef,
             ],
             STD => {
                 OUT => '',
@@ -38,7 +37,6 @@ sub run {
         {
             ARGV => [],
             mock => [
-                undef,
                 'a/pom.xml',
                 undef,
                 undef,
@@ -59,7 +57,6 @@ sub run {
         {
             ARGV => [qw{feature_1}],
             mock => [
-                undef,
                 undef,
                 undef,
                 undef,
@@ -86,7 +83,6 @@ sub run {
                 undef,
                 undef,
                 undef,
-                undef,
                 'branch=release',
                 undef,
                 [map {"  $_"} qw{origin/master origin/release}],
@@ -108,7 +104,6 @@ sub run {
         {
             ARGV => [qw{feature_1 --push}],
             mock => [
-                undef,
                 undef,
                 undef,
                 undef,
@@ -137,7 +132,6 @@ sub run {
                 undef,
                 undef,
                 undef,
-                undef,
                 'branch=release',
                 [map {"  $_"} qw{origin/master origin/release}],
                 undef,
@@ -158,7 +152,6 @@ sub run {
         {
             ARGV => [qw{feature_1 --tag release}],
             mock => [
-                undef,
                 undef,
                 undef,
                 undef,
@@ -186,7 +179,6 @@ sub run {
                 undef,
                 undef,
                 undef,
-                undef,
                 [map {"  $_"} qw{origin/master origin/release}],
                 undef,
             ],
@@ -206,7 +198,6 @@ sub run {
         {
             ARGV => [qw{feature_1 --local}],
             mock => [
-                undef,
                 undef,
                 undef,
                 undef,
@@ -236,7 +227,6 @@ sub run {
                 undef,
                 undef,
                 undef,
-                undef,
                 [map {"  $_"} qw{origin/master origin/release}],
                 undef,
             ],
@@ -255,8 +245,6 @@ sub run {
     );
 
     for my $data (@data) {
-        # add mock for max age
-        $Test::Git::Workflow::Command::git->mock_add(undef);
         command_ok('App::Git::Workflow::Command::Feature', $data);
     }
 }
