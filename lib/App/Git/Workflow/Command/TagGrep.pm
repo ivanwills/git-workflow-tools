@@ -24,7 +24,7 @@ sub run {
     );
 
     $ARGV[0] ||= '';
-    my $grep = $option{insensitive} ? "(?^i:$ARGV[0])" : $ARGV[0];
+    my $grep = $option{insensitive} ? "(?i:$ARGV[0])" : $ARGV[0];
 
     print join "\n", sort {_sorter()} grep {/$grep/} $workflow->git->tag;
     print "\n";
