@@ -1,5 +1,8 @@
 Revision history for git-workflow-tools
 
+0.12   2014-11-01
+        Fixed direct running of git command, changed tests to add missing mock data (Ivan Wills)
+
 0.11   2014-10-31
         #1 Updated bug tracker url (Ivan Wills)
         Fixed test mock data order (Ivan Wills)
