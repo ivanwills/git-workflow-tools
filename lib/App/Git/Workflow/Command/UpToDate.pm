@@ -160,20 +160,16 @@ sub branches_contain {
         next BRANCH if $option{include} && $branch !~ /$option{include}/;
         next BRANCH if $option{exclude} && $branch =~ /$option{exclude}/;
 
-        open my $pipe, '-|', "git log $format -n 1 '$branch'";
         my ($first, $author, $found, $release);
 
-        LOG:
-        while (my $log = <$pipe>) {
-            chomp $log;
-            my ($sha, $time, $user) = split /\s+/, $log, 3;
+        my ($log) = $workflow->git->log($format, qw/-n 1/, $branch);
+        my ($sha, $time, $user) = split /\s+/, $log, 3;
 
-            $first  = $time;
-            $author = $user;
-            if ( $time < $releases[-1]{time} ) {
-                warn "skipping $branch\n" if $option{verbose} > 1;
-                next BRANCH;
-            }
+        $first  = $time;
+        $author = $user;
+        if ( $time < $releases[-1]{time} ) {
+            warn "skipping $branch\n" if $option{verbose} && $option{verbose} > 1;
+            next BRANCH;
         }
 
         my $age = time - $releases[0]{time} + 10 * 60 * 60 * 24;

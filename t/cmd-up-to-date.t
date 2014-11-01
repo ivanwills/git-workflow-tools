@@ -162,6 +162,8 @@ sub run {
                 [map {"  $_"} qw{master origin/master}],
                 ['1411637048 0000000000000000000000000000000000000000'],
                 [map {"  $_"} qw{master origin/master}],
+                ['0000000000000000000000000000000000000000 1414746381 <Ivan Wills>ivan.wills@gmail.com'],
+                ['0000000000000000000000000000000000000000 1414746381 <Ivan Wills>ivan.wills@gmail.com'],
             ],
             STD => {
                 OUT => '',
@@ -182,6 +184,8 @@ sub run {
                 [map {"  $_"} qw{master origin/master}],
                 ['1411637048 0000000000000000000000000000000000000000'],
                 [map {"  $_"} qw{master origin/master}],
+                ['0000000000000000000000000000000000000000 1414746381 <Ivan Wills>ivan.wills@gmail.com'],
+                ['0000000000000000000000000000000000000000 1414746381 <Ivan Wills>ivan.wills@gmail.com'],
             ],
             STD => {
                 OUT => '',
@@ -202,6 +206,8 @@ sub run {
                 [map {"  $_"} qw{master origin/master}],
                 ['1411637048 0000000000000000000000000000000000000000'],
                 [map {"  $_"} qw{master origin/master}],
+                ['0000000000000000000000000000000000000000 1414746381 <Ivan Wills>ivan.wills@gmail.com'],
+                ['0000000000000000000000000000000000000000 1414746381 <Ivan Wills>ivan.wills@gmail.com'],
             ],
             STD => {
                 OUT => "origin/master        master <Ivan Wills>ivan.wills\@gmail.com (0 days old)\n".
@@ -222,6 +228,8 @@ sub run {
                 [map {"  $_"} qw{master origin/master}],
                 ['1411637048 0000000000000000000000000000000000000000'],
                 [map {"  $_"} qw{master origin/master}],
+                ['0000000000000000000000000000000000000000 1414746381 <Ivan Wills>ivan.wills@gmail.com'],
+                ['0000000000000000000000000000000000000000 1414746381 <Ivan Wills>ivan.wills@gmail.com'],
             ],
             STD => {
                 OUT => "origin/master,master,<Ivan Wills>ivan.wills\@gmail.com,0,0\n".
@@ -242,6 +250,8 @@ sub run {
                 [map {"  $_"} qw{master origin/master}],
                 ['1411637048 0000000000000000000000000000000000000000'],
                 [map {"  $_"} qw{master origin/master}],
+                ['0000000000000000000000000000000000000000 1414746381 <Ivan Wills>ivan.wills@gmail.com'],
+                ['0000000000000000000000000000000000000000 1414746381 <Ivan Wills>ivan.wills@gmail.com'],
             ],
             STD => {
                 OUT => "origin/master\tmaster\t<Ivan Wills>ivan.wills\@gmail.com\t0\t0\n".
@@ -263,6 +273,8 @@ sub run {
                 [map {"  $_"} qw{master origin/master}],
                 ['1411637048 0000000000000000000000000000000000000000'],
                 [map {"  $_"} qw{master origin/master}],
+                ['0000000000000000000000000000000000000000 1414746381 <Ivan Wills>ivan.wills@gmail.com'],
+                ['0000000000000000000000000000000000000000 1414746381 <Ivan Wills>ivan.wills@gmail.com'],
                 "http://example.com/example.git",
             ],
             STD => {
@@ -298,6 +310,8 @@ sub run {
                 [map {"  $_"} qw{master origin/master}],
                 ['1411637048 0000000000000000000000000000000000000000'],
                 [map {"  $_"} qw{master origin/master}],
+                ['0000000000000000000000000000000000000000 1414746381 <Ivan Wills>ivan.wills@gmail.com'],
+                ['0000000000000000000000000000000000000000 1414746381 <Ivan Wills>ivan.wills@gmail.com'],
                 'http://example.com/example.git',
             ],
             STD => {
