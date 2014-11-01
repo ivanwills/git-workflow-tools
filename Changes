@@ -1,5 +1,10 @@
 Revision history for git-workflow-tools
 
+0.13   2014-11-01
+        Changed regex to work with older Perl versions (Ivan Wills)
+        Changed regex to work with older Perl versions (Ivan Wills)
+        Added limiting array size to make perl 5.21.3+ happy (Ivan Wills)
+
 0.12   2014-11-01
         Fixed direct running of git command, changed tests to add missing mock data (Ivan Wills)
 

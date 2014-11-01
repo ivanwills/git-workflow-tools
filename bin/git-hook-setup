@@ -15,7 +15,7 @@ use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
 use File::Spec::Functions;
 
-our $VERSION = 0.12;
+our $VERSION = 0.13;
 my ($name) = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
@@ -122,7 +122,7 @@ git-hook-setup - Copies hooks into their proper location
 
 =head1 VERSION
 
-This documentation refers to git-hook-setup version 0.12.
+This documentation refers to git-hook-setup version 0.13.
 
 =head1 SYNOPSIS
 
