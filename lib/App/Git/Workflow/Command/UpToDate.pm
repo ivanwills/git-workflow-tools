@@ -202,7 +202,7 @@ sub format_text {
         $max[1] = length $row->[1] if $max[1] < length $row->[1];
     }
     for my $row (@$csv) {
-        printf "%$max[0]s %$max[1]s %s (%.0f days old)\n", @$row;
+        printf "%$max[0]s %$max[1]s %s (%.0f days old)\n", @$row[0..4];
     }
 
     return;
