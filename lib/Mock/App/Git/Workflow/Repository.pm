@@ -50,6 +50,8 @@ sub AUTOLOAD {
     $called =~ s/.*:://;
     $called =~ s/_/-/g;
 
+    return if $called eq 'DESTROY';
+
     my $cmd = "git $called " . (join ' ', @_);
     if ( !@{ $self->{data} } ) {
         confess "No data setup for `$cmd`\n\t# ".(join "\n\t# ", reverse @{ $self->{ran} })."\n\t";
