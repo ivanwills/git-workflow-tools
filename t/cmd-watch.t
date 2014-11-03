@@ -195,12 +195,12 @@ SHOW
             STD => {
                 OUT => <<"STDOUT",
 aaaaaaa @ $localdate
-  Branches: 
+  Branches:
     master
-  Files:    
+  Files:
     file1
     file2
-  Users:    
+  Users:
     Ivan Wills
 
 STDOUT
@@ -330,6 +330,7 @@ SHOW
                 once     => 1,
                 pull     => 1,
             },
+            skip   => sub { $^O eq 'MSWin32' },
             name   => 'Show with echo and pull',
         },
         {
