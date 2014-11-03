@@ -195,12 +195,12 @@ SHOW
             STD => {
                 OUT => <<"STDOUT",
 aaaaaaa @ $localdate
-  Branches:
+  Branches: 
     master
-  Files:
+  Files:    
     file1
     file2
-  Users:
+  Users:    
     Ivan Wills
 
 STDOUT
