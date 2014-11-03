@@ -9,6 +9,6 @@ if ( not $ENV{TEST_AUTHOR} ) {
     plan( skip_all => $msg );
 }
 
-eval "use Test::CheckManifest 0.13";
-plan skip_all => "Test::CheckManifest 0.13 required" if $@;
+eval "use Test::CheckManifest 0.91";
+plan skip_all => "Test::CheckManifest 0.91 required" if $@;
 ok_manifest();

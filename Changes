@@ -1,5 +1,12 @@
 Revision history for git-workflow-tools
 
+0.91   2014-11-03
+        Added escaped character at the end of the line to stop future edits removing final spaces (Ivan Wills)
+        Fixed needed whitespace (Ivan Wills)
+        Remember lists are 0 based! (Ivan Wills)
+        Added skipping test on windows as "echo" toggles or sets the echo state (Ivan Wills)
+        Added protection against DESTROY calling AUTOLOAD (Ivan Wills)
+
 0.13   2014-11-01
         Changed regex to work with older Perl versions (Ivan Wills)
         Changed regex to work with older Perl versions (Ivan Wills)
