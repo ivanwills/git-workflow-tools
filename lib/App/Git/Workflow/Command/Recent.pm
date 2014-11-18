@@ -29,6 +29,7 @@ sub run {
         'day|d',
         'week|w',
         'month|m',
+        'out|o=s',
         'quiet|q',
     );
 
@@ -39,7 +40,42 @@ sub run {
     my %changed = $self->changed_from_shas(@commits);
 
     # display results
-    warn Dumper \%changed;
+    my $out = 'out_' . ($option{out} || 'text');
+
+    if ($self->can($out)) {
+        $self->$out(\%changed);
+    }
+
+    return;
+}
+
+sub out_text {
+    my ($self, $changed) = @_;
+
+    for my $file (sort keys %$changed) {
+        print "$file\n";
+        print "  Changed by : " . ( join ', ', @{ $changed->{$file}{users} } ), "\n";
+        print "  In branches: " . ( join ', ', @{ $changed->{$file}{branches} } ), "\n";
+    }
+
+    return;
+}
+
+sub out_perl {
+    my ($self, $changed) = @_;
+
+    $Data::Dumper::Sortkeys = 1;
+    $Data::Dumper::Indent = 1;
+    print Dumper $changed;
+
+    return;
+}
+
+sub out_json {
+    my ($self, $changed) = @_;
+
+    require JSON;
+    print JSON::encode_json($changed);
 
     return;
 }
@@ -76,6 +112,11 @@ sub changed_from_shas {
                 %{ $changed->{branches} },
             };
         }
+    }
+
+    for my $file (sort keys %changed) {
+        $changed{$file}{users}    = [ sort keys %{ $changed{$file}{users   } } ];
+        $changed{$file}{branches} = [ sort keys %{ $changed{$file}{branches} } ];
     }
 
     return %changed;
