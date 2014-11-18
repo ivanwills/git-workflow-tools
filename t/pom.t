@@ -2,8 +2,8 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7 + 1;
-use Test::NoWarnings;
+use Test::More;
+use Test::Warnings;
 use Data::Dumper qw/Dumper/;
 use lib 't/lib';
 use App::Git::Workflow::Pom;
@@ -18,6 +18,7 @@ pom();
 next_pom();
 pom_versions();
 undef $pom;
+done_testing;
 
 sub pom {
     my @data = (

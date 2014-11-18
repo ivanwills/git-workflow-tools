@@ -22,10 +22,10 @@ my $builder = Module::Build->new(
         'JIRA::REST' => 0,
     },
     build_requires => {
-        'Capture::Tiny'    => 0,
-        'Test::MockTime'   => 0,
-        'Test::More'       => 0,
-        'Test::NoWarnings' => 0,
+        'Capture::Tiny'  => 0,
+        'Test::MockTime' => 0,
+        'Test::More'     => 0,
+        'Test::Warnings' => 0,
 
     },
     add_to_cleanup     => [ 'App-Git-Workflow-*' ],

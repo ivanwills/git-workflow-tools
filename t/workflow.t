@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use Test::More tests => 15 + 1;
-use Test::NoWarnings;
+use Test::Warnings;
 use Data::Dumper qw/Dumper/;
 use lib 't/lib';
 use App::Git::Workflow;
@@ -28,6 +28,7 @@ test_spew();
 test_settings();
 test_save_settings();
 test_url_encode();
+done_testing();
 
 sub test_branches {
 }
