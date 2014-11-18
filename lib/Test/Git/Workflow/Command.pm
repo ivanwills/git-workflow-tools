@@ -35,6 +35,10 @@ sub command_ok ($$) {  ## no critic
             plan skip_all => "Skipping $data->{name}";
             return;
         }
+        local $TODO;
+        if ($data->{todo}) {
+            $TODO = $data->{todo};
+        }
 
         # initialise
         $git->mock_reset();
@@ -113,7 +117,6 @@ sub command_ok ($$) {  ## no critic
         }
     };
 }
-
 
 1;
 
