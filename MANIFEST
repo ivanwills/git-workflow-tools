@@ -7,6 +7,7 @@ bin/git-files
 bin/git-hook-setup
 bin/git-jira
 bin/git-pom
+bin/git-recent
 bin/git-tag-grep
 bin/git-up-to-date
 bin/git-watch
@@ -25,6 +26,7 @@ lib/App/Git/Workflow/Command/Feature.pm
 lib/App/Git/Workflow/Command/Files.pm
 lib/App/Git/Workflow/Command/Jira.pm
 lib/App/Git/Workflow/Command/Pom.pm
+lib/App/Git/Workflow/Command/Recent.pm
 lib/App/Git/Workflow/Command/TagGrep.pm
 lib/App/Git/Workflow/Command/UpToDate.pm
 lib/App/Git/Workflow/Command/Watch.pm
@@ -48,6 +50,7 @@ t/cmd-feature.t
 t/cmd-files.t
 t/cmd-jira.t
 t/cmd-pom.t
+t/cmd-recent.t
 t/cmd-tag-grep.t
 t/cmd-up-to-date.t
 t/cmd-watch.t
