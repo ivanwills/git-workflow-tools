@@ -1,6 +1,23 @@
 Revision history for git-workflow-tools
 
+0.92   2014-11-18
+        Updating for release of version 0.92 (Ivan Wills)
+        Changed tests to using Test::Warnings (Ivan Wills)
+        Added new file (Ivan Wills)
+        Added better documentation (Ivan Wills)
+        Added recent files to load and boilerplate tests (Ivan Wills)
+        Got code coverage of "recent" to 100% (Ivan Wills)
+        Got better output going (Ivan Wills)
+        Added new files (Ivan Wills)
+        Fixed --day, --week and --month options (Ivan Wills)
+        Added branch info to output (Ivan Wills)
+        Implemented a default test (but it's still TODO) (Ivan Wills)
+        Added the ability to mark a test as TODO (Ivan Wills)
+        Basic implementation working (Ivan Wills)
+        New script to show recent changes (Ivan Wills)
+
 0.91   2014-11-03
+        Updating for release of version 0.91 (Ivan Wills)
         Added escaped character at the end of the line to stop future edits removing final spaces (Ivan Wills)
         Fixed needed whitespace (Ivan Wills)
         Remember lists are 0 based! (Ivan Wills)

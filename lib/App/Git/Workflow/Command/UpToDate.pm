@@ -13,7 +13,7 @@ use App::Git::Workflow;
 use App::Git::Workflow::Command qw/get_options/;
 use Carp qw/cluck/;
 
-our $VERSION  = 0.91;
+our $VERSION  = 0.92;
 our $workflow = App::Git::Workflow->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
@@ -299,7 +299,7 @@ git-up-to-date - Check that git branches include latest production branch/tag
 
 =head1 VERSION
 
-This documentation refers to git-up-to-date version 0.91
+This documentation refers to git-up-to-date version 0.92
 
 =head1 SYNOPSIS
 
