@@ -105,10 +105,10 @@ sub changed_from_shas {
     for my $sha (@commits) {
         my $changed = $workflow->commit_details($sha, branches => 1, files => 1, user => 1);
         for my $file (keys %{ $changed->{files} }) {
-            $changed{$file} ||= {};
+            $changed{$file} ||= { branches => {} };
             $changed{$file}{users}{$changed->{user}}++;
             $changed{$file}{branches} = {
-                %{ $changed{$file}{branches} || {} },
+                %{ $changed{$file}{branches} },
                 %{ $changed->{branches} },
             };
         }
@@ -162,6 +162,27 @@ changes and makes others work easier.
 =head2 C<run ()>
 
 Executes the git workflow command
+
+=head2 C<recent_commits ($options)>
+
+Gets a list of recent commits
+
+=head2 C<changed_from_shas (@commits)>
+
+Takes a list of commits and returns a HASH of files changed, by whom and in
+what branches.
+
+=head2 C<out_text ($changed)>
+
+Displays changed files in a textural format
+
+=head2 C<out_perl ($changed)>
+
+Displays changed files in a Perl format
+
+=head2 C<out_json ($changed)>
+
+Displays changed files in a JSON format
 
 =head1 DIAGNOSTICS
 
