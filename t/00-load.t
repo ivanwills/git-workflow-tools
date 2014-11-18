@@ -18,6 +18,7 @@ use_ok('App::Git::Workflow::Command::Jira');
 use_ok('App::Git::Workflow::Command::Pom');
 use_ok('App::Git::Workflow::Command::TagGrep');
 use_ok('App::Git::Workflow::Command::UpToDate');
+use_ok('App::Git::Workflow::Command::Recent');
 use_ok('App::Git::Workflow::Command::Watch');
 use_ok('App::Git::Workflow::Pom');
 use_ok('App::Git::Workflow::Repository');
@@ -36,6 +37,7 @@ ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-jira"        ), "bi
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-pom"         ), "bin/git-pom compiles"         );
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-tag-grep"    ), "bin/git-tag-grep compiles"    );
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-up-to-date"  ), "bin/git-up-to-date compiles"  );
+ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-recent"      ), "bin/git-recent compiles"      );
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-watch"       ), "bin/git-watch compiles"       );
 
 diag( "Testing App-Git-Workflow, Perl $], $^X" );

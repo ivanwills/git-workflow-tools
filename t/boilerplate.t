@@ -2,8 +2,8 @@
 
 use strict;
 use warnings;
-use Test::More tests => 31 + 1;
-use Test::NoWarnings;
+use Test::More;
+use Test::Warnings;
 
 sub not_in_file_ok {
     my ($filename, %regex) = @_;
@@ -69,6 +69,7 @@ module_boilerplate_ok('bin/git-jira');
 module_boilerplate_ok('bin/git-pom');
 module_boilerplate_ok('bin/git-tag-grep');
 module_boilerplate_ok('bin/git-up-to-date');
+module_boilerplate_ok('bin/git-recent');
 module_boilerplate_ok('bin/git-watch');
 module_boilerplate_ok('lib/App/Git/Workflow.pm');
 module_boilerplate_ok('lib/App/Git/Workflow/Command.pm');
@@ -82,8 +83,10 @@ module_boilerplate_ok('lib/App/Git/Workflow/Command/Jira.pm');
 module_boilerplate_ok('lib/App/Git/Workflow/Command/Pom.pm');
 module_boilerplate_ok('lib/App/Git/Workflow/Command/TagGrep.pm');
 module_boilerplate_ok('lib/App/Git/Workflow/Command/UpToDate.pm');
+module_boilerplate_ok('lib/App/Git/Workflow/Command/Recent.pm');
 module_boilerplate_ok('lib/App/Git/Workflow/Command/Watch.pm');
 module_boilerplate_ok('lib/App/Git/Workflow/Pom.pm');
 module_boilerplate_ok('lib/App/Git/Workflow/Repository.pm');
 module_boilerplate_ok('lib/Mock/App/Git/Workflow/Repository.pm');
 module_boilerplate_ok('lib/Test/Git/Workflow/Command.pm');
+done_testing;
