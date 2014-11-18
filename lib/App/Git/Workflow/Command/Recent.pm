@@ -21,13 +21,56 @@ our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
 
 sub run {
+    my $self = shift;
+
     get_options(
         \%option,
+        'since|s=s',
+        'day|d',
+        'week|w',
+        'month|m',
         'quiet|q',
     );
 
+    # get a list of recent commits
+    my @commits = $self->recent_commits(\%option);
+
+    # find the files in each commit
+    my %changed = $self->changed_from_shas(@commits);
+
+    # display results
+    warn Dumper \%changed;
 
     return;
+}
+
+sub recent_commits {
+    my ($self, $option) = @_;
+
+    my @args = ('--since', $option->{since} );
+
+    if (!@args) {
+        @args = $option->{week} ? ('--max-age', time - 7  * 24 * 60 * 60 )
+            : $option->{month}  ? ('--max-age', time - 31 * 24 * 60 * 60 )
+            :                     ('--max-age', time - 1  * 24 * 60 * 60 );
+    }
+
+    return $workflow->git->rev_list('--all', @args);
+}
+
+sub changed_from_shas {
+    my ($self, @commits) = @_;
+    my %changed;
+
+    for my $sha (@commits) {
+        my $changed = $workflow->commit_details($sha, branches => 1, files => 1, user => 1);
+        for my $file (keys %{ $changed->{files} }) {
+            $changed{$file} ||= {};
+            $changed{$file}{users} = $changed->{user};
+        }
+    }
+
+    return %changed;
 }
 
 1;
