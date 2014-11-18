@@ -16,7 +16,7 @@ __DATA__
 
 =head1 NAME
 
-git-recent - checkout whitespace only changed files
+git-recent - Find what files have been changed recently in a repository
 
 =head1 VERSION
 
@@ -24,10 +24,23 @@ This documentation refers to git-recent version 0.91
 
 =head1 SYNOPSIS
 
-   git-recent [option]
+   git-recent [-since=YYYY-MM-DD|--day|--week|--month] [(-o|--out) [text|json|perl]]
+   git-recent --help
+   git-recent --man
+   git-recent --VERSION
 
  OPTIONS:
-  -q --quiet    Suppress notifying of files changed
+  -s --since[=]iso-date
+                Show changed files since this date
+  -s --day      Show changed files from the last day (Default action)
+  -s --week     Show changed files from the last week
+  -s --month    Show changed files from the last month
+  -s --out[=](text|json|perl)
+                Specify how to display the results
+                    - text : Nice human readable format (Default)
+                    - json : as a JSON object
+                    - perl : as a Perl object
+  -q --quiet    Don't show who has changed the file or where it was changed
 
   -v --verbose  Show more detailed option
      --VERSION  Prints the version information
@@ -36,14 +49,9 @@ This documentation refers to git-recent version 0.91
 
 =head1 DESCRIPTION
 
-C<git-recent> resets any files that only contain whitespace changes.
-This is done by finding all files modified (as shown by a C<git status>) and
-run them through C<git diff -w>. If any file results in no out put is shown
-(i.e. the changes are only white spaces) the file is then C<git checkout>ed to
-remove those changes.
-
-This makes it easier make your commits clean of pointless whitespace only
-changes and makes others work easier.
+C<git-recent> finds all files that have been changed in all branches in the
+repository. This allows colaborators to quickly see who is working on what
+even if it's in a different branch.
 
 =head1 SUBROUTINES/METHODS
 
