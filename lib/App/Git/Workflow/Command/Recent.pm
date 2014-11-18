@@ -49,10 +49,14 @@ sub recent_commits {
 
     my @args = ('--since', $option->{since} );
 
-    if (!@args) {
-        @args = $option->{week} ? ('--max-age', time - 7  * 24 * 60 * 60 )
-            : $option->{month}  ? ('--max-age', time - 31 * 24 * 60 * 60 )
-            :                     ('--max-age', time - 1  * 24 * 60 * 60 );
+    if ( !$option->{since} ) {
+        my (undef,undef,undef,$day,$month,$year) = localtime;
+        $year += 1900;
+        $month++;
+
+        @args = $option->{week} ? ('--since', sprintf "%04d-%02d-%02d", $year - 1, $month, $day )
+            : $option->{month}  ? ('--since', sprintf "%04d-%02d-%02d", $year, $month - 1, $day )
+            :                     ('--since', sprintf "%04d-%02d-%02d", $year, $month, $day - 1 );
     }
 
     return $workflow->git->rev_list('--all', @args);
