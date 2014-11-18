@@ -66,7 +66,11 @@ sub changed_from_shas {
         my $changed = $workflow->commit_details($sha, branches => 1, files => 1, user => 1);
         for my $file (keys %{ $changed->{files} }) {
             $changed{$file} ||= {};
-            $changed{$file}{users} = $changed->{user};
+            $changed{$file}{users}{$changed->{user}}++;
+            $changed{$file}{branches} = {
+                %{ $changed{$file}{branches} || {} },
+                %{ $changed->{branches} },
+            };
         }
     }
 
