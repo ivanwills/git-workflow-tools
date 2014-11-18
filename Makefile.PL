@@ -28,6 +28,7 @@ WriteMakefile
                    'bin/git-hook-setup',
                    'bin/git-jira',
                    'bin/git-pom',
+                   'bin/git-recent',
                    'bin/git-tag-grep',
                    'bin/git-up-to-date',
                    'bin/git-watch'
