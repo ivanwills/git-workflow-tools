@@ -66,6 +66,22 @@ sub run {
             name   => 'Find remote branch',
         },
         {
+            ARGV => [qw/ABC-123 -l/],
+            mock => [
+                [map {"  $_"} qw/master /],
+                [map {"  $_"} qw{origin/master origin/abc_123}],
+                ['1416341516 75c7e676ea83792dafd918c4213ebbdb292299ce'],
+                ['Test User'],
+                ['test.user@example.com'],
+            ],
+            STD => {
+                OUT => qr{^origin/abc_123 [(]Test User at [^)]+[)]$},
+                ERR => qr/^$/,
+            },
+            option => {list => 1},
+            name   => 'Find remote branch',
+        },
+        {
             ARGV => [qw/ABC-123 -q/],
             mock => [
                 [map {"  $_"} qw/master abc_123/],
@@ -106,18 +122,30 @@ sub run {
             name   => 'Find quiet remote branch',
         },
         {
-            ARGV => [qw/ABC-123 --list/],
+            ARGV => [qw/ABC-124 --list/],
             mock => [
-                [map {"  $_"} qw/master abc_123/],
+                [map {"  $_"} qw/master abc_124/],
                 ['1416341516 75c7e676ea83792dafd918c4213ebbdb292299ce'],
                 ['Test User'],
                 ['test.user@example.com'],
             ],
             STD => {
-                OUT => qr/^abc_123 [(]Test User at [^)]+[)]$/,
+                OUT => qr/^abc_124 [(]Test User at [^)]+[)]$/,
                 ERR => qr/^$/,
             },
             option => {list => 1},
+            name   => 'List local branches',
+        },
+        {
+            ARGV => [qw/ABC-123 --list --quiet/],
+            mock => [
+                [map {"  $_"} qw/master abc_123/],
+            ],
+            STD => {
+                OUT => qr/^abc_123$/,
+                ERR => qr/^$/,
+            },
+            option => {list => 1, quiet => 1},
             name   => 'List local branches',
         },
         {
