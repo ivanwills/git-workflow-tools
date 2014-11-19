@@ -158,6 +158,10 @@ Executes the git workflow command
 
 Ask the user which branch to switch to
 
+=head2 C<label ($branch)>
+
+Adds user and time to a branch unless --quiet used
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
