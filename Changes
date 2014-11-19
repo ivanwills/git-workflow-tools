@@ -1,5 +1,9 @@
 Revision history for git-workflow-tools
 
+0.93   2014-11-19
+        Updating for release of version 0.93 (Ivan Wills)
+        Changed to show info about branches, fixed tests to match (Ivan Wills)
+
 0.92   2014-11-18
         Updating for release of version 0.92 (Ivan Wills)
         Changed tests to using Test::Warnings (Ivan Wills)
