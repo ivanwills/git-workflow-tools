@@ -49,6 +49,7 @@ sub run {
         my (@remote_branch) = grep {/^origin\/(\w+_)?$jira_re/} $workflow->branches('remote');
         if (@remote_branch) {
             my $remote_branch = which_branch(@remote_branch);
+            return if !defined $remote_branch;
             my $branch = $remote_branch;
             $branch =~ s{^origin/}{};
             $workflow->git->checkout('-b', $branch, '--track', $remote_branch);
@@ -83,14 +84,14 @@ sub which_branch {
     my @branches = map {/(.*)$/} @_;
 
     if ($option{list}) {
-        print +( join "\n", @branches ), "\n";
+        print +( join "\n", map {label($_)} @branches ), "\n";
         return;
     }
     return $branches[0] if @branches == 1;
 
     my $count = 0;
     print {*STDERR} "Which branch:\n\t";
-    print {*STDERR} join "", map { ++$count . ". $_\n\t" } @branches;
+    print {*STDERR} join "", map { ++$count . ". $_\n\t" } map {label($_)} @branches;
     print {*STDERR} "\n[1..$count] : ";
     my $ans = <STDIN>;
     chomp $ans;
@@ -101,6 +102,15 @@ sub which_branch {
     }
 
     return $branches[$ans];
+}
+
+sub label {
+    my ($branch) = @_;
+    return $branch if $option{quiet};
+
+    my $details = $workflow->commit_details($branch, user => 1);
+
+    return "$branch ($details->{user} at " . localtime($details->{time}) . ')';
 }
 
 1;

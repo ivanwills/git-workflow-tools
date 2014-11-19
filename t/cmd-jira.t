@@ -109,9 +109,12 @@ sub run {
             ARGV => [qw/ABC-123 --list/],
             mock => [
                 [map {"  $_"} qw/master abc_123/],
+                ['1416341516 75c7e676ea83792dafd918c4213ebbdb292299ce'],
+                ['Test User'],
+                ['test.user@example.com'],
             ],
             STD => {
-                OUT => qr/^abc_123$/,
+                OUT => qr/^abc_123 [(]Test User at [^)]+[)]$/,
                 ERR => qr/^$/,
             },
             option => {list => 1},
@@ -121,6 +124,12 @@ sub run {
             ARGV => [qw/ABC-123/],
             mock => [
                 [map {"  $_"} qw/master abc_123 abc_123_v2/],
+                ['1416341516 0000000000000000000000000000000000000000'],
+                ['Test User'],
+                ['test.user@example.com'],
+                ['1416345516 1111111111111111111111111111111111111111'],
+                ['Test User'],
+                ['test.user@example.com'],
                 undef,
             ],
             STD => {
@@ -135,6 +144,12 @@ sub run {
             ARGV => [qw/ABC-123/],
             mock => [
                 [map {"  $_"} qw/master abc_123 abc_123_v2/],
+                ['1416341516 0000000000000000000000000000000000000000'],
+                ['Test User'],
+                ['test.user@example.com'],
+                ['1416345516 1111111111111111111111111111111111111111'],
+                ['Test User'],
+                ['test.user@example.com'],
                 undef,
             ],
             STD => {
@@ -149,6 +164,12 @@ sub run {
             ARGV => [qw/ABC-123/],
             mock => [
                 [map {"  $_"} qw/master abc_123 abc_123_v2/],
+                ['1416341516 0000000000000000000000000000000000000000'],
+                ['Test User'],
+                ['test.user@example.com'],
+                ['1416345516 1111111111111111111111111111111111111111'],
+                ['Test User'],
+                ['test.user@example.com'],
             ],
             STD => {
                 OUT => qr/^$/,
@@ -161,6 +182,6 @@ sub run {
     );
 
     for my $data (@data) {
-        command_ok('App::Git::Workflow::Command::Jira', $data);
+        command_ok('App::Git::Workflow::Command::Jira', $data) or last;
     }
 }
