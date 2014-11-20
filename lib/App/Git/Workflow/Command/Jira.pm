@@ -24,6 +24,8 @@ sub run {
     }
     get_options(
         \%option,
+        'all|a',
+        'remote|r',
         'list|l',
         'quiet|q!',
         'url|u=s',
@@ -36,7 +38,9 @@ sub run {
     $jira_re = lc $jira_re;
 
     # check local branches first
-    my @branch = grep {/^(\w+_)?$jira_re(?:\D|$)/} $workflow->branches();
+    my $type   = $option{all} ? 'both' : $option{remote} ? 'remote' : 'local';
+    my $prefix = $option{all} || $option{remote} ? '(?:\w+/)?' : '';
+    my @branch = grep {/^$prefix(\w+_)?$jira_re(?:\D|$)/} $workflow->branches($type);
 
     if (@branch) {
         my $branch = which_branch(@branch);
