@@ -46,7 +46,7 @@ sub new {
     return $self;
 }
 
-sub git { $_[0]->{git} ||= App::Git::Workflow::Repository->git; }
+sub git { $_[0]->{git} || ($_[0]->{git} = App::Git::Workflow::Repository->git); }
 
 sub branches {
     my ($self, $type, $contains) = @_;
@@ -68,7 +68,7 @@ sub branches {
         map { /^[*]?\s+(?:remotes\/)?(.*?)\s*$/xms }
         grep {!/HEAD/}
         $self->git->branch(@options)
-    ] if !$self->{branches}{$type} || !@{ $self->{branches}{$type} };
+    ] if !$self->{branches}{$type};
 
     return @{ $self->{branches}{$type} };
 }

@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 15 + 1;
+use Test::More;
 use Test::Warnings;
 use Data::Dumper qw/Dumper/;
 use lib 't/lib';
@@ -31,6 +31,11 @@ test_url_encode();
 done_testing();
 
 sub test_branches {
+    ok !eval{ $pom->branches('bad') } && $@, 'Bad branch type throws error';
+
+    $git->mock_add([map {"  $_"} qw{master abc_123}]);
+    is_deeply [$pom->branches()], [$pom->branches], "Two calls to branches uses cache";
+
 }
 
 sub test_tags {
