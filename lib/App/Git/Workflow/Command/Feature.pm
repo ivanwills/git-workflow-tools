@@ -72,7 +72,7 @@ sub run {
     if ($option{new_pom}) {
         my $version = $workflow->next_pom_version($option{pom});
 
-        $workflow->runner(qw/mvn versions:set/, "–DnewVersion=$version");
+        system(qw/mvn versions:set/, "–DnewVersion=$version");
     }
 
     # push if requested to

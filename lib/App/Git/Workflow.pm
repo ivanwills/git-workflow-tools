@@ -213,21 +213,6 @@ sub spew {
     print $fh @out;
 }
 
-sub runner {
-    my ($self, @cmd) = @_;
-
-    print join ' ', @cmd, "\n" if $self->{VERBOSE};
-    return if $self->{TEST};
-
-    if (!defined wantarray) {
-        return system @cmd;
-    }
-
-    carp "Too many arguments!\n" if @cmd != 1;
-
-    return qx/$cmd[0]/;
-}
-
 sub settings {
     my ($self) = @_;
     return $self->{settings} if $self->{settings};
@@ -351,8 +336,6 @@ Get the current branch/tag or commit
 =head2 C<release ($tag_or_branch, $local, $search)>
 
 =head2 C<releases (%option)>
-
-=head2 C<runner (@cmd)>
 
 =head2 C<commit_details ($name)>
 
