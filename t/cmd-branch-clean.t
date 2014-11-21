@@ -129,6 +129,56 @@ sub run {
             name   => 'delete only old and merged branches',
         },
         {
+            ARGV => [qw{--tag --test}],
+            mock => [
+                undef,
+                [map {"  $_"} qw{master feature old_project}],
+                [(time - 60*60*24*50) . ' 1111111111111111111111111111111111111111'],
+                [map {"  $_"} qw{master feature}],
+                [(time - 60*60*24*50) . ' 1111111111111111111111111111111111111111'],
+            ],
+            STD => {
+                OUT => qr//,
+                ERR => qr/Deleted \s 2 \s of \s 2 \s branches/xms,
+            },
+            option => {
+                exclude => [],
+                max_age => 120,
+                tag_prefix => '',
+                tag_suffix => '',
+                tag        => 1,
+                test       => 1,
+            },
+            name   => 'test tag deleted branches',
+        },
+        {
+            ARGV => [qw{--tag --no-test}],
+            mock => [
+                undef,
+                [map {"  $_"} qw{master feature old_project}],
+                [(time - 60*60*24*50) . ' 1111111111111111111111111111111111111111'],
+                [map {"  $_"} qw{master feature}],
+                undef,
+                undef,
+                [(time - 60*60*24*50) . ' 1111111111111111111111111111111111111111'],
+                [map {"  $_"} qw{master old_project}],
+                undef,
+            ],
+            STD => {
+                OUT => qr//,
+                ERR => qr/Deleted \s 2 \s of \s 2 \s branches/xms,
+            },
+            option => {
+                exclude => [],
+                max_age => 120,
+                tag_prefix => '',
+                tag_suffix => '',
+                tag        => 1,
+                test       => 0,
+            },
+            name   => 'tag deleted branches',
+        },
+        {
             ARGV => [qw{--exclude-file t/data/excludes.txt}],
             mock => [
                 undef,
@@ -200,6 +250,7 @@ sub run {
     );
 
     for my $data (@data) {
-        command_ok('App::Git::Workflow::Command::BranchClean', $data);
+        command_ok('App::Git::Workflow::Command::BranchClean', $data)
+            or return;
     }
 }
