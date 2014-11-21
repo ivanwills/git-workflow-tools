@@ -20,7 +20,7 @@ git-jira - Checkout any branch mentioning the passed Jira
 
 =head1 VERSION
 
-This documentation refers to git-jira version 0.94
+This documentation refers to git-jira version 0.95
 
 =head1 SYNOPSIS
 

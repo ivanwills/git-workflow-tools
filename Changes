@@ -1,5 +1,12 @@
 Revision history for git-workflow-tools
 
+0.95   2014-11-21
+        Updating for release of version 0.95 (Ivan Wills)
+        Improved coverage of git branch-clean (Ivan Wills)
+        Improved coverage (Ivan Wills)
+        Removed runner and replaced with simple system call (Ivan Wills)
+        Added ability to list all and remote branches (Ivan Wills)
+
 0.94   2014-11-19
         Updating for release of version 0.94 (Ivan Wills)
         More tests to get better coverage (Ivan Wills)
