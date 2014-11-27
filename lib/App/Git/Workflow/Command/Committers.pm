@@ -54,6 +54,7 @@ sub run {
     push @options, '-a' if $option{all};
 
     for my $branch ($workflow->git->branch(@options)) {
+        next if $branch =~ / -> /;
         $branch =~ s/^[*]?\s*//;
         for my $log ($workflow->git->log('--format=format:%h %an', ($option{merges} ? () : '--no-merges'), "--since=$date", $branch)) {
             my ($hash, $name) = split /\s/, $log, 2;
@@ -88,6 +89,8 @@ This documentation refers to git-committers version 0.95
    git-committers [option]
 
  OPTIONS:
+  -r --remote   Committers to remote branches
+  -a --all      Committers to any branch (remote or local)
   -d --date=YYYY-MM-DD
                 Commits since this date
   -p --period=[day|week|month|year]

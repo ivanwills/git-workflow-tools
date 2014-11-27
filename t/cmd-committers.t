@@ -104,16 +104,16 @@ sub run {
             name   => 'Specific date',
         },
         {
-            ARGV => [qw/--all/],
+            ARGV => [qw/--all --merges/],
             mock => [
-                ['master'],
+                ['master', 'remotes/origin/HEAD -> origin/master'],
                 ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'],
             ],
             STD => {
                 OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
                 ERR => '',
             },
-            option => { period => 'day', all => 1 },
+            option => { period => 'day', all => 1, merges => 1 },
             name   => 'Day and all branches',
         },
         {
