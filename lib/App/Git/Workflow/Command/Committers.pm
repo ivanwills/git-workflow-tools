@@ -107,6 +107,9 @@ This documentation refers to git-committers version 0.95
 
 =head1 DESCRIPTION
 
+The C<git-committers> command allows to get statistics on who is committing
+to the git repository.
+
 =head1 SUBROUTINES/METHODS
 
 =head2 C<run ()>
