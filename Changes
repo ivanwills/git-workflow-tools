@@ -1,5 +1,12 @@
 Revision history for git-workflow-tools
 
+0.96   2014-11-28
+        Updating for release of version 0.96 (Ivan Wills)
+        Added options to control "release" and updated docs (Ivan Wills)
+        Added more tests to achieve 100% coverage of git-files (Ivan Wills)
+        Changed test to be a little less verbose (Ivan Wills)
+        Added some more documentation (Ivan Wills)
+
 0.95   2014-11-21
         Updating for release of version 0.95 (Ivan Wills)
         Improved coverage of git branch-clean (Ivan Wills)

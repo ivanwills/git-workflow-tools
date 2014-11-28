@@ -14,7 +14,7 @@ use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/Exporter/;
 
-our $VERSION   = 0.95;
+our $VERSION   = 0.96;
 our @EXPORT_OK = qw/get_options/;
 our %p2u_extra;
 
@@ -75,7 +75,7 @@ App::Git::Workflow::Command - Helper for other commands
 
 =head1 VERSION
 
-This documentation refers to App::Git::Workflow::Command version 0.95
+This documentation refers to App::Git::Workflow::Command version 0.96
 
 =head1 SYNOPSIS
 

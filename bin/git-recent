@@ -20,7 +20,7 @@ git-recent - Find what files have been changed recently in a repository
 
 =head1 VERSION
 
-This documentation refers to git-recent version 0.95
+This documentation refers to git-recent version 0.96
 
 =head1 SYNOPSIS
 
