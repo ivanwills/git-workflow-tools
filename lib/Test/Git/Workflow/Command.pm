@@ -72,7 +72,7 @@ sub command_ok ($$) {  ## no critic
         if ($error) {
             #die $error, $stderr if !$data->{error};
             is $error, $data->{error}, "Error matches"
-                or diag explain $error, $data->{error};
+                or ( ref $error && diag explain $error, $data->{error} );
         }
 
         # STDOUT
