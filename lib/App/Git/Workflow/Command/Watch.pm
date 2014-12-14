@@ -208,6 +208,14 @@ A simple example:
 
 This would just echo the files that have changed with each change.
 
+=head2 Notes
+
+If trying to watch a branch that is connected to a remote branch the C<--pull>
+isn't currently working as expected. The workaround is to watch the remote
+branch and do the pull your self. eg
+
+ $ git watch do -rb origin/master -- 'git pull --ff -r; your-command'
+
 =head1 SUBROUTINES/METHODS
 
 =head2 C<run ()>
