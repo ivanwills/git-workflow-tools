@@ -95,3 +95,4 @@ tmp*
 git.conf
 fatlib/
 out/
+testing/
