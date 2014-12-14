@@ -161,9 +161,9 @@ This documentation refers to git-watch version 0.96
  OPTIONS:
   -1 --once     Run once then exit
   -p --pull     Before checking if anything has changed do a git pull to the
-                current branch.
+                current branch. (see notes below)
   -P --pull-options[=]flags
-                When using --pull add these options to the pull command
+                When using --pull add these options to the pull command.
   -f --file[=]regex
                 Watch file any files changing that match "regex"
   -b --branch[=]regex
