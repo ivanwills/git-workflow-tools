@@ -1,5 +1,15 @@
 Revision history for git-workflow-tools
 
+0.96001   2014-12-14
+        Updating for release of version 0.96001
+        Fixed generated files (Ivan Wills)
+        Added clarification in --pull's description (Ivan Wills)
+        Added note about --pull not working the way I expect (Ivan Wills)
+        Removed testing files form distribution (Ivan Wills)
+        Moved pull to appropriate position (Ivan Wills)
+        Implemented "run" method (Ivan Wills)
+        Adding testing helper scripts (Ivan Wills)
+
 0.96   2014-11-28
         Updating for release of version 0.96 (Ivan Wills)
         Added options to control "release" and updated docs (Ivan Wills)

@@ -12,7 +12,7 @@ use English qw/ -no_match_vars /;
 use App::Git::Workflow::Pom;
 use App::Git::Workflow::Command qw/get_options/;
 
-our $VERSION  = 0.96;
+our $VERSION  = 0.96001;
 our $workflow = App::Git::Workflow::Pom->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
@@ -127,7 +127,7 @@ git-jira - Checkout any branch mentioning the passed Jira
 
 =head1 VERSION
 
-This documentation refers to git-jira version 0.96
+This documentation refers to git-jira version 0.96001
 
 =head1 SYNOPSIS
 
