@@ -75,12 +75,13 @@ sub run {
         }
         $file->append(rand 100000, "\n");
 
-        system qw/git pull --ff -r/;
         system qw/git add ./;
         system qw/git commit -m/, time . ' Added changes';
+        system qw/git pull --ff -r/;
         system qw/git push/;
 
         sleep $option{sleep};
+        print "\n";
     }
 
     return;
