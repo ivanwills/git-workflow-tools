@@ -20,7 +20,7 @@ our $VERSION = 0.96;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
-    out     => undef,
+    sleep   => 10,
     verbose => 0,
     man     => 0,
     help    => 0,
@@ -57,7 +57,31 @@ sub main {
     my $base_dir = path($0)->parent;
     create($base_dir) if $option{force} || !-d $base_dir->child('git-01-master');
 
-    run();
+    run($base_dir);
+
+    return;
+}
+
+sub run {
+    my ($base_dir) = @_;
+
+    local $CWD = $base_dir->child('git-02-parent');
+    my $file = path('file');
+    my $odd = path('odd');
+
+    while (1) {
+        if (time % 2) {
+            $odd->append(rand 100, "\n");
+        }
+        $file->append(rand 100000, "\n");
+
+        system qw/git pull --ff -r/;
+        system qw/git add ./;
+        system qw/git commit -m/, time . ' Added changes';
+        system qw/git push/;
+
+        sleep $option{sleep};
+    }
 
     return;
 }
