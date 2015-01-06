@@ -204,7 +204,7 @@ aaaaaaa @ $localdate
     Ivan Wills
 
 STDOUT
-                ERR => '.',
+                ERR => qr{^[-/|\\.]?},
             },
             option => {
                 max      => 10,
@@ -262,7 +262,7 @@ SHOW
                 OUT => <<"STDOUT",
 aaaaaaa @ $localdate
 STDOUT
-                ERR => '.',
+                ERR => qr{^[-/|\\.]?},
             },
             option => {
                 max      => 10,

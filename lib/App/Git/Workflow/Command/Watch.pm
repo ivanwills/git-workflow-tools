@@ -48,7 +48,7 @@ sub run {
 
     while ($once) {
         my ($id, @rest) = git_state();
-        print {*STDERR} '.' if $option{verbose};
+        spin() if $option{verbose};
 
         if ( $last ne $id ) {
             $once++;
@@ -138,6 +138,26 @@ sub changes {
 
     return $changes;
 }
+
+{
+    my $spinner;
+    sub spin {
+        if (!defined $spinner) {
+            $spinner = 0;
+            eval { require Term::Spinner };
+            return if $@;
+            $spinner = Term::Spinner->new();
+        }
+        elsif (!$spinner) {
+            print {*STDERR} '.';
+            return;
+        }
+
+        return $spinner->advance;
+    }
+}
+
+1;
 
 __DATA__
 
