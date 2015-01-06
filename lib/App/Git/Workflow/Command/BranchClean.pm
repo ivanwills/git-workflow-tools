@@ -16,8 +16,11 @@ our $VERSION = 0.96001;
 our $workflow = App::Git::Workflow->new;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
+our %p2u_extra;
 
 sub run {
+    my ($self) = @_;
+
     %option = (
         exclude    => [],
         max_age    => ( $ENV{GIT_WORKFLOW_MAX_AGE} || $workflow->config('workflow.max') || 120 ),
@@ -42,7 +45,14 @@ sub run {
     my $max      = 0;
     my @branches = $workflow->branches($option{remote} ? 'remote' : $option{all} ? 'both' : undef );
     my @excludes = @{ $option{exclude} };
+    my $action   = 'do_' . ( $ARGV[0] || 'delete' );
     my ($total, $deleted) = (0, 0);
+
+    if (!$self->can($action)) {
+        warn "Unknown action $ARGV[0]!\n";
+        Pod::Usage::pod2usage( %p2u_extra, -verbose => 1 );
+        return 1;
+    }
 
     if ($option{exclude_file}) {
         for my $exclude ($workflow->slurp($option{exclude_file})) {
@@ -66,39 +76,45 @@ sub run {
         next BRANCH if too_young_to_die($details);
 
         $max = $details->{time} if $max < $details->{time};
-            my $too_old = too_old($details);
-        my $in_master;
-
-        if (!$too_old) {
-            $in_master = in_master($details);
-        }
-
-        if ( $in_master || $too_old ) {
-            warn 'deleting ' . ($in_master ? 'merged' : 'old') . " branch $branch\n";
-            $deleted++;
-
-            my ($remote, $name) = $branch =~ m{/} ? split m{/}, $branch, 2 : (undef, $branch);
-
-            if ( $option{tag} ) {
-                my $tag = $option{tag_prefix} . $name . $option{tag_suffix};
-                $workflow->git->tag(qw/-a -m /, "Converting '$name' to the tag '$tag'", $tag) if !$option{test};
-            }
-
-            if ( !$option{test} ) {
-                if ($remote) {
-                    $workflow->git->push($remote, ":refs/heads/$name");
-                }
-                else {
-                    $workflow->git->branch('-D', "$name");
-                }
-            }
-        }
+        __PACKAGE__->$action($details);
         $total++;
     }
 
     warn "Deleted $deleted of $total branches\nMax = " . (int $max/60/60/24) . "\n";
 
     return;
+}
+
+sub delete {
+    my ($details) = @_;
+
+    my $too_old = too_old($details);
+    my $in_master;
+
+    if (!$too_old) {
+        $in_master = in_master($details);
+    }
+
+    if ( $in_master || $too_old ) {
+        warn 'deleting ' . ($in_master ? 'merged' : 'old') . " branch $branch\n";
+        $deleted++;
+
+        my ($remote, $name) = $branch =~ m{/} ? split m{/}, $branch, 2 : (undef, $branch);
+
+        if ( $option{tag} ) {
+            my $tag = $option{tag_prefix} . $name . $option{tag_suffix};
+            $workflow->git->tag(qw/-a -m /, "Converting '$name' to the tag '$tag'", $tag) if !$option{test};
+        }
+
+        if ( !$option{test} ) {
+            if ($remote) {
+                $workflow->git->push($remote, ":refs/heads/$name");
+            }
+            else {
+                $workflow->git->branch('-D', "$name");
+            }
+        }
+    }
 }
 
 sub in_master {
