@@ -76,7 +76,7 @@ sub run {
         next BRANCH if too_young_to_die($details);
 
         $max = $details->{time} if $max < $details->{time};
-        __PACKAGE__->$action($details);
+        $deleted += __PACKAGE__->$action($branch, $details);
         $total++;
     }
 
@@ -86,7 +86,7 @@ sub run {
 }
 
 sub delete {
-    my ($details) = @_;
+    my ($branch, $details) = @_;
 
     my $too_old = too_old($details);
     my $in_master;
@@ -97,7 +97,6 @@ sub delete {
 
     if ( $in_master || $too_old ) {
         warn 'deleting ' . ($in_master ? 'merged' : 'old') . " branch $branch\n";
-        $deleted++;
 
         my ($remote, $name) = $branch =~ m{/} ? split m{/}, $branch, 2 : (undef, $branch);
 
@@ -114,7 +113,11 @@ sub delete {
                 $workflow->git->branch('-D', "$name");
             }
         }
+
+        return 1;
     }
+
+    return 0;
 }
 
 sub in_master {
