@@ -179,6 +179,7 @@ Defaults for this script can be set thought C<git config>
                 and updating the pom.xml for the new branch)
  workflow.pom-local
                 Can set default value of C<--local>
+ jira.url       Sets the default url for talking to JIRA with
 
 You can set these values either by editing the repository local C<.git/config>
 file or C<~/.gitconfig> or use the C<git config> command
