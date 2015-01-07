@@ -53,6 +53,9 @@ sub pom_versions {
                 ['* master', '  origin/master', '  origin/veryold'],
                 undef,
                 ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'],
+                ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'],
+                ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'],
+                ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'],
                 '<project><version>1.0.0-SNAPSHOT</version></project>',
                 ['1410113842 5ee992acaa81f6c90d9fa7e52898e33b00f6fa90'],
                 '<project><version>2.0.0-SNAPSHOT</version></project>',
@@ -71,4 +74,5 @@ sub pom_versions {
         is_deeply $pom->get_pom_versions('pom.xml'), $data->[1], "Get the correct versions"
             or diag Dumper $data;
     }
+    die 'Still have ' . @{ $git->{data} } . " items of mock data!\n" . Dumper $git->{data} if @{ $git->{data} };
 }

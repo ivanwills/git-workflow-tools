@@ -60,7 +60,7 @@ sub AUTOLOAD {
 
     my $return = shift @{ $self->{data} };
     if (wantarray) {
-        #cluck "Returning Mock for `$cmd`\n" . Dumper($return), "\t";
+        cluck "Returning Mock for `$cmd`\n" . Dumper($return), "\t" if ref $return ne 'ARRAY';
         return @$return;
     }
     else {
