@@ -85,7 +85,6 @@ sub command_ok ($$) {  ## no critic
                 or diag explain $stdout, $data->{STD}{OUT};
         }
         elsif ( ref $data->{STD}{OUT} eq 'HASH' ) {
-            #chomp $stdout;
             my $actual   = $data->{STD}{OUT_PRE} ? eval { $data->{STD}{OUT_PRE}->($stdout) } : $stdout;
             #diag explain [$stdout, $data, $@] if $@;
             is_deeply $actual, $data->{STD}{OUT}, "STDOUT $data->{name} run"

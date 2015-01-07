@@ -85,8 +85,8 @@ sub run {
     return;
 }
 
-sub delete {
-    my ($branch, $details) = @_;
+sub do_delete {
+    my ($self, $branch, $details) = @_;
 
     my $too_old = too_old($details);
     my $in_master;
