@@ -202,6 +202,10 @@ an optional suffix (C<--tag-suffix>) added.
 
 Executes the git workflow command
 
+=head2 C<do_delete ($branch, $details)>
+
+Performs the deleting of old branches.
+
 =head2 C<in_master ($details)>
 
 The branch with C<$details> has been merged to master

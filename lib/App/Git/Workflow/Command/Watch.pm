@@ -248,6 +248,10 @@ Executes the git workflow command
 
 =head2 C<changes ()>
 
+=head2 C<spin ()>
+
+Helper providing access to Term::Spinner if installed
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
