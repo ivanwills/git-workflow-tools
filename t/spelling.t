@@ -40,5 +40,6 @@ add_stopwords(qw/
     whos
     ARGV
     STD
+    eg
 /);
 all_pod_files_spelling_ok();
