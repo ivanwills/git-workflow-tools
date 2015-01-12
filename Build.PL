@@ -18,8 +18,9 @@ my $builder = Module::Build->new(
         'Time::Piece' => 0,
     },
     recommends => {
-        'JSON'       => '2.0',
-        'JIRA::REST' => 0,
+        'JSON'          => '2.0',
+        'JIRA::REST'    => 0,
+        'Term::Spinner' => 0,
     },
     build_requires => {
         'Capture::Tiny'  => 0,
