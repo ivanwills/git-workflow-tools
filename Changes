@@ -1,5 +1,19 @@
 Revision history for git-workflow-tools
 
+0.96002   2015-01-14
+        Updating for release of version 0.96002
+        Added protection against bad (invalid xml) pom files (Ivan Wills)
+        Licence updated (Ivan Wills)
+        Added eg to spell ignores (Ivan Wills)
+        Added missing POD documentation (Ivan Wills)
+        Added recommended dependency (Ivan Wills)
+        Fixed incorrectly named method and missing $self (Ivan Wills)
+        Fixed the test (not sure what the issue was) (Ivan Wills)
+        Fixing some of the broken logic (Ivan Wills)
+        Improved on the verbose action to use Term::Spinner if available (Ivan Wills)
+        Restructured so that branch-clean can support sub commands (Ivan Wills)
+        Added jira.url config documentation (Ivan Wills)
+
 0.96001   2014-12-14
         Updating for release of version 0.96001
         Fixed generated files (Ivan Wills)
