@@ -85,7 +85,13 @@ sub get_pom_versions {
 
             $branch =~ s{^origin/}{}xms;
 
-            my $numerical = my $version = $self->pom_version($xml);
+            my $numerical = my $version = eval { $self->pom_version($xml) };
+
+            # make sure we get a valid version
+            if ( $@ || !defined $numerical ) {
+                next BRANCH;
+            }
+
             # remove snapshots from the end
             $numerical =~ s/-SNAPSHOT$//xms;
             # remove any extranious text from the front
