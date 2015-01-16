@@ -320,7 +320,7 @@ SHOW
                 ['ivan.wills@example.com'],
             ],
             STD => {
-                OUT => "\n",
+                OUT => qr/^\n?$/,
                 ERR => '',
             },
             option => {
