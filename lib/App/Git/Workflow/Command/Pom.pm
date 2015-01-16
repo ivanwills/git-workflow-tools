@@ -34,6 +34,7 @@ sub run {
         'local|l!',
     ) or return;
     my $sub_command = @ARGV ? 'do_' . shift @ARGV : "do_uniq";
+    $sub_command =~ s/-/_/g;
 
     if ( !$self->can($sub_command) ) {
         warn "Unknown sub command '$sub_command'!\n";
@@ -110,26 +111,25 @@ sub do_bad_branches {
     my @branches = $workflow->branches('both');
     my $max_age  = $workflow->_max_age;
 
+    BRANCH:
     for my $branch (sort @branches) {
-        my $current = $self->commit_details($branch);
+        my $current = $workflow->commit_details($branch);
 
         # Skip any branches that are over $MAX_AGE old
         if ( $current->{time} < time - $max_age ) {
-            $saved->{old} = 1;
-            $self->save_settings() if $count++ % 20 == 0;
             next BRANCH;
         }
 
-        my $xml = $self->git->show("$branch:$pom");
+        my $xml = $workflow->git->show("$branch:$pom");
         chomp $xml;
         next if !$xml;
 
         $branch =~ s{^origin/}{}xms;
 
-        my $version = eval { $self->pom_version($xml) };
+        my $version = eval { $workflow->pom_version($xml) };
 
         # make sure we get a valid version
-        if ( $@ || !defined $numerical ) {
+        if ( $@ ) {
             warn "$branch is bad!\n";
         }
     }
