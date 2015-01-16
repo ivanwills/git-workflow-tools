@@ -104,6 +104,39 @@ sub do_whos {
     return;
 }
 
+sub do_bad_branches {
+    my (undef, $pom) = @_;
+
+    my @branches = $workflow->branches('both');
+    my $max_age  = $workflow->_max_age;
+
+    for my $branch (sort @branches) {
+        my $current = $self->commit_details($branch);
+
+        # Skip any branches that are over $MAX_AGE old
+        if ( $current->{time} < time - $max_age ) {
+            $saved->{old} = 1;
+            $self->save_settings() if $count++ % 20 == 0;
+            next BRANCH;
+        }
+
+        my $xml = $self->git->show("$branch:$pom");
+        chomp $xml;
+        next if !$xml;
+
+        $branch =~ s{^origin/}{}xms;
+
+        my $version = eval { $self->pom_version($xml) };
+
+        # make sure we get a valid version
+        if ( $@ || !defined $numerical ) {
+            warn "$branch is bad!\n";
+        }
+    }
+
+    return;
+}
+
 1;
 
 __DATA__
