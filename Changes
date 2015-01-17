@@ -1,5 +1,11 @@
 Revision history for git-workflow-tools
 
+0.96003   2015-01-17
+        Updating for release of version 0.96003
+        Changed test as freebsd seems to not always return a new line (Ivan Wills)
+        Fixed code (Ivan Wills)
+        Added bad-branches (Ivan Wills)
+
 0.96002   2015-01-14
         Updating for release of version 0.96002
         Added protection against bad (invalid xml) pom files (Ivan Wills)
