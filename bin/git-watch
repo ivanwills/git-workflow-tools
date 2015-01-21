@@ -51,7 +51,7 @@ This documentation refers to git-watch version 0.96003
                 Sleep time between fetches (devault 60s)
   -q --quiet    Suppress notifying of what files and branches have changed
   -v --verbose  Show more detailes
-     --VERSION  Prints the version information
+     --version  Prints the version information
      --help     Prints this help information
      --man      Prints the full documentation for git-watch
 

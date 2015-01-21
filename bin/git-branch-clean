@@ -50,7 +50,7 @@ This documentation refers to git-branch-clean version 0.96003
                 would be deleted.
 
   -v --verbose  Show more detailed option
-     --VERSION  Prints the version information
+     --version  Prints the version information
      --help     Prints this help information
      --man      Prints the full documentation for git-branch-clean
 

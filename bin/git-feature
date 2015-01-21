@@ -49,7 +49,7 @@ This documentation refers to git-feature version 0.96003
                     current directory.
   -t --test         Test don't actually run
   -v --verbose      Show more details
-     --VERSION      Prints the version information
+     --version      Prints the version information
      --help         Prints this help information
      --man          Prints the full documentation for git-feature
 

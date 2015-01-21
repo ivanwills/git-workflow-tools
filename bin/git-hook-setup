@@ -20,10 +20,6 @@ my ($name) = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
     base    => '/home',
-    verbose => 0,
-    man     => 0,
-    help    => 0,
-    VERSION => 0,
 );
 
 if ( !@ARGV ) {
@@ -44,10 +40,10 @@ sub main {
         'verbose|v+',
         'man',
         'help',
-        'VERSION!',
+        'version!',
     ) or pod2usage(2);
 
-    if ( $option{'VERSION'} ) {
+    if ( $option{'version'} ) {
         print "$name Version = $VERSION\n";
         exit 1;
     }
@@ -139,7 +135,7 @@ This documentation refers to git-hook-setup version 0.96003.
  OPTIONS:
 
   -v --verbose      Show more detailed option
-     --VERSION      Prints the version information
+     --version      Prints the version information
      --help         Prints this help information
      --man          Prints the full documentation for git-hook-setup
 
