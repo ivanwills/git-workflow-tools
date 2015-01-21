@@ -18,13 +18,7 @@ use Path::Class;
 our $VERSION = 0.96003;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
-my %option = (
-    out     => undef,
-    verbose => 0,
-    man     => 0,
-    help    => 0,
-    VERSION => 0,
-);
+my %option = ();
 
 main();
 exit 0;
@@ -38,11 +32,11 @@ sub main {
         'verbose|v+',
         'man',
         'help',
-        'VERSION!',
+        'version!',
     ) or pod2usage(2);
 
-    if ( $option{'VERSION'} ) {
-        print "$name Version = $VERSION\n";
+    if ( $option{'version'} ) {
+        print "$name Version = $version\n";
         exit 1;
     }
     elsif ( $option{'man'} ) {

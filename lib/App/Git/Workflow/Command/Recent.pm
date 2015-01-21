@@ -139,7 +139,7 @@ This documentation refers to git-recent version 0.96003
    git-recent [-since=YYYY-MM-DD|--day|--week|--month] [(-o|--out) [text|json|perl]]
    git-recent --help
    git-recent --man
-   git-recent --VERSION
+   git-recent --version
 
  OPTIONS:
   -s --since[=]iso-date
@@ -155,7 +155,7 @@ This documentation refers to git-recent version 0.96003
   -q --quiet    Don't show who has changed the file or where it was changed
 
   -v --verbose  Show more detailed option
-     --VERSION  Prints the version information
+     --version  Prints the version information
      --help     Prints this help information
      --man      Prints the full documentation for git-recent
 

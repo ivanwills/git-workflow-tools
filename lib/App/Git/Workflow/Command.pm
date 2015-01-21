@@ -28,18 +28,18 @@ sub get_options {
     Getopt::Long::Configure('bundling');
     GetOptions(
         $option,
-        @options,
         'verbose|v+',
         'man',
         'help',
-        'VERSION!',
+        'version!',
+        @options,
     ) or Pod::Usage::pod2usage(
         -verbose => 1,
         -input   => $caller_package,
         %p2u_extra,
     ) and return;
 
-    if ( $option->{'VERSION'} ) {
+    if ( $option->{'version'} ) {
         my $name = "${caller_package}::name";
         no strict qw/refs/; ## no critic
         print "${$name} Version = $VERSION\n";
@@ -93,7 +93,7 @@ Does the boilerplate for other command modules.
 =head2 C<get_options ($option_hash, @options)>
 
 Just a wrapper for L<Getopt::Long>'s C<GetOptions> which configures bundling
-and adds verbose, help, man and VERSION options. Also if C<GetOptions> fails
+and adds verbose, help, man and version options. Also if C<GetOptions> fails
 usage info will be displayed.
 
 =head1 DIAGNOSTICS

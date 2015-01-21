@@ -348,7 +348,7 @@ This documentation refers to git-up-to-date version 0.96003
   -x --fix          With am-i, merges in the current prod/release branch/tag
 
   -v --verbose      Shows changed branches that are upto date.
-     --VERSION      Prints the version information
+     --version      Prints the version information
      --help         Prints this help information
      --man          Prints the full documentation for git-up-to-date
 

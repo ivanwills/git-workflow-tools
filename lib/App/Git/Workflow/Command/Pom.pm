@@ -170,7 +170,7 @@ This documentation refers to git-pom version 0.96003
   -l --local    Shorthand for --branch '^master$'
 
   -v --verbose  Show more detailed option
-     --VERSION  Prints the version information
+     --version  Prints the version information
      --help     Prints this help information
      --man      Prints the full documentation for git-pom
 

@@ -151,7 +151,7 @@ This documentation refers to git-files version 0.96003
                 Limit getting release history to this number of commits
 
   -v --verbose  Show more detailed option
-     --VERSION  Prints the version information
+     --version  Prints the version information
      --help     Prints this help information
      --man      Prints the full documentation for git-files
 

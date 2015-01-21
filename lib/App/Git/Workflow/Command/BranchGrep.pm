@@ -66,7 +66,7 @@ This documentation refers to git-branch-grep version 0.96003
   -a --all      List all branches
 
   -v --verbose  Show more detailed option
-     --VERSION  Prints the version information
+     --version  Prints the version information
      --help     Prints this help information
      --man      Prints the full documentation for git-branch-grep
 
