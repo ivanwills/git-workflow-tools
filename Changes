@@ -1,5 +1,13 @@
 Revision history for git-workflow-tools
 
+0.96004   2015-01-22
+        Updating for release of version 0.96004
+        Added missing doc (Ivan Wills)
+        Added -v documentation (Ivan Wills)
+        Fixed test to match new --version (Ivan Wills)
+        Added grep -v negation option (Ivan Wills)
+        Finished conversion of --VERSION to --version (Ivan Wills)
+
 0.96003   2015-01-17
         Updating for release of version 0.96003
         Changed test as freebsd seems to not always return a new line (Ivan Wills)

@@ -15,7 +15,7 @@ use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
 use Path::Class;
 
-our $VERSION = 0.96003;
+our $VERSION = 0.96004;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = ();
@@ -67,7 +67,7 @@ __DATA__
 
 =head1 VERSION
 
-This documentation refers to <Name> version 0.0.96003
+This documentation refers to <Name> version 0.0.96004
 
 =head1 SYNOPSIS
 
