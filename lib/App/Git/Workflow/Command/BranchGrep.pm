@@ -23,6 +23,7 @@ sub run {
         'remote|r',
         'all|a',
         'insensitive|i',
+        'v',
     );
 
     $ARGV[0] ||= '';
@@ -31,7 +32,10 @@ sub run {
     push @options, '-a' if $option{all};
     my $grep = $option{insensitive} ? "(?i:$ARGV[0])" : $ARGV[0];
 
-    print join "\n", sort {_sorter()} grep {/$grep/} $workflow->git->branch(@options);
+    print join "\n",
+        sort {_sorter()}
+        grep { $option{v} ? !/$grep/ : /$grep/ }
+        $workflow->git->branch(@options);
     print "\n";
 }
 
