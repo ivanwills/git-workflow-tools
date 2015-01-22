@@ -30,8 +30,9 @@ This documentation refers to git-branch-grep version 0.96003
   regex         grep's perl (-P) regular expression
   -r --remote   List all remote branches
   -a --all      List all branches
+  -v            Find all branches that don't match regex
 
-  -v --verbose  Show more detailed option
+     --verbose  Show more detailed option
      --version  Prints the version information
      --help     Prints this help information
      --man      Prints the full documentation for git-branch-grep
