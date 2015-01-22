@@ -23,12 +23,12 @@ sub options {
     my @data = (
         [
             # @ARGV
-            [qw/--VERSION/],
+            [qw/--version/],
             # Mock Git
             [],
             # STDOUT
             qr/\Atest Version = $App::Git::Workflow::VERSION\n\Z/,
-            { VERSION => 1 },
+            { version => 1 },
         ],
         [
             # @ARGV
@@ -59,7 +59,7 @@ sub options {
         ],
         #[
         #    # @ARGV
-        #    [qw/--VERSION/],
+        #    [qw/--version/],
         #    # Mock Git
         #    [],
         #    # STDOUT
