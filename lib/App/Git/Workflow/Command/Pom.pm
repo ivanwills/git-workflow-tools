@@ -209,6 +209,10 @@ Executes the git workflow command
 
 =head2 C<do_uniq ()>
 
+=head2 C<do_bad_branches ($pom)>
+
+Show branches with pom.xml files that don't pass
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
