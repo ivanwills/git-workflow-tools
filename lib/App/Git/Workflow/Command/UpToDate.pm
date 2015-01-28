@@ -152,7 +152,7 @@ sub do_update_me {
 sub branches_contain {
     my @releases = @_;
     my @branches = $workflow->branches('both');
-    my $format = q/--format=format:'%H %at <%an>%ae'/;
+    my $format = q/--format=format:%at <%an>%ae/;
     my @csv;
 
     BRANCH:
@@ -163,7 +163,7 @@ sub branches_contain {
         my ($first, $author, $found, $release);
 
         my ($log) = $workflow->git->log($format, qw/-n 1/, $branch);
-        my ($sha, $time, $user) = split /\s+/, $log, 3;
+        my ($time, $user) = split /\s+/, $log, 2;
 
         $first  = $time;
         $author = $user;
