@@ -243,6 +243,7 @@ sub run {
     );
 
     for my $data (@data) {
-        command_ok('App::Git::Workflow::Command::Jira', $data) or last;
+        command_ok('App::Git::Workflow::Command::Jira', $data)
+            or return;
     }
 }

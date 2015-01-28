@@ -89,6 +89,7 @@ sub run {
     );
 
     for my $data (@data) {
-        command_ok('App::Git::Workflow::Command::BranchGrep', $data);
+        command_ok('App::Git::Workflow::Command::BranchGrep', $data)
+            or return;
     }
 }

@@ -387,6 +387,7 @@ sub run {
     );
 
     for my $data (@data) {
-        command_ok('App::Git::Workflow::Command::UpToDate', $data);
+        command_ok('App::Git::Workflow::Command::UpToDate', $data)
+            or return;
     }
 }

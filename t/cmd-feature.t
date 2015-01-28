@@ -245,6 +245,7 @@ sub run {
     );
 
     for my $data (@data) {
-        command_ok('App::Git::Workflow::Command::Feature', $data);
+        command_ok('App::Git::Workflow::Command::Feature', $data)
+            or return;
     }
 }

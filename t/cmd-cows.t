@@ -53,6 +53,7 @@ sub run {
     );
 
     for my $data (@data) {
-        command_ok('App::Git::Workflow::Command::Cows', $data);
+        command_ok('App::Git::Workflow::Command::Cows', $data)
+            or return;
     }
 }

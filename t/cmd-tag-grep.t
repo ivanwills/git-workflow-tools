@@ -65,6 +65,7 @@ sub run {
     );
 
     for my $data (@data) {
-        command_ok('App::Git::Workflow::Command::TagGrep', $data);
+        command_ok('App::Git::Workflow::Command::TagGrep', $data)
+            or return;
     }
 }

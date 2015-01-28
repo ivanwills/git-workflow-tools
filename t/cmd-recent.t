@@ -298,6 +298,7 @@ STATUS_0
     );
 
     for my $data (@data) {
-        command_ok('App::Git::Workflow::Command::Recent', $data);
+        command_ok('App::Git::Workflow::Command::Recent', $data)
+            or return;
     }
 }

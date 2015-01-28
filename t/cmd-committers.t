@@ -132,6 +132,7 @@ sub run {
     );
 
     for my $data (@data) {
-        command_ok('App::Git::Workflow::Command::Committers', $data);
+        command_ok('App::Git::Workflow::Command::Committers', $data)
+            or return;
     }
 }

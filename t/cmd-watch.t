@@ -603,6 +603,7 @@ SHOW
     );
 
     for my $data (@data) {
-        command_ok('App::Git::Workflow::Command::Watch', $data);
+        command_ok('App::Git::Workflow::Command::Watch', $data)
+            or return;
     }
 }

@@ -204,6 +204,7 @@ sub run {
     );
 
     for my $data (@data) {
-        command_ok('App::Git::Workflow::Command::Pom', $data);
+        command_ok('App::Git::Workflow::Command::Pom', $data)
+            or return;
     }
 }
