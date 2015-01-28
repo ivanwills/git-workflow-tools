@@ -196,13 +196,14 @@ sub branches_contain {
 sub format_text {
     my (undef, $csv, @releases) = @_;
 
-    my @max = (0,0);
+    my @max = (0,0,0);
     for my $row (@$csv) {
         $max[0] = length $row->[0] if $max[0] < length $row->[0];
         $max[1] = length $row->[1] if $max[1] < length $row->[1];
+        $max[2] = length $row->[2] if $max[2] < length $row->[2];
     }
     for my $row (@$csv) {
-        printf "%$max[0]s %-$max[1]s %s (%.0f days old)\n", @$row[0..3];
+        printf "%$max[0]s %-$max[1]s %-$max[2]s (%2.0f days old)\n", @$row[0..3];
     }
 
     return;
