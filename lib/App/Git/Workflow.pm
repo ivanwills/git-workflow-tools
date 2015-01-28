@@ -123,12 +123,13 @@ sub config {
 }
 
 sub match_commits {
-    my ($self, $type, $regex, $max) = @_;
-    $max ||= 1;
+    my ($self, $type, $regex, %option) = @_;
+    $option{max_history} ||= 1;
+    $option{branches}      = defined $option{branches} ? $option{branches} : 1;
     my @commits = grep {/$regex/} $type eq 'tag' ? $self->tags() : $self->branches('both');
 
-    my $oldest = @commits > $max ? -$max : -scalar @commits;
-    return map { $self->commit_details($_, branches => 1) } @commits[ $oldest .. -1 ];
+    my $oldest = @commits > $option{max_history} ? -$option{max_history} : -scalar @commits;
+    return map { $self->commit_details($_, branches => $option{branches}) } @commits[ $oldest .. -1 ];
 }
 
 sub release {
@@ -163,7 +164,7 @@ sub releases {
         }
     }
 
-    my @releases = $self->match_commits($type, $regex, $option{max_history});
+    my @releases = $self->match_commits($type, $regex, %option);
     die "Could not find any historic releases for $type /$regex/!\n" if !@releases;
     return @releases;
 }

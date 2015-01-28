@@ -24,6 +24,7 @@ sub run {
     %option = (
         format      => 'test',
         max_history => $workflow->config('workflow.max-history') || 1,
+        branches    => 0,
     );
     get_options(
         \%option,
@@ -163,6 +164,7 @@ sub branches_contain {
         my ($first, $author, $found, $release);
 
         my ($log) = $workflow->git->log($format, qw/-n 1/, $branch);
+        next if !$log;
         my ($time, $user) = split /\s+/, $log, 2;
 
         $first  = $time;
