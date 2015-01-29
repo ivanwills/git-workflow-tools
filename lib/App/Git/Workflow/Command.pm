@@ -82,7 +82,8 @@ sub pod2usage {
     else {
         Pod::Usage::pod2usage(@_);
     }
-    return;
+
+    return 1;
 }
 
 1;
