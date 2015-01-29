@@ -47,43 +47,45 @@ sub run {
     my ($last) = git_state();
 
     while ($once) {
-        my ($id, @rest) = git_state();
-        spin() if $option{verbose};
+        eval {
+            my ($id, @rest) = git_state();
+            spin() if $option{verbose};
 
-        if ( $last ne $id ) {
-            $once++;
-            my $changes = changes($last, $id, @rest);
+            if ( $last ne $id ) {
+                $once++;
+                my $changes = changes($last, $id, @rest);
 
-            if ( found($changes) ) {
-                if ( $action eq 'show' ) {
-                    my $time = $option{verbose} ? ' @ ' . localtime $changes->{time} : '';
-                    print "$id$time\n";
+                if ( found($changes) ) {
+                    if ( $action eq 'show' ) {
+                        my $time = $option{verbose} ? ' @ ' . localtime $changes->{time} : '';
+                        print "$id$time\n";
 
-                    if ( !$option{quiet} ) {
-                        my $join = $option{verbose} ? "\n    " : '';
-                        print "  Branches: ";
-                        print $join, join +($join || ', '), sort keys %{ $changes->{branches} };
-                        print "\n";
-                        print "  Files:    ";
-                        print $join, join +($join || ', '), sort keys %{ $changes->{files} };
-                        print "\n";
-                        print "  Users:    ";
-                        print $join, join +($join || ', '), sort keys %{ $changes->{user} };
-                        print "\n\n";
+                        if ( !$option{quiet} ) {
+                            my $join = $option{verbose} ? "\n    " : '';
+                            print "  Branches: ";
+                            print $join, join +($join || ', '), sort keys %{ $changes->{branches} };
+                            print "\n";
+                            print "  Files:    ";
+                            print $join, join +($join || ', '), sort keys %{ $changes->{files} };
+                            print "\n";
+                            print "  Users:    ";
+                            print $join, join +($join || ', '), sort keys %{ $changes->{user} };
+                            print "\n\n";
+                        }
+                    }
+                    else {
+                        $ENV{WATCH_SHA}      = $id;
+                        $ENV{WATCH_USERS}    = join ',', keys %{ $changes->{user} };
+                        $ENV{WATCH_EMAILS}   = join ',', keys %{ $changes->{email} };
+                        $ENV{WATCH_FILES}    = join ',', keys %{ $changes->{files} };
+                        $ENV{WATCH_BRANCHES} = join ',', keys %{ $changes->{branches} };
+                        system @ARGV;
                     }
                 }
-                else {
-                    $ENV{WATCH_SHA}      = $id;
-                    $ENV{WATCH_USERS}    = join ',', keys %{ $changes->{user} };
-                    $ENV{WATCH_EMAILS}   = join ',', keys %{ $changes->{email} };
-                    $ENV{WATCH_FILES}    = join ',', keys %{ $changes->{files} };
-                    $ENV{WATCH_BRANCHES} = join ',', keys %{ $changes->{branches} };
-                    system @ARGV;
-                }
             }
-        }
 
-        $last = $id;
+            $last = $id;
+        };
         sleep $option{sleep};
     }
 
