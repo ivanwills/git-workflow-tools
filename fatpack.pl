@@ -13,7 +13,7 @@ use Pod::Usage;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use FindBin qw/$Bin/;
-use Path::Class;
+use Path::Tiny;
 
 our $VERSION = 0.96004;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
@@ -36,7 +36,7 @@ sub main {
     ) or pod2usage(2);
 
     if ( $option{'version'} ) {
-        print "$name Version = $version\n";
+        print "$name Version = $VERSION\n";
         exit 1;
     }
     elsif ( $option{'man'} ) {
@@ -48,7 +48,7 @@ sub main {
 
     # do stuff here
     mkdir 'out';
-    for my $file (dir('bin')->children) {
+    for my $file (path('bin')->children) {
         next if !-x $file;
         my $out = $file;
         $out =~ s/bin/out/;

@@ -9,7 +9,6 @@ package App::Git::Workflow::Command;
 use strict;
 use warnings;
 use Getopt::Long;
-use Pod::Usage ();
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
 use base qw/Exporter/;
@@ -33,7 +32,7 @@ sub get_options {
         'help',
         'version!',
         @options,
-    ) or Pod::Usage::pod2usage(
+    ) or pod2usage(
         -verbose => 1,
         -input   => $caller_package,
         %p2u_extra,
@@ -46,7 +45,7 @@ sub get_options {
         return;
     }
     elsif ( $option->{'man'} ) {
-        Pod::Usage::pod2usage(
+        pod2usage(
             -verbose => 2,
             -input   => $caller_package,
             %p2u_extra,
@@ -54,7 +53,7 @@ sub get_options {
         return;
     }
     elsif ( $option->{'help'} ) {
-        Pod::Usage::pod2usage(
+        pod2usage(
             -verbose => 1,
             -input   => $caller_package,
             %p2u_extra,
@@ -63,6 +62,27 @@ sub get_options {
     }
 
     return 1;
+}
+
+sub pod2usage {
+    my %opt = @_;
+    eval { require Pod::Usage };
+    if ($@) {
+        my $found = 0;
+        open my $fh, '<', $opt{-input};
+        while ( $_ = <$fh> ) {
+            if (/^__DATA__$/) {
+                $found = 1;
+            }
+            elsif ($found) {
+                print {*STDERR} $_;
+            }
+        }
+    }
+    else {
+        Pod::Usage::pod2usage(@_);
+    }
+    return;
 }
 
 1;
