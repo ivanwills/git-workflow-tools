@@ -58,7 +58,13 @@ sub AUTOLOAD {
     }
     push @{ $self->{ran} }, $cmd;
 
-    my $return = shift @{ $self->{data} };
+    my ($action, $return) = each %{ shift @{ $self->{data} } };
+
+    # sanity check
+    if ($action ne $called) {
+        confess "Trying to use $action data for $called!\n" . Dumper($cmd, $return);
+    }
+
     if (wantarray) {
         cluck "Returning Mock for `$cmd`\n" . Dumper($return), "\t" if ref $return ne 'ARRAY';
         return @$return;
