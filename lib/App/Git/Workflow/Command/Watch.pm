@@ -48,7 +48,7 @@ sub run {
 
     while ($once) {
         eval {
-            my ($id, @rest) = git_state();
+            my ($id, @rest) = git_state(1);
             spin() if $option{verbose};
 
             if ( $last ne $id ) {
@@ -93,10 +93,13 @@ sub run {
 }
 
 sub git_state {
+    my ($fetch) = @_;
     my @out;
 
     if ( $option{all} || $option{remote} ) {
-        $workflow->git->fetch;
+        if ($fetch) {
+            $workflow->git->fetch;
+        }
         @out = $workflow->git->rev_list('--all', "-$option{max}");
     }
     else {
