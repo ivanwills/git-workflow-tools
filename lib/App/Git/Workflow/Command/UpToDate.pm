@@ -70,6 +70,9 @@ sub run {
         return branch_age();
     }
 
+    if ($action eq 'do_show') {
+        $option{branches} = 1;
+    }
     my @releases = $workflow->releases(%option);
 
     if ($option{verbose}) {
@@ -109,7 +112,7 @@ sub do_am_i {
     my (undef, @releases) = @_;
 
     # work out current branch, check that it contains a release branch
-    my $format = q/--format=format:'%H %at <%an>%ae'/;
+    my $format = q/--format=format:%H %at <%an>%ae/;
 
     my $bad = 0;
     for my $release (reverse @releases) {
