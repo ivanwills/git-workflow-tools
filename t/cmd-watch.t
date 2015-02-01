@@ -18,7 +18,7 @@ sub run {
         {
             ARGV => [qw{--once --sleep 0}],
             mock => [
-                [
+                { log    =>  [
                     '9999999 Message9',
                     '8888888 Message8',
                     '7777777 Message7',
@@ -29,8 +29,8 @@ sub run {
                     '2222222 Message2',
                     '1111111 Message1',
                     '0000000 Message0',
-                ],
-                [
+                ]},
+                { log    =>  [
                     '9999999 Message9',
                     '8888888 Message8',
                     '7777777 Message7',
@@ -41,8 +41,8 @@ sub run {
                     '2222222 Message2',
                     '1111111 Message1',
                     '0000000 Message0',
-                ],
-                [
+                ]},
+                { log    =>  [
                     'aaaaaaa Message10',
                     '9999999 Message9',
                     '8888888 Message8',
@@ -54,10 +54,10 @@ sub run {
                     '2222222 Message2',
                     '1111111 Message1',
                     '0000000 Message0',
-                ],
-                [time . ' aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'],
-                ["  master"],
-                <<'SHOW',
+                ]},
+                { 'rev-list' => [time . ' aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'] },
+                { branch => ["  master"] },
+                { show => <<'SHOW' },
 commit 1111111111111111111111111111111111111111
 Author: Ivan Wills <ivan.wills@gmail.com>
 Date:   Wed Sep 24 18:16:18 2014 +1000
@@ -67,8 +67,8 @@ Date:   Wed Sep 24 18:16:18 2014 +1000
 M   file1
 M   file2
 SHOW
-                ['Ivan Wills'],
-                ['ivan.wills@example.com'],
+                { log    => ['Ivan Wills'] },
+                { log    => ['ivan.wills@example.com'] },
             ],
             STD => {
                 OUT => <<'STDOUT',
@@ -91,7 +91,7 @@ STDOUT
         {
             ARGV => [qw{show --once --sleep 0}],
             mock => [
-                [
+                { log    =>  [
                     '9999999 Message9',
                     '8888888 Message8',
                     '7777777 Message7',
@@ -102,8 +102,8 @@ STDOUT
                     '2222222 Message2',
                     '1111111 Message1',
                     '0000000 Message0',
-                ],
-                [
+                ]},
+                { log    =>  [
                     'aaaaaaa Message10',
                     '9999999 Message9',
                     '8888888 Message8',
@@ -115,10 +115,10 @@ STDOUT
                     '2222222 Message2',
                     '1111111 Message1',
                     '0000000 Message0',
-                ],
-                [time . ' aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'],
-                ["  master"],
-                <<'SHOW',
+                ]},
+                { 'rev-list' => [time . ' aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'] },
+                { branch => ["  master"] },
+                { show => <<'SHOW' },
 commit 1111111111111111111111111111111111111111
 Author: Ivan Wills <ivan.wills@gmail.com>
 Date:   Wed Sep 24 18:16:18 2014 +1000
@@ -128,8 +128,8 @@ Date:   Wed Sep 24 18:16:18 2014 +1000
 M   file1
 M   file2
 SHOW
-                ['Ivan Wills'],
-                ['ivan.wills@example.com'],
+                { log    => ['Ivan Wills'] },
+                { log    => ['ivan.wills@example.com'] },
             ],
             STD => {
                 OUT => <<'STDOUT',
@@ -152,7 +152,7 @@ STDOUT
         {
             ARGV => [qw{show --once --sleep 0 --verbose}],
             mock => [
-                [
+                { log    =>  [
                     '9999999 Message9',
                     '8888888 Message8',
                     '7777777 Message7',
@@ -163,8 +163,8 @@ STDOUT
                     '2222222 Message2',
                     '1111111 Message1',
                     '0000000 Message0',
-                ],
-                [
+                ]},
+                { log    =>  [
                     'aaaaaaa Message10',
                     '9999999 Message9',
                     '8888888 Message8',
@@ -176,10 +176,10 @@ STDOUT
                     '2222222 Message2',
                     '1111111 Message1',
                     '0000000 Message0',
-                ],
-                ['1411592689 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'],
-                ["  master"],
-                <<'SHOW',
+                ]},
+                { branch => ['1411592689 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'] },
+                { branch => ["  master"] },
+                { show => <<'SHOW' },
 commit 1111111111111111111111111111111111111111
 Author: Ivan Wills <ivan.wills@gmail.com>
 Date:   Wed Sep 24 18:16:18 2014 +1000
@@ -189,8 +189,8 @@ Date:   Wed Sep 24 18:16:18 2014 +1000
 M   file1
 M   file2
 SHOW
-                ['Ivan Wills'],
-                ['ivan.wills@example.com'],
+                { log    => ['Ivan Wills'] },
+                { log    => ['ivan.wills@example.com'] },
             ],
             STD => {
                 OUT => <<"STDOUT",
@@ -218,7 +218,7 @@ STDOUT
         {
             ARGV => [qw{show --once --sleep 0 --verbose --quiet}],
             mock => [
-                [
+                { log    =>  [
                     '9999999 Message9',
                     '8888888 Message8',
                     '7777777 Message7',
@@ -229,8 +229,8 @@ STDOUT
                     '2222222 Message2',
                     '1111111 Message1',
                     '0000000 Message0',
-                ],
-                [
+                ]},
+                { log    =>  [
                     'aaaaaaa Message10',
                     '9999999 Message9',
                     '8888888 Message8',
@@ -242,10 +242,10 @@ STDOUT
                     '2222222 Message2',
                     '1111111 Message1',
                     '0000000 Message0',
-                ],
-                ['1411592689 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'],
-                ["  master"],
-                <<'SHOW',
+                ]},
+                { 'rev-list' => ['1411592689 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'] },
+                { branch => ["  master"] },
+                { show => <<'SHOW' },
 commit 1111111111111111111111111111111111111111
 Author: Ivan Wills <ivan.wills@gmail.com>
 Date:   Wed Sep 24 18:16:18 2014 +1000
@@ -255,8 +255,8 @@ Date:   Wed Sep 24 18:16:18 2014 +1000
 M   file1
 M   file2
 SHOW
-                ['Ivan Wills'],
-                ['ivan.wills@example.com'],
+                { log    => ['Ivan Wills'] },
+                { log    => ['ivan.wills@example.com'] },
             ],
             STD => {
                 OUT => <<"STDOUT",
@@ -277,8 +277,8 @@ STDOUT
         {
             ARGV => [qw{echo --once --sleep 0 --pull}],
             mock => [
-                undef,
-                [
+                { config => undef },
+                { log    =>  [
                     '9999999 Message9',
                     '8888888 Message8',
                     '7777777 Message7',
@@ -289,9 +289,9 @@ STDOUT
                     '2222222 Message2',
                     '1111111 Message1',
                     '0000000 Message0',
-                ],
-                undef,
-                [
+                ]},
+                { config => undef },
+                { log    =>  [
                     'aaaaaaa Message10',
                     '9999999 Message9',
                     '8888888 Message8',
@@ -303,10 +303,10 @@ STDOUT
                     '2222222 Message2',
                     '1111111 Message1',
                     '0000000 Message0',
-                ],
-                [time . ' aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'],
-                ["  master"],
-                <<'SHOW',
+                ]},
+                { 'rev-list' => [time . ' aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'] },
+                { branch => ["  master"] },
+                { show => <<'SHOW' },
 commit 1111111111111111111111111111111111111111
 Author: Ivan Wills <ivan.wills@gmail.com>
 Date:   Wed Sep 24 18:16:18 2014 +1000
@@ -316,8 +316,8 @@ Date:   Wed Sep 24 18:16:18 2014 +1000
 M   file1
 M   file2
 SHOW
-                ['Ivan Wills'],
-                ['ivan.wills@example.com'],
+                { log    => ['Ivan Wills'] },
+                { log    => ['ivan.wills@example.com'] },
             ],
             STD => {
                 OUT => qr/^\n?$/,
@@ -336,16 +336,16 @@ SHOW
         {
             ARGV => [qw{--remote --once --sleep 0 --file 3 --branch other}],
             mock => [
-                undef,
-                [
+                { config => undef },
+                { log    =>  [
                     '4444444444444444444444444444444444444444',
                     '3333333333333333333333333333333333333333',
                     '2222222222222222222222222222222222222222',
                     '1111111111111111111111111111111111111111',
                     '0000000000000000000000000000000000000000',
-                ],
-                undef,
-                [
+                ]},
+                { config => undef },
+                { log    =>  [
                     '6666666666666666666666666666666666666666',
                     '5555555555555555555555555555555555555555',
                     '4444444444444444444444444444444444444444',
@@ -353,10 +353,10 @@ SHOW
                     '2222222222222222222222222222222222222222',
                     '1111111111111111111111111111111111111111',
                     '0000000000000000000000000000000000000000',
-                ],
-                [time . ' 6666666666666666666666666666666666666666'],
-                [map {"  $_"} qw/master other/],
-                <<'SHOW',
+                ]},
+                { 'rev-list' => [time . ' 6666666666666666666666666666666666666666'] },
+                { branch => [map {"  $_"} qw/master other/] },
+                { show => <<'SHOW' },
 commit 6666666666666666666666666666666666666666
 Author: Some One <some.one@example.com>
 Date:   Wed Sep 24 18:17:18 2014 +1000
@@ -365,11 +365,11 @@ Date:   Wed Sep 24 18:17:18 2014 +1000
 
 M   file3
 SHOW
-                ['Some One'],
-                ['some.one@example.com'],
-                [time . ' 5555555555555555555555555555555555555555'],
-                ["  master"],
-                <<'SHOW',
+                { log    => ['Some One'] },
+                { log    => ['some.one@example.com'] },
+                { 'rev-list' => [time . ' 5555555555555555555555555555555555555555'] },
+                { branch => ["  master"] },
+                { show => <<'SHOW' },
 commit 5555555555555555555555555555555555555555
 Author: Ivan Wills <ivan.wills@gmail.com>
 Date:   Wed Sep 24 18:16:18 2014 +1000
@@ -379,8 +379,8 @@ Date:   Wed Sep 24 18:16:18 2014 +1000
 M   file1
 M   file2
 SHOW
-                ['Ivan Wills'],
-                ['ivan.wills@example.com'],
+                { log    => ['Ivan Wills'] },
+                { log    => ['ivan.wills@example.com'] },
             ],
             STD => {
                 OUT => <<'STDOUT',
@@ -406,16 +406,16 @@ STDOUT
         {
             ARGV => [qw{--remote --once --sleep 0 --branch other}],
             mock => [
-                undef,
-                [
+                { config => undef },
+                { log    =>  [
                     '4444444444444444444444444444444444444444',
                     '3333333333333333333333333333333333333333',
                     '2222222222222222222222222222222222222222',
                     '1111111111111111111111111111111111111111',
                     '0000000000000000000000000000000000000000',
-                ],
-                undef,
-                [
+                ]},
+                { config => undef },
+                { log    =>  [
                     '6666666666666666666666666666666666666666',
                     '5555555555555555555555555555555555555555',
                     '4444444444444444444444444444444444444444',
@@ -423,10 +423,10 @@ STDOUT
                     '2222222222222222222222222222222222222222',
                     '1111111111111111111111111111111111111111',
                     '0000000000000000000000000000000000000000',
-                ],
-                [time . ' 6666666666666666666666666666666666666666'],
-                [map {"  $_"} qw/master ~ther/],
-                <<'SHOW',
+                ]},
+                { 'rev-list' => [time . ' 6666666666666666666666666666666666666666'] },
+                { branch => [map {"  $_"} qw/master ~ther/] },
+                { show => <<'SHOW' },
 commit 6666666666666666666666666666666666666666
 Author: Some One <some.one@example.com>
 Date:   Wed Sep 24 18:17:18 2014 +1000
@@ -435,11 +435,11 @@ Date:   Wed Sep 24 18:17:18 2014 +1000
 
 M   file3
 SHOW
-                ['Some One'],
-                ['some.one@example.com'],
-                [time . ' 5555555555555555555555555555555555555555'],
-                ["  master"],
-                <<'SHOW',
+                { log    => ['Some One'] },
+                { log    => ['some.one@example.com'] },
+                { 'rev-list' => [time . ' 5555555555555555555555555555555555555555'] },
+                { branch => ["  master"] },
+                { show => <<'SHOW' },
 commit 5555555555555555555555555555555555555555
 Author: Ivan Wills <ivan.wills@gmail.com>
 Date:   Wed Sep 24 18:16:18 2014 +1000
@@ -449,8 +449,8 @@ Date:   Wed Sep 24 18:16:18 2014 +1000
 M   file1
 M   file2
 SHOW
-                ['Ivan Wills'],
-                ['ivan.wills@example.com'],
+                { log    => ['Ivan Wills'] },
+                { log    => ['ivan.wills@example.com'] },
             ],
             STD => {
                 OUT => '',
@@ -469,16 +469,16 @@ SHOW
         {
             ARGV => [qw{--all --once --sleep 0 --file qwerty.txt --branch other}],
             mock => [
-                undef,
-                [
+                { config => undef },
+                { log    =>  [
                     '4444444444444444444444444444444444444444',
                     '3333333333333333333333333333333333333333',
                     '2222222222222222222222222222222222222222',
                     '1111111111111111111111111111111111111111',
                     '0000000000000000000000000000000000000000',
-                ],
-                undef,
-                [
+                ]},
+                { config => undef },
+                { log    =>  [
                     '6666666666666666666666666666666666666666',
                     '5555555555555555555555555555555555555555',
                     '4444444444444444444444444444444444444444',
@@ -486,10 +486,10 @@ SHOW
                     '2222222222222222222222222222222222222222',
                     '1111111111111111111111111111111111111111',
                     '0000000000000000000000000000000000000000',
-                ],
-                [time . ' 6666666666666666666666666666666666666666'],
-                [map {"  $_"} qw/master other/],
-                <<'SHOW',
+                ]},
+                [{ 'rev-list' => time . ' 6666666666666666666666666666666666666666'] },
+                [{ branch => map {"  $_"} qw/master other/] },
+                { show => <<'SHOW' },
 commit 6666666666666666666666666666666666666666
 Author: Some One <some.one@example.com>
 Date:   Wed Sep 24 18:17:18 2014 +1000
@@ -498,11 +498,11 @@ Date:   Wed Sep 24 18:17:18 2014 +1000
 
 M   file3
 SHOW
-                ['Some One'],
-                ['some.one@example.com'],
-                [time . ' 5555555555555555555555555555555555555555'],
-                ["  master"],
-                <<'SHOW',
+                { log    => ['Some One'] },
+                { log    => ['some.one@example.com'] },
+                { 'rev-list' => [time . ' 5555555555555555555555555555555555555555'] },
+                { branch => ["  master"] },
+                { show => <<'SHOW' },
 commit 5555555555555555555555555555555555555555
 Author: Ivan Wills <ivan.wills@gmail.com>
 Date:   Wed Sep 24 18:16:18 2014 +1000
@@ -512,8 +512,8 @@ Date:   Wed Sep 24 18:16:18 2014 +1000
 M   file1
 M   file2
 SHOW
-                ['Ivan Wills'],
-                ['ivan.wills@example.com'],
+                { log    => ['Ivan Wills'] },
+                { log    => ['ivan.wills@example.com'] },
             ],
             STD => {
                 OUT => <<'STDOUT',
@@ -539,16 +539,16 @@ STDOUT
         {
             ARGV => [qw{--remote --once --sleep 0 --file qwerty.txt --branch no-found}],
             mock => [
-                undef,
-                [
+                { config => undef },
+                { log    =>  [
                     '4444444444444444444444444444444444444444',
                     '3333333333333333333333333333333333333333',
                     '2222222222222222222222222222222222222222',
                     '1111111111111111111111111111111111111111',
                     '0000000000000000000000000000000000000000',
-                ],
-                undef,
-                [
+                ]},
+                { config => undef },
+                { log    =>  [
                     '6666666666666666666666666666666666666666',
                     '5555555555555555555555555555555555555555',
                     '4444444444444444444444444444444444444444',
@@ -556,10 +556,10 @@ STDOUT
                     '2222222222222222222222222222222222222222',
                     '1111111111111111111111111111111111111111',
                     '0000000000000000000000000000000000000000',
-                ],
-                [time . ' 6666666666666666666666666666666666666666'],
-                [map {"  $_"} qw/master other/],
-                <<'SHOW',
+                ]},
+                { 'rev-list' => [time . ' 6666666666666666666666666666666666666666'] },
+                { branch => [map {"  $_"} qw/master other/] },
+                { show => <<'SHOW' },
 commit 6666666666666666666666666666666666666666
 Author: Some One <some.one@example.com>
 Date:   Wed Sep 24 18:17:18 2014 +1000
@@ -568,11 +568,11 @@ Date:   Wed Sep 24 18:17:18 2014 +1000
 
 M   file3
 SHOW
-                ['Some One'],
-                ['some.one@example.com'],
-                [time . ' 5555555555555555555555555555555555555555'],
-                ["  master"],
-                <<'SHOW',
+                { log    => ['Some One'] },
+                { log    => ['some.one@example.com'] },
+                { 'rev-list' => [time . ' 5555555555555555555555555555555555555555'] },
+                { branch => ["  master"] },
+                { show => <<'SHOW' },
 commit 5555555555555555555555555555555555555555
 Author: Ivan Wills <ivan.wills@gmail.com>
 Date:   Wed Sep 24 18:16:18 2014 +1000
@@ -582,8 +582,8 @@ Date:   Wed Sep 24 18:16:18 2014 +1000
 M   file1
 M   file2
 SHOW
-                ['Ivan Wills'],
-                ['ivan.wills@example.com'],
+                { log    => ['Ivan Wills'] },
+                { log    => ['ivan.wills@example.com'] },
             ],
             STD => {
                 OUT => '',

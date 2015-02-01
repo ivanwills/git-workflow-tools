@@ -17,9 +17,9 @@ sub run {
         {
             ARGV => [],
             mock => [
-                undef,
-                undef,
-                undef,
+                { config => undef },
+                { config => undef },
+                { config => undef },
             ],
             STD => {
                 OUT => '',
@@ -37,9 +37,9 @@ sub run {
         {
             ARGV => [],
             mock => [
-                'a/pom.xml',
-                undef,
-                undef,
+                { config => 'a/pom.xml' },
+                { config => undef },
+                { config => undef },
             ],
             STD => {
                 OUT => '',
@@ -57,13 +57,13 @@ sub run {
         {
             ARGV => [qw{feature_1}],
             mock => [
-                undef,
-                undef,
-                undef,
-                'branch=release',
-                undef,
-                [map {"  $_"} qw{origin/master origin/release}],
-                undef,
+                { config => undef },
+                { config => undef },
+                { config => undef },
+                { config => 'branch=release' },
+                { fetch  => undef },
+                { branch => [map {"  $_"} qw{origin/master origin/release}] },
+                { checkout => undef },
             ],
             STD => {
                 OUT => '',
@@ -80,13 +80,13 @@ sub run {
         {
             ARGV => [qw{feature_1 -v}],
             mock => [
-                undef,
-                undef,
-                undef,
-                'branch=release',
-                undef,
-                [map {"  $_"} qw{origin/master origin/release}],
-                undef,
+                { config => undef },
+                { config => undef },
+                { config => undef },
+                { config => 'branch=release' },
+                { fetch  => undef },
+                { branch => [map {"  $_"} qw{origin/master origin/release}] },
+                { checkout => undef },
             ],
             STD => {
                 OUT => "Created feature_1\n",
@@ -104,14 +104,14 @@ sub run {
         {
             ARGV => [qw{feature_1 --push}],
             mock => [
-                undef,
-                undef,
-                undef,
-                'branch=release',
-                undef,
-                [map {"  $_"} qw{origin/master origin/release}],
-                undef,
-                undef,
+                { config => undef },
+                { config => undef },
+                { config => undef },
+                { config => 'branch=release' },
+                { fetch  => undef },
+                { branch => [map {"  $_"} qw{origin/master origin/release}] },
+                { checkout => undef },
+                { push   => undef },
             ],
             STD => {
                 OUT => '',
@@ -129,12 +129,12 @@ sub run {
         {
             ARGV => [qw{feature_1 --no-fetch}],
             mock => [
-                undef,
-                undef,
-                undef,
-                'branch=release',
-                [map {"  $_"} qw{origin/master origin/release}],
-                undef,
+                { config => undef },
+                { config => undef },
+                { config => undef },
+                { config => 'branch=release' },
+                { branch => [map {"  $_"} qw{origin/master origin/release}] },
+                { checkout => undef },
             ],
             STD => {
                 OUT => '',
@@ -152,12 +152,12 @@ sub run {
         {
             ARGV => [qw{feature_1 --tag release}],
             mock => [
-                undef,
-                undef,
-                undef,
-                undef,
-                [qw{v1 v2 release}],
-                undef,
+                { config => undef },
+                { config => undef },
+                { config => undef },
+                { fetch  => undef },
+                { tag    => [qw{v1 v2 release}] },
+                { checkout => undef },
             ],
             STD => {
                 OUT => '',
@@ -175,12 +175,12 @@ sub run {
         {
             ARGV => [qw{feature_1 --branch release}],
             mock => [
-                undef,
-                undef,
-                undef,
-                undef,
-                [map {"  $_"} qw{origin/master origin/release}],
-                undef,
+                { config => undef },
+                { config => undef },
+                { config => undef },
+                { fetch  => undef },
+                { branch => [map {"  $_"} qw{origin/master origin/release}] },
+                { checkout => undef },
             ],
             STD => {
                 OUT => '',
@@ -198,13 +198,13 @@ sub run {
         {
             ARGV => [qw{feature_1 --local}],
             mock => [
-                undef,
-                undef,
-                undef,
-                undef,
-                undef,
-                [map {"  $_"} qw{master release}],
-                undef,
+                { config => undef },
+                { config => undef },
+                { config => undef },
+                { config => undef },
+                { fetch  => undef },
+                { branch => [map {"  $_"} qw{master release}] },
+                { checkout => undef },
             ],
             STD => {
                 OUT => '',
@@ -222,13 +222,13 @@ sub run {
         {
             ARGV => [qw{feature_1}],
             mock => [
-                undef,
-                undef,
-                undef,
-                undef,
-                undef,
-                [map {"  $_"} qw{origin/master origin/release}],
-                undef,
+                { config => undef },
+                { config => undef },
+                { config => undef },
+                { config => undef },
+                { fetch  => undef },
+                { branch => [map {"  $_"} qw{origin/master origin/release}] },
+                { checkout => undef },
             ],
             STD => {
                 OUT => '',

@@ -17,7 +17,7 @@ sub run {
         {
             ARGV => ["1"],
             mock => [
-                [qw/0.1 1.0 2.0/],
+                { branch => [qw/0.1 1.0 2.0/] },
             ],
             STD => {
                 OUT => "0.1\n1.0\n",
@@ -29,7 +29,7 @@ sub run {
         {
             ARGV => ["3"],
             mock => [
-                [qw/1.0 2.0/],
+                { branch => [qw/1.0 2.0/] },
             ],
             STD => {
                 OUT => "\n",
@@ -41,7 +41,7 @@ sub run {
         {
             ARGV => [qw/-i a/],
             mock => [
-                [qw/A b c/],
+                { branch => [qw/A b c/] },
             ],
             STD => {
                 OUT => "A\n",
@@ -53,7 +53,7 @@ sub run {
         {
             ARGV => [],
             mock => [
-                [qw/A b c/],
+                { branch => [qw/A b c/] },
             ],
             STD => {
                 OUT => "A\nb\nc\n",
@@ -65,7 +65,7 @@ sub run {
         {
             ARGV => ['-a', 'h'],
             mock => [
-                [qw{master origin/master hamster origin/hamster}],
+                { branch => [qw{master origin/master hamster origin/hamster}] },
             ],
             STD => {
                 OUT => "hamster\norigin/hamster\n",
@@ -77,7 +77,7 @@ sub run {
         {
             ARGV => ['-r', 'h'],
             mock => [
-                [qw{origin/master origin/hamster}],
+                { branch => [qw{origin/master origin/hamster}] },
             ],
             STD => {
                 OUT => "origin/hamster\n",

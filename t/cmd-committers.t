@@ -17,8 +17,8 @@ sub run {
         {
             ARGV => [],
             mock => [
-                ['master'],
-                ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'],
+                { branch => ['master'] },
+                { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
                 OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
@@ -30,8 +30,8 @@ sub run {
         {
             ARGV => [qw/--period day/],
             mock => [
-                ['master'],
-                ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'],
+                { branch => ['master'] },
+                { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
                 OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
@@ -43,8 +43,8 @@ sub run {
         {
             ARGV => [qw/--period week/],
             mock => [
-                ['master'],
-                ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'],
+                { branch => ['master'] },
+                { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
                 OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
@@ -56,8 +56,8 @@ sub run {
         {
             ARGV => [qw/--period month/],
             mock => [
-                ['master'],
-                ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'],
+                { branch => ['master'] },
+                { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
                 OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
@@ -69,8 +69,8 @@ sub run {
         {
             ARGV => [qw/--period year/],
             mock => [
-                ['master'],
-                ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'],
+                { branch => ['master'] },
+                { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
                 OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
@@ -93,8 +93,8 @@ sub run {
         {
             ARGV => [qw/--date 2014-09-19/],
             mock => [
-                ['master'],
-                ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'],
+                { branch => ['master'] },
+                { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
                 OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
@@ -106,8 +106,8 @@ sub run {
         {
             ARGV => [qw/--all --merges/],
             mock => [
-                ['master', 'remotes/origin/HEAD -> origin/master'],
-                ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'],
+                { branch => ['master', 'remotes/origin/HEAD -> origin/master'] },
+                { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
                 OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
@@ -119,8 +119,8 @@ sub run {
         {
             ARGV => [qw/--remote/],
             mock => [
-                ['origin/master'],
-                ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'],
+                { branch => ['origin/master'] },
+                { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
                 OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",

@@ -17,13 +17,13 @@ sub run {
         {
             ARGV => [],
             mock => [
-                [
+                { status => [
                     "#  modified: file1\n",
                     "#  modified: file2\n",
-                ],
-                "file1 differs\n",
-                "",
-                undef,
+                ]},
+                { diff   => "file1 differs\n" },
+                { diff   =>     "" },
+                { checkout =>     undef },
             ],
             STD => {
                 OUT => '',
@@ -35,13 +35,13 @@ sub run {
         {
             ARGV => [qw/--quiet/],
             mock => [
-                [
+                { status => [
                     "#  modified: file1\n",
                     "#  modified: file2\n",
-                ],
-                "file1 differs\n",
-                "",
-                undef,
+                ]},
+                { diff   => "file1 differs\n" },
+                { diff   => "" },
+                { checkout => undef },
             ],
             STD => {
                 OUT => '',
