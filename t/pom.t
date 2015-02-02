@@ -10,7 +10,7 @@ use App::Git::Workflow::Pom;
 use Mock::App::Git::Workflow::Repository;
 
 my $git = Mock::App::Git::Workflow::Repository->git;
-$git->mock_add(undef);
+$git->mock_add({config => undef});
 $ENV{HOME} = undef;
 my $pom = App::Git::Workflow::Pom->new( git => $git );
 
