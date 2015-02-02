@@ -103,7 +103,7 @@ sub git_state {
         @out = $workflow->git->rev_list('--all', "-$option{max}");
     }
     else {
-        $workflow->git->pull(split /\s+/, $option{pull_options}) if $option{pull};
+        $workflow->git->pull(split /\s+/, $option{pull_options}) if $fetch && $option{pull};
         @out = $workflow->git->log('--oneline', "-$option{max}");
     }
 
