@@ -1,5 +1,27 @@
 Revision history for git-workflow-tools
 
+0.96005   2015-02-02
+        Updating for release of version 0.96005
+        Added missing POD (Ivan Wills)
+        Added early death for bad data and more detailed info on bad data (Ivan Wills)
+        Fixed mock data adding (Ivan Wills)
+        Fixed data setup (Ivan Wills)
+        Fixed mock data (Ivan Wills)
+        Fixed tests with hardcoded time too far in the past, fixed call to pod2usage (Ivan Wills)
+        Fixed watch test (Ivan Wills)
+        Finished converting to more descriptive mocking (Ivan Wills)
+        Fixed up-to-date tests (Ivan Wills)
+        Changing mocks to be hashes to confirm the correct data is being used (Ivan Wills)
+        added only fetching some times (Ivan Wills)
+        Fixed not returning true from pod2usage (Ivan Wills)
+        Fixing fatpacked files so that they can work with git bash (Ivan Wills)
+        Added catching errors so watch can continue if upstream server is down (Ivan Wills)
+        Added exiting tests on first failure (Ivan Wills)
+        Added some performance optomisations (Ivan Wills)
+        Removed unnessesary quotes and SHA from format (Ivan Wills)
+        More formatting (Ivan Wills)
+        Fixed formatting of text output (Ivan Wills)
+
 0.96004   2015-01-22
         Updating for release of version 0.96004
         Added missing doc (Ivan Wills)
