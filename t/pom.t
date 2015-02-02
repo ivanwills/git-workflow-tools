@@ -50,16 +50,16 @@ sub pom_versions {
     my @data = (
         [
             [
-                ['* master', '  origin/master', '  origin/veryold'],
-                undef,
-                ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'],
-                ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'],
-                ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'],
-                ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'],
-                '<project><version>1.0.0-SNAPSHOT</version></project>',
-                ['1410113842 5ee992acaa81f6c90d9fa7e52898e33b00f6fa90'],
-                '<project><version>2.0.0-SNAPSHOT</version></project>',
-                ['1210113842 5ee992aca381f6c90d9fa7e52898e33b00f6fa90'],
+                { branch     => ['* master', '  origin/master', '  origin/veryold'] },
+                { config     => undef },
+                { 'rev-list' => ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'] },
+                { 'rev-list' => ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'] },
+                { 'rev-list' => ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'] },
+                { 'rev-list' => ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'] },
+                { show       => '<project><version>1.0.0-SNAPSHOT</version></project>' },
+                { 'rev-list' => ['1410113842 5ee992acaa81f6c90d9fa7e52898e33b00f6fa90'] },
+                { show       => '<project><version>2.0.0-SNAPSHOT</version></project>' },
+                { 'rev-list' => ['1210113842 5ee992aca381f6c90d9fa7e52898e33b00f6fa90'] },
             ],
             {
                 '2.0.0' => {master => '2.0.0-SNAPSHOT'},
