@@ -36,6 +36,7 @@ sub git {
 
 sub mock_add {
     my $self = shift;
+    confess "Data not Hashes!\n" . Dumper(\@_) if @_ && ref $_[0] ne 'HASH';
     push @{ $self->{data} }, @_;
 }
 sub mock_reset {
@@ -58,11 +59,16 @@ sub AUTOLOAD {
     }
     push @{ $self->{ran} }, $cmd;
 
+    confess "Data not set up correctly! Not an Array of Hashes\n" if ref $self->{data}[0] ne "HASH";
     my ($action, $return) = each %{ shift @{ $self->{data} } };
 
     # sanity check
     if ($action ne $called) {
-        confess "Trying to use $action data for $called!\n" . Dumper($cmd, $return);
+        confess "Expected mock data for '$called' but got data for '$action'!\n"
+            . Dumper($cmd, $return)
+            . "\t# "
+            . (join "\n\t# ", reverse @{ $self->{ran} })
+            . "\n\t";
     }
 
     if (wantarray) {
