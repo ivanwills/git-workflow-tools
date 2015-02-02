@@ -38,7 +38,7 @@ sub run {
 
     if ( !$self->can($sub_command) ) {
         warn "Unknown sub command '$sub_command'!\n";
-        Pod::Usage::pod2usage( %p2u_extra, -verbose => 1 );
+        App::Git::Workflow::Command::pod2usage( %p2u_extra, -verbose => 1 );
         return 1;
     }
 
@@ -89,7 +89,7 @@ sub do_whos {
 
     if (!$version) {
         warn "No version supplied!\n";
-        Pod::Usage::pod2usage( %p2u_extra, -verbose => 1 );
+        App::Git::Workflow::Command::pod2usage( %p2u_extra, -verbose => 1 );
         return 1;
     }
 
