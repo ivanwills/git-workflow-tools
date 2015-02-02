@@ -33,7 +33,7 @@ done_testing();
 sub test_branches {
     ok !eval{ $pom->branches('bad') } && $@, 'Bad branch type throws error';
 
-    $git->mock_add([map {"  $_"} qw{master abc_123}]);
+    $git->mock_add({ branch => [map {"  $_"} qw{master abc_123} ]});
     is_deeply [$pom->branches()], [$pom->branches], "Two calls to branches uses cache";
 
 }
@@ -41,13 +41,13 @@ sub test_branches {
 sub test_tags {
     my @data = (
         [
-            [qw/
+            { tag => [qw /
                 1.0
                 10.0
                 0.1
                 v0.1
-            /],
-            [qw/
+            /]},
+            [qw /
                 0.1
                 1.0
                 10.0
@@ -84,12 +84,12 @@ sub test_current {
 
     for my $data (@data) {
         $git->mock_reset();
-        $git->mock_add('t/data');
+        $git->mock_add({ 'rev-parse' => 't/data' });
         $pom->{branches} = {};
         $pom->{tags}     = [];
         $pom->{GIT_DIR}  = $data->[0];
         my $ans = [$pom->current()];
-        is_deeply $ans, $data->[1], "Get the current"
+        is_deeply $ans, $data->[1], "Get the current $data->[0]"
             or diag Dumper $ans, $data->[1];
     }
 }
@@ -147,14 +147,14 @@ sub test_release {
     my @data = (
         [
             [
-                [qw{1.0 10.0 2.0 3.0 ZZZ}],
+                { tag => [qw{1.0 10.0 2.0 3.0 ZZZ}] },
             ],
             [qw/tag local/, qr/^\d+/],
             '10.0',
         ],
         [
             [
-                [map {"  $_"} qw{origin/other origin/master}],
+                { branch => [map {"  $_"} qw{origin/other origin/master}] },
             ],
             [qw/branch remote/, qr/master/],
             'origin/master',
@@ -176,9 +176,9 @@ sub test_releases {
     my @data = (
         [
             [
-                [qw/not-release v3.0 v1.0 v1.1 v2.0/],
-                ['1405968782 55d0295a1227f591afc683dd12e43823cd2e404d'],
-                [map {"  $_"} qw{master origin/master}],
+                { tag    => [qw/not-release v3.0 v1.0 v1.1 v2.0/] },
+                { 'rev-list' => ['1405968782 55d0295a1227f591afc683dd12e43823cd2e404d'] },
+                { branch => [map {"  $_"} qw{master origin/master}] },
             ],
             { tag => '^v\d+(?:[.]\d+)*$' },
             [
@@ -198,9 +198,9 @@ sub test_releases {
         ],
         [
             [
-                [map {"  $_"} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0}],
-                ['1405968782 55d0295a1227f591afc683dd12e43823cd2e404d'],
-                [map {"  $_"} qw{origin/R1.0 origin/R2.0 origin/R3.0}],
+                { branch => [map {"  $_"} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0}] },
+                { 'rev-list' => ['1405968782 55d0295a1227f591afc683dd12e43823cd2e404d'] },
+                { branch => [map {"  $_"} qw{origin/R1.0 origin/R2.0 origin/R3.0}] },
             ],
             { branch => '^origin/R\d+(?:[.]\d+)*$' },
             [
@@ -219,10 +219,10 @@ sub test_releases {
         ],
         [
             [
-                undef,
-                [map {"  $_"} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0}],
-                ['1405968782 55d0295a1227f591afc683dd12e43823cd2e404d'],
-                [map {"  $_"} qw{master origin/master origin/R1.0 origin/R2.0}],
+                { config => undef },
+                { branch => [map {"  $_"} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0}] },
+                { 'rev-list' => ['1405968782 55d0295a1227f591afc683dd12e43823cd2e404d'] },
+                { branch => [map {"  $_"} qw{master origin/master origin/R1.0 origin/R2.0}] },
             ],
             { local => 1 },
             [
@@ -241,10 +241,10 @@ sub test_releases {
         ],
         [
             [
-                '?',
-                [map {"  $_"} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0}],
-                ['1405968782 55d0295a1227f591afc683dd12e43823cd2e404d'],
-                [map {"  $_"} qw{master origin/master origin/R1.0}],
+                { config => '?' },
+                { branch => [map {"  $_"} qw{master origin/master origin/R1.0 origin/R2.0 origin/R3.0}] },
+                { 'rev-list' => ['1405968782 55d0295a1227f591afc683dd12e43823cd2e404d'] },
+                { branch => [map {"  $_"} qw{master origin/master origin/R1.0}] },
             ],
             { local => 1 },
             [
@@ -283,7 +283,7 @@ sub test_commit_details {
 sub test_files_from_sha {
     my @data = (
         [
-            [ <<'SHOW'
+            [{ show => <<'SHOW'
 commit 4614a57568bb1889138bfab239d2e82b5b6bc338
 Author: Ivan Wills <ivan.wills@gmail.com>
 Date:   Sun Sep 14 16:54:22 2014 +1000
@@ -293,7 +293,7 @@ Date:   Sun Sep 14 16:54:22 2014 +1000
 A   t/slurp.txt
 M   t/workflow.t
 SHOW
-            ],
+            }],
             [qw/4614a57568bb1889138bfab239d2e82b5b6bc338/],
             {
                 't/slurp.txt'  => 'A',
