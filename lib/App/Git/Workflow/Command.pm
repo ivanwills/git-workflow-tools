@@ -117,6 +117,11 @@ Just a wrapper for L<Getopt::Long>'s C<GetOptions> which configures bundling
 and adds verbose, help, man and version options. Also if C<GetOptions> fails
 usage info will be displayed.
 
+=head2 C<pod2usage ()>
+
+Wrapper for L<Pod::Usage>'s C<pod2usage> to work around Windows' Git Bash tool
+missing the library.
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
