@@ -22,7 +22,7 @@ sub get_options {
     my ($caller_package) = caller;
     $caller_package .= '.pm';
     $caller_package =~ s{::}{/}g;
-    $caller_package = $INC{$caller_package};
+    $caller_package = $INC{$caller_package} || $0;
 
     Getopt::Long::Configure('bundling');
     GetOptions(
@@ -39,7 +39,7 @@ sub get_options {
     ) and return;
 
     if ( $option->{'version'} ) {
-        my $name = "${caller_package}::name";
+        my $name = (caller)[0] . '::name';
         no strict qw/refs/; ## no critic
         print "${$name} Version = $VERSION\n";
         return;
@@ -75,7 +75,7 @@ sub pod2usage {
                 $found = 1;
             }
             elsif ($found) {
-                print {*STDERR} $_;
+                print $_;
             }
         }
     }
