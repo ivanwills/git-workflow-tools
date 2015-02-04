@@ -36,7 +36,7 @@ sub options {
             # Mock Git
             [],
             # STDOUT
-            qr/\AUsage:\n     Stuff\n\n\Z/,
+            qr/^\s+Stuff$/xms,
             { help => 1 },
         ],
         [
@@ -54,7 +54,7 @@ sub options {
             # Mock Git
             [],
             # STDOUT
-            qr/\AUsage:\n     Stuff\n\n\Z/,
+            qr/^\s+Stuff$/xms,
             {},
         ],
         #[
@@ -71,13 +71,15 @@ sub options {
         @ARGV = @{ $data->[0] };
         $git->mock_add(@{ $data->[1] });
         my $option = {};
-        my ($stdout) = capture { get_options($option) };
+        my ($stdout, $stderr) = capture { get_options($option) };
         like $stdout, $data->[2], 'Ran ' . join ' ', @{ $data->[0] }
-            or diag Dumper $stdout, $data->[2], [ $stdout =~ /$data->[2]/ ];
+            or diag Dumper $stdout, $data->[2];
         is_deeply $option, $data->[3], 'Options set correctly'
             or diag Dumper $option, $data->[3];
     }
 }
+
+__DATA__
 
 =head1 NAME
 
