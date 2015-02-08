@@ -12,7 +12,7 @@ use English qw/ -no_match_vars /;
 use App::Git::Workflow::Pom;
 use App::Git::Workflow::Command qw/get_options/;
 
-our $VERSION = 0.96005;
+our $VERSION = 0.96006;
 our $workflow = App::Git::Workflow::Pom->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
@@ -147,7 +147,7 @@ git-pom - Manage pom.xml file versions
 
 =head1 VERSION
 
-This documentation refers to git-pom version 0.96005
+This documentation refers to git-pom version 0.96006
 
 =head1 SYNOPSIS
 

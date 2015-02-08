@@ -1,5 +1,13 @@
 Revision history for git-workflow-tools
 
+0.96006   2015-02-08
+        Updating for release of version 0.96006
+        Added more things to do (Ivan Wills)
+        Fixed up the way the caller is determined and change printing help to STDOUT rather than STDERR (Ivan Wills)
+        Changed the way the test works so it's less sensitive to Pod::Usage missing (Ivan Wills)
+        More TODO things (Ivan Wills)
+        Added TODO file (Ivan Wills)
+
 0.96005   2015-02-02
         Updating for release of version 0.96005
         Added missing POD (Ivan Wills)
