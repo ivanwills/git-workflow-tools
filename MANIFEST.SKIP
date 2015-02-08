@@ -96,3 +96,4 @@ git.conf
 fatlib/
 out/
 testing/
+cmds
