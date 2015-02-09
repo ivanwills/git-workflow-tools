@@ -24,7 +24,6 @@ my $builder = Module::Build->new(
     },
     build_requires => {
         'Capture::Tiny'  => 0,
-        'Test::MockTime' => 0,
         'Test::More'     => 0,
         'Test::Warnings' => 0,
 
