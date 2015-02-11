@@ -3,3 +3,5 @@
 * branch-clean - fix --max-age=0 to actually not delete branches not merged to master
 * watch - Doesn't really watch remote changes. (set up a remote and local auto committing repo to watch)
 * watch - Save state option
+* branch-diff - with --merged show the differences of branched merged in the current branch an another
+* branch-recreate - recreate a branch by cherry-picking without some commits (is this possible generically?)
