@@ -13,7 +13,7 @@ use Time::Piece;
 use App::Git::Workflow;
 use App::Git::Workflow::Command qw/get_options/;
 
-our $VERSION  = 0.96006;
+our $VERSION  = 0.96007;
 our $workflow = App::Git::Workflow->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
@@ -82,7 +82,7 @@ git-committers - Stats on the number of commits by committer
 
 =head1 VERSION
 
-This documentation refers to git-committers version 0.96006
+This documentation refers to git-committers version 0.96007
 
 =head1 SYNOPSIS
 
