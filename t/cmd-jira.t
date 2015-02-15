@@ -32,7 +32,7 @@ sub run {
                 { checkout => undef },
             ],
             STD => {
-                OUT => qr/^Switched to branch 'abc_123'$/,
+                OUT => qr/^$/,
                 ERR => qr/^$/,
             },
             option => {},
@@ -194,7 +194,7 @@ sub run {
                 { checkout => undef },
             ],
             STD => {
-                OUT => qr/^Switched to branch 'abc_123'$/,
+                OUT => qr/^$/,
                 ERR => qr/^Which \s branch:$/xms,
                 IN  => "1\n",
             },
@@ -214,7 +214,7 @@ sub run {
                 { checkout => undef },
             ],
             STD => {
-                OUT => qr/^Switched to branch 'abc_123_v2'$/,
+                OUT => qr/^$/,
                 ERR => qr/^Which \s branch:$/xms,
                 IN  => "2\n",
             },

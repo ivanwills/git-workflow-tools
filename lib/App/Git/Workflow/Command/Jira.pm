@@ -46,7 +46,6 @@ sub run {
         my $branch = which_branch(@branch);
         return if !defined $branch;
         $workflow->git->checkout($branch);
-        print "Switched to branch '$branch'\n" if !$option{quiet};
     }
     else {
         # check if there is a remote branch
