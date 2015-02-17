@@ -5,3 +5,4 @@
 * watch - Save state option
 * branch-diff - with --merged show the differences of branched merged in the current branch an another
 * branch-recreate - recreate a branch by cherry-picking without some commits (is this possible generically?)
+    (git show --pretty=%P may help for merge commits)
