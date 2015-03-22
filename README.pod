@@ -1,8 +1,11 @@
-git-workflow-tools
+=for HTML <a href="https://travis-ci.org/ivanwills/git-workflow-tools"><img src="https://travis-ci.org/ivanwills/git-workflow-tools.svg?branch=master"></a>
+<a href='https://coveralls.io/r/ivanwills/git-workflow-tools?branch=master'><img src='https://coveralls.io/repos/ivanwills/git-workflow-tools/badge.svg?branch=master' alt='Coverage Status' /></a>
+
+=head1 git-workflow-tools
 
 A bunch of tools to help ease the git workflow process
 
-INSTALLATION
+=head1 INSTALLATION
 
 To install this module, run the following commands:
 
@@ -11,7 +14,7 @@ To install this module, run the following commands:
     ./Build test
     ./Build install
 
-SUPPORT AND DOCUMENTATION
+=head1 SUPPORT AND DOCUMENTATION
 
 After installing, you can find documentation for this module with the
 perldoc command.
@@ -35,7 +38,7 @@ You can also look for information at:
     Source Code
         git://github.com/ivanwills/git-workflow-tools.git
 
-COPYRIGHT AND LICENCE
+=head1 COPYRIGHT AND LICENCE
 
 Copyright (C) 2014 Ivan Wills
 
