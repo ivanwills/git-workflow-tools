@@ -27,15 +27,15 @@ This documentation refers to git-pom version 0.96007
    git-pom [uniq] [option]
    git-pom next [--update|-u]
    git-pom whos version [option]
-   git-pom release [(-t|--tag) release_tag_re|(-b|--branch) relase_branch_re] [-l|--local]
 
  SUB-COMMAND:
   uniq          Confirm that the current branch is the only branch using it's version
   next          Calculates the next available version number
   whos          Which branch uses the pom version "version"
-  release       Display the currently used POM version in the current release
 
  OPTIONS:
+  -P --pom[=]file
+                Specify the pom file location (Default pom.xml)
   -u --update   Update to next version (used with next)
   -t --tag[=]str
                 Specify a tag that any branch with newer commits must contain
@@ -73,6 +73,20 @@ Find which branch or branches use a POM version number.
 =back
 
 =head1 SUBROUTINES/METHODS
+
+=head2 C<run ()>
+
+Executes the git workflow command
+
+=head2 C<do_whos ()>
+
+=head2 C<do_next ()>
+
+=head2 C<do_uniq ()>
+
+=head2 C<do_bad_branches ($pom)>
+
+Show branches with pom.xml files that don't pass
 
 =head1 DIAGNOSTICS
 

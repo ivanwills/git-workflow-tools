@@ -161,6 +161,8 @@ This documentation refers to git-pom version 0.96007
   whos          Which branch uses the pom version "version"
 
  OPTIONS:
+  -P --pom[=]file
+                Specify the pom file location (Default pom.xml)
   -u --update   Update to next version (used with next)
   -t --tag[=]str
                 Specify a tag that any branch with newer commits must contain
