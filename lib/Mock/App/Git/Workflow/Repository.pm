@@ -59,6 +59,7 @@ sub AUTOLOAD {
     }
     push @{ $self->{ran} }, $cmd;
 
+    confess "Data not set up correctly! Not an ARRAY of HASHes\n" if ref $self->{data}    ne "ARRAY";
     confess "Data not set up correctly! Not an Array of Hashes\n" if ref $self->{data}[0] ne "HASH";
     my ($action, $return) = each %{ shift @{ $self->{data} } };
 
@@ -72,7 +73,9 @@ sub AUTOLOAD {
     }
 
     if (wantarray) {
-        cluck "Returning Mock for `$cmd`\n" . Dumper($return), "\t" if ref $return ne 'ARRAY';
+        if ( !$return || !ref $return || ref $return ne 'ARRAY' ) {
+            confess "Returning Mock for `$cmd` with scalar value when expecting an array\n" . Dumper($return), "\t";
+        }
         return @$return;
     }
     else {
