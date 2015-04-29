@@ -35,6 +35,7 @@ sub run {
         'pull_options|pull-options|P=s',
         'file|f=s',
         'max|m=i',
+        'runs|r=i',
         'once|1',
         'quiet|q',
         'remote|r',
@@ -43,8 +44,8 @@ sub run {
 
     # do stuff here
     my $action = @ARGV && $actions{$ARGV[0]} ? shift @ARGV : @ARGV ? 'do' : 'show';
-    my $once   = $option{once} ? -1 : 1;
-    my $last   = '';
+    my $once   = $option{once} ? -1 : $option{runs} || 1;
+    my ($last) = git_state();
 
     while ($once) {
         eval {
