@@ -35,7 +35,7 @@ sub run {
         'pull_options|pull-options|P=s',
         'file|f=s',
         'max|m=i',
-        'runs|r=i',
+        'runs|R=i',
         'once|1',
         'quiet|q',
         'remote|r',
@@ -44,7 +44,7 @@ sub run {
 
     # do stuff here
     my $action = @ARGV && $actions{$ARGV[0]} ? shift @ARGV : @ARGV ? 'do' : 'show';
-    my $once   = $option{once} ? -1 : $option{runs} || 1;
+    my $once   = $option{once} ? -1 : -$option{runs} || 1;
     my ($last) = git_state();
 
     while ($once) {
@@ -186,6 +186,8 @@ This documentation refers to git-watch version 0.96007
 
  OPTIONS:
   -1 --once     Run once then exit
+  -R --runs[=]int
+                Run at most this number of times.
   -p --pull     Before checking if anything has changed do a git pull to the
                 current branch. (see notes below)
   -P --pull-options[=]flags

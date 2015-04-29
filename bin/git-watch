@@ -33,10 +33,12 @@ This documentation refers to git-watch version 0.96007
 
  OPTIONS:
   -1 --once     Run once then exit
+  -R --runs[=]int
+                Run at most this number of times.
   -p --pull     Before checking if anything has changed do a git pull to the
-                current branch.
+                current branch. (see notes below)
   -P --pull-options[=]flags
-                When using --pull add these options to the pull command
+                When using --pull add these options to the pull command.
   -f --file[=]regex
                 Watch file any files changing that match "regex"
   -b --branch[=]regex
@@ -80,6 +82,14 @@ A simple example:
   git watch 'echo $WATCH_FILES'
 
 This would just echo the files that have changed with each change.
+
+=head2 Notes
+
+If trying to watch a branch that is connected to a remote branch the C<--pull>
+isn't currently working as expected. The workaround is to watch the remote
+branch and do the pull your self. eg
+
+ $ git watch do -rb origin/master -- 'git pull --ff -r; your-command'
 
 =head1 SUBROUTINES/METHODS
 
