@@ -91,7 +91,7 @@ sub jira {
     my $jira_rest = JIRA::REST->new($option{url}, $option{user}, $option{pass});
     my $issue     = $jira_rest->GET("/issue/$option{jira}");
     my $branch    = lc "$option{jira} $issue->{fields}{summary}";
-    $branch =~ s/[ :!?-]+/_/gxms;
+    $branch =~ s/[ |:!?-]+/_/gxms;
 
     return $branch;
 }
