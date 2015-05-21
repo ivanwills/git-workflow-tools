@@ -21,6 +21,7 @@ undef $pom;
 done_testing;
 
 sub pom {
+    note 'pom';
     my @data = (
         ['t/data/good-pom.xml', '1.92.2'],
         ['t/data/bad-pom.xml' , undef],
@@ -35,6 +36,7 @@ sub pom {
 }
 
 sub next_pom {
+    note 'next pom';
     my @data = (
         [{'1.0.0-SNAPSHOT' => 1, '1.0.0' => 1}, '1.1.0-SNAPSHOT'],
         [{'1.10.0-SNAPSHOT' => 1, '1.9.0' => 1}, '1.11.0-SNAPSHOT'],
@@ -47,6 +49,7 @@ sub next_pom {
 }
 
 sub pom_versions {
+    note 'pom versions';
     my @data = (
         [
             [
