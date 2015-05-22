@@ -20,7 +20,7 @@ git-branch-clean - Clean old branches out of the repository
 
 =head1 VERSION
 
-This documentation refers to git-branch-clean version 0.96007
+This documentation refers to git-branch-clean version 0.96008
 
 =head1 SYNOPSIS
 

@@ -1,5 +1,23 @@
 Revision history for git-workflow-tools
 
+0.96008   2015-05-22
+        Updating for release of version 0.96008
+        Added missing mock data (Ivan Wills)
+        Added note to keep track of where things are (Ivan Wills)
+        Added pipe (|) to special escaped characters (Ivan Wills)
+        Added cpan tag (Ivan Wills)
+        Udated the documentation (Ivan Wills)
+        Added the ability to limit the maximum number of runs (Ivan Wills)
+        Updated manifest with renamed readme (Ivan Wills)
+        Added missing documentation (Ivan Wills)
+        Updated errors to be more helpful (Ivan Wills)
+        Removed unneeded tag (Ivan Wills)
+        Added : as a character to replace (Ivan Wills)
+        Worked on documentation (Ivan Wills)
+        Added specific Test::More version for the features being used (Ivan Wills)
+        Converted README into a POD file and added build and coverage badges (Ivan Wills)
+        Added config for coveralls.io (Ivan Wills)
+
 0.96007   2015-02-15
         Updating for release of version 0.96007
         Fixed saying switched to branch twice (Ivan Wills)
