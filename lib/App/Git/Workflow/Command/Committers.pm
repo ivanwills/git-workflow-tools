@@ -12,6 +12,7 @@ use English qw/ -no_match_vars /;
 use Time::Piece;
 use App::Git::Workflow;
 use App::Git::Workflow::Command qw/get_options/;
+use utf8;
 
 our $VERSION  = 0.96008;
 our $workflow = App::Git::Workflow->new;
@@ -23,12 +24,15 @@ sub run {
     %option = (
         period => 'day',
         fmt    => 'table',
+        min    => 0,
     );
     get_options(
         \%option,
         'remote|r',
         'all|a',
         'fmt|format|f=s',
+        'changes|c',
+        'min|min-commits|M=i',
         'date|d=s',
         'period|p=s',
         'merges|m!',
@@ -66,6 +70,14 @@ sub run {
         }
     }
 
+    for my $user (keys %users) {
+        my $commits = $users{$user};
+        $users{$user} = {
+            commit_count => scalar keys %{ $users{$user} },
+            $option{commits} ? (commits => [keys %{ $users{$user} }]) : (),
+        }
+    }
+
     my $fmt = 'fmt_' . $option{fmt};
     if ($self->can($fmt)) {
         $self->$fmt(\%users, $commits);
@@ -77,9 +89,9 @@ sub run {
 sub fmt_table {
     my ($self, $users, $total) = @_;
 
-    print map {sprintf "% 4d $_\n", $users->{$_}}
-        reverse sort {$users->{$a} <=> $users->{$b}}
-        map { $users->{$_} = scalar keys %{$users->{$_}}; $_ }
+    print map {sprintf "% 5d $_\n", $users->{$_}{commit_count}}
+        reverse sort {$users->{$a}{commit_count} <=> $users->{$b}{commit_count}}
+        grep { $users->{$_}{commit_count} >= $option{min} }
         keys %$users;
     print "Total commits = $total\n";
 
