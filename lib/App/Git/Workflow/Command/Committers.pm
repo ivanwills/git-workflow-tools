@@ -23,8 +23,6 @@ sub run {
     my ($self) = @_;
     %option = (
         period => 'day',
-        fmt    => 'table',
-        min    => 0,
     );
     get_options(
         \%option,
@@ -78,7 +76,7 @@ sub run {
         }
     }
 
-    my $fmt = 'fmt_' . $option{fmt};
+    my $fmt = 'fmt_' . ($option{fmt} || 'table');
     if ($self->can($fmt)) {
         $self->$fmt(\%users, $commits);
     }
@@ -91,7 +89,7 @@ sub fmt_table {
 
     print map {sprintf "% 5d $_\n", $users->{$_}{commit_count}}
         reverse sort {$users->{$a}{commit_count} <=> $users->{$b}{commit_count}}
-        grep { $users->{$_}{commit_count} >= $option{min} }
+        grep { $users->{$_}{commit_count} >= ($option{min} || 0) }
         keys %$users;
     print "Total commits = $total\n";
 
