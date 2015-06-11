@@ -19,13 +19,16 @@ our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
 
 sub run {
+    my ($self) = @_;
     %option = (
         period => 'day',
+        fmt    => 'table',
     );
     get_options(
         \%option,
         'remote|r',
         'all|a',
+        'fmt|format|f=s',
         'date|d=s',
         'period|p=s',
         'merges|m!',
@@ -63,13 +66,39 @@ sub run {
         }
     }
 
-    print map {sprintf "% 4d $_\n", $users{$_}}
-        reverse sort {$users{$a} <=> $users{$b}}
-        map { $users{$_} = scalar keys %{$users{$_}}; $_ }
-        keys %users;
-    print "Total commits = $commits\n";
+    my $fmt = 'fmt_' . $option{fmt};
+    if ($self->can($fmt)) {
+        $self->$fmt(\%users, $commits);
+    }
 
     return;
+}
+
+sub fmt_table {
+    my ($self, $users, $total) = @_;
+
+    print map {sprintf "% 4d $_\n", $users->{$_}}
+        reverse sort {$users->{$a} <=> $users->{$b}}
+        map { $users->{$_} = scalar keys %{$users->{$_}}; $_ }
+        keys %$users;
+    print "Total commits = $total\n";
+
+    return;
+}
+
+sub fmt_json {
+    my ($self, $users, $total) = @_;
+    require JSON;
+
+    print JSON::encode_json({ total => $total, users => $users });
+}
+
+sub fmt_perl {
+    my ($self, $users, $total) = @_;
+    require Data::Dumper;
+
+    local $Data::Dumper::Indent = 1;
+    print Data::Dumper::Dumper({ total => $total, users => $users });
 }
 
 1;
@@ -93,6 +122,12 @@ This documentation refers to git-committers version 0.96008
   -a --all      Committers to any branch (remote or local)
   -d --date=YYYY-MM-DD
                 Commits since this date
+  -f --format[=](table|json|csv)
+                Change how the data is presented
+                   - table : shows the data in a simple table
+                   - json  : returns the raw data as a json object
+                   - perl  : Dump the data structure
+                   - csv   : Like table but as a csv
   -p --period=[day|week|month|year]
                 If --date is not specified this works out the date for the
                 last day/week/month/year
