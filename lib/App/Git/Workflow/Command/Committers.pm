@@ -30,6 +30,7 @@ sub run {
         'all|a',
         'fmt|format|f=s',
         'changes|c',
+        'commits|C',
         'min|min-commits|M=i',
         'date|d=s',
         'period|p=s',
@@ -73,7 +74,8 @@ sub run {
         $users{$user} = {
             commit_count => scalar keys %{ $users{$user} },
             $option{commits} ? (commits => [keys %{ $users{$user} }]) : (),
-        }
+            $option{changes} ? (changes => $self->changes($commits)) : (),
+        };
     }
 
     my $fmt = 'fmt_' . ($option{fmt} || 'table');
@@ -84,10 +86,46 @@ sub run {
     return;
 }
 
+sub changes {
+    my ($self, $commits) = @_;
+    my %changes = (
+        lines_added   => 0,
+        lines_removed => 0,
+        files         => {},
+        files_added   => 0,
+        files_removed => 0,
+    );
+
+    for my $commit (keys %$commits) {
+        # get the stats from each commit
+        my @show = $workflow->git->show($commit);
+        $changes{lines_added}   += grep {/^[+](?:[^+]|[+][^+]|[+][+]\s|$)/} @show;
+        $changes{lines_removed} += grep {/^[-](?:[^-]|[-][^-]|[-][-]\s|$)/} @show;
+        $changes{files} = {
+            %{ $changes{files} || {} },
+            map {/^[+]{3}\s+b\/(.*)$/; ($1 || "" => 1) }
+            grep {/^[+]{3}\s/}
+            @show
+        };
+        $changes{total}++;
+    }
+    $changes{files} = keys %{ $changes{files} || {} };
+
+    return \%changes;
+}
+
 sub fmt_table {
     my ($self, $users, $total) = @_;
+    my $fmt = "%-25s % 7d";
 
-    print map {sprintf "% 5d $_\n", $users->{$_}{commit_count}}
+    if ($option{changes}) {
+        $fmt .= " % 9d % 9d % 5d";
+        my $fmt2 = $fmt;
+        $fmt2 =~ s/d/s/g;
+        printf "$fmt2\n", qw/Name Commits Added Removed Files/;
+    }
+
+    print map {sprintf "$fmt\n", $_, $users->{$_}{commit_count}, $users->{$_}{changes}{lines_added}, $users->{$_}{changes}{lines_removed}, $users->{$_}{changes}{files}}
         reverse sort {$users->{$a}{commit_count} <=> $users->{$b}{commit_count}}
         grep { $users->{$_}{commit_count} >= ($option{min} || 0) }
         keys %$users;
