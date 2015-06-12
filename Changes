@@ -1,5 +1,13 @@
 Revision history for git-workflow-tools
 
+0.96009   2015-06-12
+        Updating for release of version 0.96009
+        Fixed tests (Ivan Wills)
+        Added missing docs (Ivan Wills)
+        Added showing commit counts (Ivan Wills)
+        Added showing commit counts (Ivan Wills)
+        Added different formatting options (Ivan Wills)
+
 0.96008   2015-05-22
         Updating for release of version 0.96008
         Added missing mock data (Ivan Wills)
