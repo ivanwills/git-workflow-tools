@@ -161,6 +161,18 @@ to the git repository.
 
 Executes the git workflow command
 
+=head2 C<fmt_table ()>
+
+Output a table
+
+=head2 C<fmt_json ()>
+
+Output JSON
+
+=head2 C<fmt_perl ()>
+
+Output a Perl object
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
