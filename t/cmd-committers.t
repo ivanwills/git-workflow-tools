@@ -21,7 +21,7 @@ sub run {
                 { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
-                OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
+                OUT => "    2 User Name\n    1 Other Name\nTotal commits = 3\n",
                 ERR => '',
             },
             option => { period => 'day' },
@@ -34,7 +34,7 @@ sub run {
                 { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
-                OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
+                OUT => "    2 User Name\n    1 Other Name\nTotal commits = 3\n",
                 ERR => '',
             },
             option => { period => 'day' },
@@ -47,7 +47,7 @@ sub run {
                 { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
-                OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
+                OUT => "    2 User Name\n    1 Other Name\nTotal commits = 3\n",
                 ERR => '',
             },
             option => { period => 'week' },
@@ -60,7 +60,7 @@ sub run {
                 { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
-                OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
+                OUT => "    2 User Name\n    1 Other Name\nTotal commits = 3\n",
                 ERR => '',
             },
             option => { period => 'month' },
@@ -73,7 +73,7 @@ sub run {
                 { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
-                OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
+                OUT => "    2 User Name\n    1 Other Name\nTotal commits = 3\n",
                 ERR => '',
             },
             option => { period => 'year' },
@@ -97,7 +97,7 @@ sub run {
                 { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
-                OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
+                OUT => "    2 User Name\n    1 Other Name\nTotal commits = 3\n",
                 ERR => '',
             },
             option => { period => 'day', date => '2014-09-19' },
@@ -110,7 +110,7 @@ sub run {
                 { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
-                OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
+                OUT => "    2 User Name\n    1 Other Name\nTotal commits = 3\n",
                 ERR => '',
             },
             option => { period => 'day', all => 1, merges => 1 },
@@ -123,7 +123,7 @@ sub run {
                 { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
             ],
             STD => {
-                OUT => "   2 User Name\n   1 Other Name\nTotal commits = 3\n",
+                OUT => "    2 User Name\n    1 Other Name\nTotal commits = 3\n",
                 ERR => '',
             },
             option => { period => 'day', remote => 1 },
