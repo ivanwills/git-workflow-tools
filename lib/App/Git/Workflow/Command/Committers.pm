@@ -32,16 +32,17 @@ sub run {
         'changes|c',
         'commits|C',
         'min|min-commits|M=i',
-        'date|d=s',
+        'since|s=s',
+        'until|u=s',
         'period|p=s',
         'merges|m!',
     );
 
     my %users;
     my $commits = 0;
-    my $date = $option{date};
+    my $since = $option{since};
 
-    if (!$date) {
+    if (!$since) {
         my $now = localtime;
         my $period
             = $option{period} eq 'day'   ? 1
@@ -49,7 +50,7 @@ sub run {
             : $option{period} eq 'month' ? 30
             : $option{period} eq 'year'  ? 365
             :                              die "Unknown period '$option{period}' please choose one of day, week, month or year\n";
-        $date
+        $since
             = $now->wday == 1 ? localtime(time - 3 * $period * 24 * 60 * 60)->ymd
             : $now->wday == 7 ? localtime(time - 2 * $period * 24 * 60 * 60)->ymd
             :                   localtime(time - 1 * $period * 24 * 60 * 60)->ymd;
@@ -62,7 +63,15 @@ sub run {
     for my $branch ($workflow->git->branch(@options)) {
         next if $branch =~ / -> /;
         $branch =~ s/^[*]?\s*//;
-        for my $log ($workflow->git->log('--format=format:%h %an', ($option{merges} ? () : '--no-merges'), "--since=$date", $branch)) {
+        for my $log (
+            $workflow->git->log(
+                '--format=format:%h %an',
+                ($option{merges} ? () : '--no-merges'),
+                "--since=$since",
+                ($option{until} ? "--until=$option{until}" : ()),
+                $branch,
+            )
+        ) {
             my ($hash, $name) = split /\s/, $log, 2;
             $users{$name}{$hash} = 1;
             $commits++;
@@ -168,8 +177,10 @@ This documentation refers to git-committers version 0.96009
  OPTIONS:
   -r --remote   Committers to remote branches
   -a --all      Committers to any branch (remote or local)
-  -d --date=YYYY-MM-DD
-                Commits since this date
+  -s --since[=]YYYY-MM-DD
+                Only commits since this date
+  -u --until[=]YYYY-MM-DD
+                Only commits up until this date
   -f --format[=](table|json|csv)
                 Change how the data is presented
                    - table : shows the data in a simple table
@@ -177,7 +188,7 @@ This documentation refers to git-committers version 0.96009
                    - perl  : Dump the data structure
                    - csv   : Like table but as a csv
   -p --period=[day|week|month|year]
-                If --date is not specified this works out the date for the
+                If --since is not specified this works out the date for the
                 last day/week/month/year
   -m --merges   Count merge commits
      --no-merges
