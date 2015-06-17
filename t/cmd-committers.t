@@ -91,7 +91,7 @@ sub run {
             name   => 'Bad date (use day)',
         },
         {
-            ARGV => [qw/--date 2014-09-19/],
+            ARGV => [qw/--since 2014-09-19/],
             mock => [
                 { branch => ['master'] },
                 { log    => ['abc123 User Name', '123abc User Name', 'a1b2c3 Other Name'] },
@@ -100,8 +100,8 @@ sub run {
                 OUT => "User Name                       2\nOther Name                      1\nTotal commits = 3\n",
                 ERR => '',
             },
-            option => { period => 'day', date => '2014-09-19' },
-            name   => 'Specific date',
+            option => { period => 'day', since => '2014-09-19' },
+            name   => 'Specific since date',
         },
         {
             ARGV => [qw/--all --merges/],
