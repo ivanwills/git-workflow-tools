@@ -1,5 +1,13 @@
 Revision history for git-workflow-tools
 
+0.96011   2015-06-18
+        Updating for release of version 0.96011
+        Added ability to specify outputting multiple periods (Ivan Wills)
+        Fixed test to match changed param name (Ivan Wills)
+        Added ability to limit dates by until (Ivan Wills)
+        Fixed tests (Ivan Wills)
+        Working on detailed stats (Ivan Wills)
+
 0.96009   2015-06-12
         Updating for release of version 0.96009
         Fixed tests (Ivan Wills)
