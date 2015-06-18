@@ -157,18 +157,31 @@ sub changes {
 sub fmt_table {
     my ($self, $users, $total) = @_;
     my $fmt = "%-25s % 7d";
+    my $max = 1;
 
     if ($option{changes}) {
         $fmt .= " % 9d % 9d % 5d";
         my $fmt2 = $fmt;
         $fmt2 =~ s/d/s/g;
         printf "$fmt2\n", qw/Name Commits Added Removed Files/;
+        $max = 4;
     }
 
-    print map {sprintf "$fmt\n", $_, $users->{$_}{commit_count}, $users->{$_}{changes}{lines_added}, $users->{$_}{changes}{lines_removed}, $users->{$_}{changes}{files}}
+    my @users =
         reverse sort {$users->{$a}{commit_count} <=> $users->{$b}{commit_count}}
         grep { $users->{$_}{commit_count} >= ($option{min} || 0) }
         keys %$users;
+
+    for my $user (@users) {
+        my @out = (
+            $user,
+            $users->{$user}{commit_count},
+            $users->{$user}{changes}{lines_added},
+            $users->{$user}{changes}{lines_removed},
+            $users->{$user}{changes}{files},
+        );
+        printf "$fmt\n", @out[0..$max];
+    }
     print "Total commits = $total\n";
 
     return;
