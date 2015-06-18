@@ -35,6 +35,7 @@ sub run {
         'since|s=s',
         'until|u=s',
         'period|p=s',
+        'periods|P=i',
         'merges|m!',
     );
 
@@ -59,32 +60,42 @@ sub run {
     my @options;
     push @options, '-r' if $option{remote};
     push @options, '-a' if $option{all};
+    my @log = (
+        '--format=format:%h %an',
+        ($option{merges} ? () : '--no-merges'),
+    );
 
-    for my $branch ($workflow->git->branch(@options)) {
-        next if $branch =~ / -> /;
-        $branch =~ s/^[*]?\s*//;
-        for my $log (
-            $workflow->git->log(
-                '--format=format:%h %an',
-                ($option{merges} ? () : '--no-merges'),
+    my $periods = $option{periods} || 1;
+    while ($periods--) {
+        my @dates;
+        if ($option{periods}) {
+            @dates = $self->dates($option{period}, $option{periods}--);
+        }
+        else {
+            @dates = (
                 "--since=$since",
                 ($option{until} ? "--until=$option{until}" : ()),
-                $branch,
-            )
-        ) {
-            my ($hash, $name) = split /\s/, $log, 2;
-            $users{$name}{$hash} = 1;
-            $commits++;
+            );
         }
-    }
 
-    for my $user (keys %users) {
-        my $commits = $users{$user};
-        $users{$user} = {
-            commit_count => scalar keys %{ $users{$user} },
-            $option{commits} ? (commits => [keys %{ $users{$user} }]) : (),
-            $option{changes} ? (changes => $self->changes($commits)) : (),
-        };
+        for my $branch ($workflow->git->branch(@options)) {
+            next if $branch =~ / -> /;
+            $branch =~ s/^[*]?\s*//;
+            for my $log ( $workflow->git->log( @log, @dates, $branch, ) ) {
+                my ($hash, $name) = split /\s/, $log, 2;
+                $users{$name}{$hash} = 1;
+                $commits++;
+            }
+        }
+
+        for my $user (keys %users) {
+            my $commits = $users{$user};
+            $users{$user} = {
+                commit_count => scalar keys %{ $users{$user} },
+                $option{commits} ? (commits => [keys %{ $users{$user} }]) : (),
+                $option{changes} ? (changes => $self->changes($commits)) : (),
+            };
+        }
     }
 
     my $fmt = 'fmt_' . ($option{fmt} || 'table');
@@ -93,6 +104,26 @@ sub run {
     }
 
     return;
+}
+
+sub dates {
+    my ($self, $period, $count) = @_;
+    my @dates;
+
+    $period
+        = $period eq 'day'   ? 1
+        : $period eq 'week'  ? 7
+        : $period eq 'month' ? 30
+        : $period eq 'year'  ? 365
+        :                      die "Unknown period '$option{period}' please choose one of day, week, month or year\n";
+
+    my $now = localtime;
+    my $since
+        = $now->wday == 1 ? localtime(time - 3 * $period * 24 * 60 * 60)->ymd
+        : $now->wday == 7 ? localtime(time - 2 * $period * 24 * 60 * 60)->ymd
+        :                   localtime(time - 1 * $period * 24 * 60 * 60)->ymd;
+
+    return @dates;
 }
 
 sub changes {
@@ -209,6 +240,14 @@ to the git repository.
 =head2 C<run ()>
 
 Executes the git workflow command
+
+=head2 C<dates ($period, $count)>
+
+Returns the C<--since> and C<--until> dates for the C<$period> specified
+
+=head2 C<changes ($commits)>
+
+Calculates the changes for C<$commits>.
 
 =head2 C<fmt_table ()>
 
