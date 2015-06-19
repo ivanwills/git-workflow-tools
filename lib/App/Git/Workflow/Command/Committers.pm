@@ -98,9 +98,12 @@ sub run {
                 $option{changes} ? (changes => $self->changes($commits)) : (),
             };
         }
+        my $dates = join ' - ',
+            map {/=(.*)$/; $1}
+            @dates;
         push @stats, {
             commits => $commits,
-            period  => \@dates,
+            period  => $dates,
             users   => \%users,
         };
         $total_commits += $commits;
@@ -116,7 +119,6 @@ sub run {
 
 sub dates {
     my ($self, $period, $count) = @_;
-    my @dates;
 
     $period
         = $period eq 'day'   ? 1
@@ -125,13 +127,16 @@ sub dates {
         : $period eq 'year'  ? 365
         :                      die "Unknown period '$option{period}' please choose one of day, week, month or year\n";
 
-    my $now = localtime;
+    my $until = localtime(time - ($count - 1) * $period * 24 * 60 * 60);
     my $since
-        = $now->wday == 1 ? localtime(time - 3 * $period * 24 * 60 * 60)->ymd
-        : $now->wday == 7 ? localtime(time - 2 * $period * 24 * 60 * 60)->ymd
-        :                   localtime(time - 1 * $period * 24 * 60 * 60)->ymd;
+        = $until->wday == 1 ? localtime(time - 3 * $count * $period * 24 * 60 * 60)
+        : $until->wday == 7 ? localtime(time - 2 * $count * $period * 24 * 60 * 60)
+        :                     localtime(time - 1 * $count * $period * 24 * 60 * 60);
 
-    return @dates;
+    return (
+        "--since=" . $since->ymd,
+        "--until=" . $until->ymd,
+    );
 }
 
 sub changes {
