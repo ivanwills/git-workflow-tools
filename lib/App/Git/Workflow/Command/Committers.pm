@@ -236,6 +236,8 @@ This documentation refers to git-committers version 0.96012
  OPTIONS:
   -r --remote   Committers to remote branches
   -a --all      Committers to any branch (remote or local)
+  -c --changes  Add stats for lines added/removed
+  -C --commits  Output the individual commits (with --format json)
   -s --since[=]YYYY-MM-DD
                 Only commits since this date
   -u --until[=]YYYY-MM-DD
@@ -248,6 +250,10 @@ This documentation refers to git-committers version 0.96012
   -p --period=[day|week|month|year]
                 If --since is not specified this works out the date for the
                 last day/week/month/year
+  -P --periods[=]int
+                Generate stats for more than one period.
+  -M --min-commit[=]int
+                Only show stats for users with at least this number of commits
   -m --merges   Count merge commits
      --no-merges
                 Don't count merge commits
