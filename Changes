@@ -1,5 +1,9 @@
 Revision history for git-workflow-tools
 
+0.96012   2015-06-19
+        Updating for release of version 0.96012
+        Fixed issue with latest perl (Ivan Wills)
+
 0.96011   2015-06-18
         Updating for release of version 0.96011
         Added ability to specify outputting multiple periods (Ivan Wills)
