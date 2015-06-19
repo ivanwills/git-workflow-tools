@@ -39,8 +39,8 @@ sub run {
         'merges|m!',
     );
 
-    my %users;
-    my $commits = 0;
+    my @stats;
+    my $total_commits = 0;
     my $since = $option{since};
 
     if (!$since) {
@@ -67,6 +67,8 @@ sub run {
 
     my $periods = $option{periods} || 1;
     while ($periods--) {
+        my $commits = 0;
+        my %users;
         my @dates;
         if ($option{periods}) {
             @dates = $self->dates($option{period}, $option{periods}--);
@@ -96,11 +98,17 @@ sub run {
                 $option{changes} ? (changes => $self->changes($commits)) : (),
             };
         }
+        push @stats, {
+            commits => $commits,
+            period  => \@dates,
+            users   => \%users,
+        };
+        $total_commits += $commits;
     }
 
     my $fmt = 'fmt_' . ($option{fmt} || 'table');
     if ($self->can($fmt)) {
-        $self->$fmt(\%users, $commits);
+        $self->$fmt(\@stats, $total_commits);
     }
 
     return;
@@ -155,9 +163,11 @@ sub changes {
 }
 
 sub fmt_table {
-    my ($self, $users, $total) = @_;
+    my ($self, $stats, $total) = @_;
     my $fmt = "%-25s % 7d";
     my $max = 1;
+    my $users = $stats->[0]{users};
+    $total = $stats->[0]{commits};
 
     if ($option{changes}) {
         $fmt .= " % 9d % 9d % 5d";
