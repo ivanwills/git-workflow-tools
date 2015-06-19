@@ -245,7 +245,6 @@ This documentation refers to git-committers version 0.96012
                    - table : shows the data in a simple table
                    - json  : returns the raw data as a json object
                    - perl  : Dump the data structure
-                   - csv   : Like table but as a csv
   -p --period=[day|week|month|year]
                 If --since is not specified this works out the date for the
                 last day/week/month/year
