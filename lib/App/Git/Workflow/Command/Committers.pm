@@ -102,9 +102,9 @@ sub run {
             map {/=(.*)$/; $1}
             @dates;
         push @stats, {
-            commits => $commits,
             period  => $dates,
-            users   => \%users,
+            ( %users ? (commits => $commits) : () ),
+            ( %users ? (users   => \%users ) : () ),
         };
         $total_commits += $commits;
     }
@@ -120,9 +120,10 @@ sub run {
 sub dates {
     my ($self, $period, $count) = @_;
 
+    my $now = localtime;
     $period
         = $period eq 'day'   ? 1
-        : $period eq 'week'  ? 7
+        : $period eq 'week'  ? 7  - $now->wdaygg
         : $period eq 'month' ? 30
         : $period eq 'year'  ? 365
         :                      die "Unknown period '$option{period}' please choose one of day, week, month or year\n";
@@ -168,11 +169,11 @@ sub changes {
 }
 
 sub fmt_table {
-    my ($self, $stats, $total) = @_;
+    my ($self, $stats) = @_;
     my $fmt = "%-25s % 7d";
     my $max = 1;
-    my $users = $stats->[0]{users};
-    $total = $stats->[0]{commits};
+    my $users = $stats->[0]{users}   || {};
+    my $total = $stats->[0]{commits} || 0;
 
     if ($option{changes}) {
         $fmt .= " % 9d % 9d % 5d";
