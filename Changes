@@ -1,5 +1,11 @@
 Revision history for git-workflow-tools
 
+0.96013   2015-06-22
+        Updating for release of version 0.96013
+        Added missing documentation of cmd line parameters (Ivan Wills)
+        Removed documentation about unimplemented format (Ivan Wills)
+        Got data outputting correctly for multiple periods (Ivan Wills)
+
 0.96012   2015-06-19
         Updating for release of version 0.96012
         Fixed issue with latest perl (Ivan Wills)
