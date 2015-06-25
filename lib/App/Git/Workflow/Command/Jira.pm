@@ -169,9 +169,9 @@ Adds user and time to a branch unless --quiet used
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-Defaults for this script can be set thought C<git config>
+Defaults for this script can be set through C<git config>
 
- jira.url       Specifiys the URL for the JIRA instance being used.
+ jira.url       Specifies the URL for the JIRA instance being used.
 
 You can set these values either by editing the repository local C<.git/config>
 file or C<~/.gitconfig> or use the C<git config> command
