@@ -31,10 +31,10 @@ This documentation refers to git-feature version 0.96013
   branch-name       The name of the new branch to create from the current release branch/tag
 
   -j --jira[=]JIRAID
-                    Specify a JIRA ID to use to find the summary of an make it
+                    Find the summary for JIRA item JIRAID and make it the
                     branch name for the feature.
   -u --url[=]URL    Use URL as the JIRA instance for looking up summaries.
-  -U --user[=]str   JIRA user name to use when looking up JIRA
+  -U --user[=]str   JIRA user name to use when querying JIRA
   -P --password[=]str
                     JIRA password for --user
   -t --tag[=]str    Specify a tag that any branch with newer commits must contain
@@ -47,7 +47,7 @@ This documentation refers to git-feature version 0.96013
   -x --pom[=]dir/pom.xml
                     The location of the master pom.xml if it isn't in the
                     current directory.
-  -t --test         Test don't actually run
+  -t --test         Test, don't actually run
   -v --verbose      Show more details
      --version      Prints the version information
      --help         Prints this help information
@@ -60,14 +60,14 @@ feature branches using whatever you define as the I<current release>.
 
 By default I<current release> is defined as the I<origin/master> branch that
 can be changed either on the command line using the --tag or --branch
-arguments or by setting the C<workflow.prod> git config. Example of a commonly
+arguments or by setting the C<workflow.prod> git config. Example of commonly
 used alternatives include using release version tags where you might use
 something like C<--tag ^v\d+[.]\d+'> to match tags like v0.1 or v1.0 etc.
 Other examples include different branches containing release versions of
 code.
 
 The branch I<origin/master> is used over I<master> to save you from having
-to switch to master and pull any new changes, a C<git fetch> is called by
+to switch to master and pull any new changes. A C<git fetch> is called by
 default before branching to further ensure the latest version of code is
 available.
 
@@ -77,15 +77,15 @@ available.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-Defaults for this script can be set thought C<git config>
+Defaults for this script can be set through C<git config>
 
  workflow.prod  Sets how a prod release is determined
-                eg the default equavilent is branch=^origin/master$
- workflow.pom   The default location for the pom.xml file (used C<--new-pom>
-                and updating the pom.xml for the new branch)
+                eg the default equivalent is branch=^origin/master$
+ workflow.pom   The default location for the pom.xml file (used by C<--new-pom>
+                when updating pom.xml for the new branch)
  workflow.pom-local
                 Can set default value of C<--local>
- jira.url       Sets the default url for talking to JIRA with
+ jira.url       Specifies the URL for the JIRA instance being used
 
 You can set these values either by editing the repository local C<.git/config>
 file or C<~/.gitconfig> or use the C<git config> command

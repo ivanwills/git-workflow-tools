@@ -29,7 +29,7 @@ This documentation refers to git-pom version 0.96013
    git-pom whos version [option]
 
  SUB-COMMAND:
-  uniq          Confirm that the current branch is the only branch using it's version
+  uniq          Confirm that the current branch is the only branch using its version
   next          Calculates the next available version number
   whos          Which branch uses the pom version "version"
 
@@ -92,12 +92,12 @@ Show branches with pom.xml files that don't pass
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-Defaults for this script can be set thought C<git config>
+Defaults for this script can be set through C<git config>
 
  workflow.prod  Sets how a prod release is determined
-                eg the default equavilent is branch=^origin/master$
- workflow.pom   The default location for the pom.xml file (used C<--new-pom>
-                and updating the pom.xml for the new branch)
+                eg the default equivalent is branch=^origin/master$
+ workflow.pom   The default location for the pom.xml file (used by C<--new-pom>
+                when updating pom.xml for the new branch)
 
 You can set these values either by editing the repository local C<.git/config>
 file or C<~/.gitconfig> or use the C<git config> command
@@ -108,7 +108,7 @@ file or C<~/.gitconfig> or use the C<git config> command
  # or set a repository's local value
     git config workflow.prod 'tag=^release_\d{4}_\d{2}\d{2}$'
 
- # or setting pom.xml location to a sub directory
+ # or set pom.xml location to a sub directory
     git config workflow.pom 'somedir/pom.xml'
 
 =head1 DEPENDENCIES

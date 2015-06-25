@@ -60,7 +60,7 @@ This documentation refers to git-up-to-date version 0.96013
                     (Default 1)
 
   -s --branch-status
-                    Shows the status (name, last commiter, last commit date) of
+                    Shows the status (name, last committer, last commit date) of
                     all branches.
   -a --age-limit[=]date
                     With --branch-status limit to only branches created after
@@ -95,10 +95,10 @@ releases are searched for).
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-Defaults for this script can be set thought C<git config>
+Defaults for this script can be set through C<git config>
 
  workflow.prod  Sets how a prod release is determined
-                eg the default equavilent is branch=^origin/master$
+                eg the default equivalent is branch=^origin/master$
  workflow.max-history
                 Sets the default C<--max-history> value
 
