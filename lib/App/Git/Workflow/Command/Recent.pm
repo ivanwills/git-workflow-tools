@@ -144,10 +144,10 @@ This documentation refers to git-recent version 0.96013
  OPTIONS:
   -s --since[=]iso-date
                 Show changed files since this date
-  -s --day      Show changed files from the last day (Default action)
-  -s --week     Show changed files from the last week
-  -s --month    Show changed files from the last month
-  -s --out[=](text|json|perl)
+  -d --day      Show changed files from the last day (Default action)
+  -w --week     Show changed files from the last week
+  -m --month    Show changed files from the last month
+  -o --out[=](text|json|perl)
                 Specify how to display the results
                     - text : Nice human readable format (Default)
                     - json : as a JSON object
