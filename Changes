@@ -1,5 +1,12 @@
 Revision history for git-workflow-tools
 
+0.97   2015-06-29
+        Updating for release of version 0.97
+        Merge pull request #7 from zackse/master (Ivan Wills)
+        apply doc updates to script in bin/ (Evan Zacks)
+        minor documentation updates (Evan Zacks)
+        git-recent pod: fix short argument names (Evan Zacks)
+
 0.96013   2015-06-22
         Updating for release of version 0.96013
         Added missing documentation of cmd line parameters (Ivan Wills)
