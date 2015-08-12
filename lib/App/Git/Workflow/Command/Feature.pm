@@ -91,8 +91,9 @@ sub jira {
     my $jira_rest = JIRA::REST->new($option{url}, $option{user}, $option{pass});
     my $issue     = $jira_rest->GET("/issue/$option{jira}");
     my $branch    = lc "$option{jira} $issue->{fields}{summary}";
+
     # remove unsafe characters
-    $branch =~ s/[ .:!?|\/\\-]+/_/gxms;
+    $branch =~ s/[&'" .:!?|\/\\-]+/_/gxms;
     # remove leading and trailing underscores
     $branch =~ s/^_+|_+$//gxms;
     # remove doubled underscores
