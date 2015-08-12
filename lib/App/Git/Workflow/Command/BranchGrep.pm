@@ -23,7 +23,6 @@ sub run {
         'remote|r',
         'all|a',
         'insensitive|i',
-        'v',
     );
 
     $ARGV[0] ||= '';
