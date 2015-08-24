@@ -12,6 +12,7 @@ my $builder = Module::Build->new(
         'perl'        => '5.008',
         'autodie'     => 0,
         'Error'       => 0,
+        'File::chdir' => 0,
         'Git'         => 0,
         'XML::Tiny'   => 0,
         'Time::Piece' => 0,
