@@ -1,5 +1,13 @@
 Revision history for git-workflow-tools
 
+0.98   2015-08-24
+        Updating for release of version 0.98
+        Added extra dependency (Ivan Wills)
+        Removed creation of makefile (Ivan Wills)
+        Removed unused parameter (Ivan Wills)
+        Added more character that should be removed from branch names (Ivan Wills)
+        Added Perl 5.22 to list of perl versions to build with (Ivan Wills)
+
 0.97   2015-06-29
         Updating for release of version 0.97
         Merge pull request #7 from zackse/master (Ivan Wills)
