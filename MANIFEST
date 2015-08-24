@@ -35,7 +35,6 @@ lib/App/Git/Workflow/Repository.pm
 lib/Mock/App/Git/Workflow/Repository.pm
 lib/Test/Git/Workflow/Command.pm
 LICENSE
-Makefile.PL
 MANIFEST
 META.json
 META.yml
