@@ -31,6 +31,7 @@ sub run {
         'tag|t=s',
         'branch|b=s',
         'local|l!',
+        'remote|r!',
         'format|f=s',
         'quick|q!',
         'include|i=s',
@@ -155,7 +156,7 @@ sub do_update_me {
 
 sub branches_contain {
     my @releases = @_;
-    my @branches = $workflow->branches('both');
+    my @branches = $workflow->branches($option{remote} ? 'remote' : 'both');
     my $format = q/--format=format:%at <%an>%ae/;
     my @csv;
 
