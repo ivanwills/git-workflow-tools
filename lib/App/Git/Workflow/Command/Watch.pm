@@ -44,8 +44,11 @@ sub run {
 
     # do stuff here
     my $action = @ARGV && $actions{$ARGV[0]} ? shift @ARGV : @ARGV ? 'do' : 'show';
-    my $once   = $option{once} ? -1 : -$option{runs} || 1;
     my ($last) = git_state();
+    my $once
+        = $option{once} ? -1
+        : $option{runs} ? -$option{runs}
+        :                 1;
 
     while ($once) {
         eval {
