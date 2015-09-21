@@ -12,7 +12,7 @@ use English qw/ -no_match_vars /;
 use App::Git::Workflow;
 use App::Git::Workflow::Command qw/get_options/;
 
-our $VERSION = 0.98;
+our $VERSION = 0.99;
 our $workflow = App::Git::Workflow->new;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
@@ -121,7 +121,7 @@ git-files - Get information on files changed across branches.
 
 =head1 VERSION
 
-This documentation refers to git-files version 0.98
+This documentation refers to git-files version 0.99
 
 =head1 SYNOPSIS
 

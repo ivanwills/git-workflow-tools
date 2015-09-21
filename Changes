@@ -1,5 +1,10 @@
 Revision history for git-workflow-tools
 
+0.99   2015-09-21
+        Updating for release of version 0.99
+        Making it possible to only look at remote branches (Ivan Wills)
+        Fixed issue with undefined --runs (Ivan Wills)
+
 0.98   2015-08-24
         Updating for release of version 0.98
         Added extra dependency (Ivan Wills)
