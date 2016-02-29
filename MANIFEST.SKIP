@@ -97,3 +97,6 @@ fatlib/
 out/
 testing/
 cmds
+.travis.yml
+.editorconfig
+.vtide.yml
