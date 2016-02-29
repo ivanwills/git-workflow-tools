@@ -50,20 +50,15 @@ sub next_pom {
 
 sub pom_versions {
     note 'pom versions';
+    my $now = time;
     my @data = (
         [
             [
                 { branch     => ['* master', '  origin/master', '  origin/veryold'] },
                 { config     => undef },
-                { 'rev-list' => ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'] },
-                { 'rev-list' => ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'] },
-                { 'rev-list' => ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'] },
-                { 'rev-list' => ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'] },
-                { 'rev-list' => ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'] },
-                { 'rev-list' => ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'] },
-                { 'rev-list' => ['1410113841 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'] },
+                { 'rev-list' => [$now - 1 . ' 6ee992acaa81f6c90d9fa7e52898e33b00f6fa90'] },
                 { show       => '<project><version>1.0.0-SNAPSHOT</version></project>' },
-                { 'rev-list' => ['1410113842 5ee992acaa81f6c90d9fa7e52898e33b00f6fa90'] },
+                { 'rev-list' => [$now - 2 . ' 5ee992acaa81f6c90d9fa7e52898e33b00f6fa90'] },
                 { show       => '<project><version>2.0.0-SNAPSHOT</version></project>' },
                 { 'rev-list' => ['1210113842 5ee992aca381f6c90d9fa7e52898e33b00f6fa90'] },
             ],
