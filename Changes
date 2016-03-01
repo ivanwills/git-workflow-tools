@@ -1,5 +1,12 @@
 Revision history for git-workflow-tools
 
+1.0   2016-03-01
+        Updating for release of version 1.0
+        Updated license (Ivan Wills)
+        Stopped supporting perl 5.8! (Ivan Wills)
+        VTide and editor configs (Ivan Wills)
+        Fixed date dependance of test data (Ivan Wills)
+
 0.99   2015-09-21
         Updating for release of version 0.99
         Making it possible to only look at remote branches (Ivan Wills)
