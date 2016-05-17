@@ -5,9 +5,28 @@ default:
   wait: 1
 name: git-workflow-tools
 terminals:
-  2: []
+  1a:
+    command: ./Build && ./Build testcover
+    restart: 1
+    wait: 0
+    watch:
+      - lib
+      - bin
+      - test
+  2:
+    edit: base
+  3:
+    edit: utils
 editor:
   files:
+    base:
+      - lib/App/Git/Workflow.pm
+      - lib/App/Git/Workflow/Command.pm
+      - lib/App/Git/Workflow/Repository.pm
+    utils:
+      - lib/App/Git/Workflow/Pom.pm
+      - lib/Mock/App/Git/Workflow/Repository.pm
+      - lib/Test/Git/Workflow/Command.pm
     branch-clean:
       - bin/git-branch-clean
       - lib/App/Git/Workflow/Command/BranchClean.pm
