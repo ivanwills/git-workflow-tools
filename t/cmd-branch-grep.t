@@ -32,7 +32,7 @@ sub run {
                 { branch => [qw/1.0 2.0/] },
             ],
             STD => {
-                OUT => "\n",
+                OUT => '',
                 ERR => '',
             },
             option => {},

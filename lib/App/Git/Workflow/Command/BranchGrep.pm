@@ -9,6 +9,7 @@ package App::Git::Workflow::Command::BranchGrep;
 use strict;
 use warnings;
 use English qw/ -no_match_vars /;
+use Term::ANSIColor qw/colored/;
 use App::Git::Workflow;
 use App::Git::Workflow::Command qw/get_options/;
 
@@ -20,6 +21,7 @@ our %option;
 sub run {
     get_options(
         \%option,
+        'colour|color|c',
         'remote|r',
         'all|a',
         'insensitive|i',
@@ -31,11 +33,12 @@ sub run {
     push @options, '-a' if $option{all};
     my $grep = $option{insensitive} ? "(?i:$ARGV[0])" : $ARGV[0];
 
-    print join "\n",
-        sort {_sorter()}
-        grep { $option{v} ? !/$grep/ : /$grep/ }
-        $workflow->git->branch(@options);
-    print "\n";
+    for my $branch ( sort {_sorter()} grep { $option{v} ? !/$grep/ : /$grep/ } $workflow->git->branch(@options) ) {
+        if ( $option{colour} ) {
+            $branch =~ s/($grep)/colored ['red'], $1/egxms;
+        }
+        print "$branch\n";
+    }
 }
 
 sub _sorter {
