@@ -9,6 +9,7 @@ package App::Git::Workflow::Command::TagGrep;
 use strict;
 use warnings;
 use English qw/ -no_match_vars /;
+use Term::ANSIColor qw/colored/;
 use App::Git::Workflow;
 use App::Git::Workflow::Command qw/get_options/;
 
@@ -20,14 +21,19 @@ our %option;
 sub run {
     get_options(
         \%option,
+        'colour|color|c',
         'insensitive|i',
     );
 
     $ARGV[0] ||= '';
     my $grep = $option{insensitive} ? "(?i:$ARGV[0])" : $ARGV[0];
 
-    print join "\n", sort {_sorter()} grep {/$grep/} $workflow->git->tag;
-    print "\n";
+    for my $tag ( sort {_sorter()} grep {/$grep/} $workflow->git->tag ) {
+        if ( $option{colour} ) {
+            $tag =~ s/($grep)/colored ['red'], $1 /egxms;
+        }
+        print "$tag\n";
+    }
 }
 
 sub _sorter {

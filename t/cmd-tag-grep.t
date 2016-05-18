@@ -24,7 +24,7 @@ sub run {
                 ERR => '',
             },
             option => {},
-            name   => 'Default',
+            name   => 'Default 1',
         },
         {
             ARGV => ["3"],
@@ -32,7 +32,7 @@ sub run {
                 { tag => [qw/1.0 2.0/] },
             ],
             STD => {
-                OUT => "\n",
+                OUT => '',
                 ERR => '',
             },
             option => {},
