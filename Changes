@@ -1,5 +1,12 @@
 Revision history for git-workflow-tools
 
+1.0.1   2016-06-26
+        Updating for release of version 1.0.1
+        Added colouring of found branch matches (Ivan Wills)
+        Added colouring of found matches (Ivan Wills)
+        Updated config (Ivan Wills)
+        Added new task (Ivan Wills)
+
 1.0   2016-03-01
         Updating for release of version 1.0
         Updated license (Ivan Wills)
