@@ -32,8 +32,8 @@ sub new {
         ) {
             pop @dir;
         }
-        $self->{repository} = File::Spec->catdir(@dir);
-        die "Couldn't find the git repository!\n" if !-d $self->{repository};
+        $self->{repository} = File::Spec->catdir(@dir) || '';
+        die "Couldn't find the git repository! '$self->{repository}'\n" if !-d $self->{repository};
     }
     $self->{git} = Git->repository(Directory => $self->{repository});
 
