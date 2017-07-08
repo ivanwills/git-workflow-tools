@@ -100,3 +100,4 @@ cmds
 .travis.yml
 .editorconfig
 .vtide.yml
+vrc.yml
