@@ -31,7 +31,7 @@ sub run {
         'exclude|e=s@',
         'exclude_file|exclude-file|f=s',
         'max|n=i',
-        'reverse|r',
+        'reverse|R',
     ) or return;
 
     # get the list of branches to look at
@@ -106,7 +106,7 @@ This documentation refers to git-branches version 1.0.2
                 starting with a hash (#) are ignored.
   -n --max[=]int
                 Maximum number of branches to show
-  -r --reverse  Reverse the display order of branches
+  -R --reverse  Reverse the display order of branches
 
   -v --verbose  Show more detailed option
      --version  Prints the version information
