@@ -23,7 +23,6 @@ sub run {
 
     %option = (
         exclude    => [],
-        max_age    => ( $ENV{GIT_WORKFLOW_MAX_AGE} || $workflow->config('workflow.max') || 120 ),
     );
     get_options(
         \%option,
@@ -31,12 +30,8 @@ sub run {
         'all|a',
         'exclude|e=s@',
         'exclude_file|exclude-file|f=s',
-        'max_age|max-age|m=i',
-        'min_age|min-age|n=i',
-        'tag|t!',
-        'tag_prefix|tag-prefix|p=s',
-        'tag_suffix|tag-suffix|s=s',
-        'test!',
+        'max|n=i',
+        'reverse|r',
     ) or return;
 
     # get the list of branches to look at
@@ -65,10 +60,19 @@ sub run {
     }
 
     for (@found) {
-        $max = length $_ if length $_ > $max;
+        $max = length $_->{name} if length $_->{name} > $max;
     }
 
-    for my $details (sort {$a->{time} <=> $b->{time}} @found) {
+    my $count = 0;
+    if ( $option{reverse} ) {
+        @found = reverse sort {$a->{time} <=> $b->{time}} @found;
+    }
+    else {
+        @found = sort {$a->{time} <=> $b->{time}} @found;
+    }
+
+    for my $details (@found) {
+        last if $option{max} && $count++ >= $option{max};
         printf "%-${max}s %s\n", $details->{name}, scalar localtime $details->{time};
     }
 
@@ -94,25 +98,15 @@ This documentation refers to git-branches version 1.0.2
  OPTIONS:
   -r --remote   Only remote branches (defaults to local branches)
   -a --all      All branches
-  -m --max-age[=]days
-                Maximum age of a branch with out changes before it is esed
-                weather it's merged to master or not. (Default 0, no max age)
-  -n --min-age[=]days
-                Leave branches this number of days or new alone even if merged
-                to master. (default 7 days)
   -e --exclude[=]regex
                 Regular expression to exclude specific branches from deletion.
                 You can specify --exclude multiple times for more control.
      --exclude-file[=]file
                 A file of exclude regular expressions, blank lines and lines
                 starting with a hash (#) are ignored.
-  -t --tag      Create tags of the same name as the branch
-  -p --tag-prefix[=]str
-                When converting a branch to a tag prepend it with "str"
-  -s --tag-suffix[=]str
-                When converting a branch to a tag apend it with "str"
-     --test     Don't actually delete branches just report on what branches
-                would be deleted.
+  -n --max[=]int
+                Maximum number of branches to show
+  -r --reverse  Reverse the display order of branches
 
   -v --verbose  Show more detailed option
      --version  Prints the version information
@@ -121,11 +115,7 @@ This documentation refers to git-branches version 1.0.2
 
 =head1 DESCRIPTION
 
-C<git-branches> deletes branches merged to master (but not newer than
-C<--min-age> days). Optionally also deleting branches that haven't been
-modified more than C<--max-age> days. When deleting branches they can be
-converted to tags (C<--tag>) with optional an prefix (C<--tag-prefix>) and/or
-an optional suffix (C<--tag-suffix>) added.
+C<git-branches> aims to show details about all branches .
 
 =head1 SUBROUTINES/METHODS
 
