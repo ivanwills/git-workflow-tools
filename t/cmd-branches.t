@@ -17,7 +17,6 @@ sub run {
         {
             ARGV => [],
             mock => [
-                { config => undef },
                 { branch => [] },
             ],
             STD => {
@@ -26,7 +25,6 @@ sub run {
             },
             option => {
                 exclude => [],
-                max_age => 120,
             },
             name   => 'default',
         },
