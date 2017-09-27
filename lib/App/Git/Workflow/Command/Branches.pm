@@ -85,7 +85,7 @@ __DATA__
 
 =head1 NAME
 
-git-branches - lists brances with dates of last commits
+git-branches - lists branches with dates of last commits
 
 =head1 VERSION
 
