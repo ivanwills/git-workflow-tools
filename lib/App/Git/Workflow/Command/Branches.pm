@@ -1,6 +1,6 @@
 package App::Git::Workflow::Command::Branches;
 
-# Created on: 2014-03-11 20:58:59
+# Created on: 2017-09-28 09:32:00
 # Create by:  Ivan Wills
 # $Id$
 # $Revision$, $HeadURL$, $Date$
@@ -85,7 +85,7 @@ __DATA__
 
 =head1 NAME
 
-git-branches - es old branches out of the repository
+git-branches - lists brances with dates of last commits
 
 =head1 VERSION
 
@@ -115,30 +115,13 @@ This documentation refers to git-branches version 1.0.2
 
 =head1 DESCRIPTION
 
-C<git-branches> aims to show details about all branches .
+C<git-branches> aims to show details about all branches ordered by commit date.
 
 =head1 SUBROUTINES/METHODS
 
 =head2 C<run ()>
 
 Executes the git workflow command
-
-=head2 C<do_delete ($branch, $details)>
-
-Performs the deleting of old branches.
-
-=head2 C<in_master ($details)>
-
-The branch with C<$details> has been merged to master
-
-=head2 C<too_old ($details)>
-
-The branch with C<$details> has not been modified in greater than C<--max-age>
-days.
-
-=head2 C<too_young_to_die ($details)>
-
-The branch was only recently used and should be esed.
 
 =head1 DIAGNOSTICS
 

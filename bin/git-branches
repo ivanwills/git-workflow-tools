@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Created on: 2014-03-11 20:58:59
+# Created on: 2017-09-28 09:32:00
 # Create by:  Ivan Wills
 # $Id$
 # $Revision$, $HeadURL$, $Date$
@@ -16,7 +16,7 @@ __DATA__
 
 =head1 NAME
 
-git-branches - es old branches out of the repository
+git-branches - lists brances with dates of last commits
 
 =head1 VERSION
 
@@ -29,25 +29,15 @@ This documentation refers to git-branches version 1.0.2
  OPTIONS:
   -r --remote   Only remote branches (defaults to local branches)
   -a --all      All branches
-  -m --max-age[=]days
-                Maximum age of a branch with out changes before it is esed
-                weather it's merged to master or not. (Default 0, no max age)
-  -n --min-age[=]days
-                Leave branches this number of days or new alone even if merged
-                to master. (default 7 days)
   -e --exclude[=]regex
                 Regular expression to exclude specific branches from deletion.
                 You can specify --exclude multiple times for more control.
      --exclude-file[=]file
                 A file of exclude regular expressions, blank lines and lines
                 starting with a hash (#) are ignored.
-  -t --tag      Create tags of the same name as the branch
-  -p --tag-prefix[=]str
-                When converting a branch to a tag prepend it with "str"
-  -s --tag-suffix[=]str
-                When converting a branch to a tag apend it with "str"
-     --test     Don't actually delete branches just report on what branches
-                would be deleted.
+  -n --max[=]int
+                Maximum number of branches to show
+  -r --reverse  Reverse the display order of branches
 
   -v --verbose  Show more detailed option
      --version  Prints the version information
@@ -56,11 +46,7 @@ This documentation refers to git-branches version 1.0.2
 
 =head1 DESCRIPTION
 
-C<git-branches> deletes branches merged to master (but not newer than
-C<--min-age> days). Optionally also deleting branches that haven't been
-modified more than C<--max-age> days. When deleting branches they can be
-converted to tags (C<--tag>) with optional an prefix (C<--tag-prefix>) and/or
-an optional suffix (C<--tag-suffix>) added.
+C<git-branches> aims to show details about all branches ordered by commit date.
 
 =head1 SUBROUTINES/METHODS
 
