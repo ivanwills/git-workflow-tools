@@ -40,7 +40,7 @@ sub run {
     # check local branches first
     my $type   = $option{all} ? 'both' : $option{remote} ? 'remote' : 'local';
     my $prefix = $option{all} || $option{remote} ? '(?:\w+/)?' : '';
-    my @branch = grep {/^$prefix(\w+_)?$jira_re(?:\D|$)/} $workflow->branches($type);
+    my @branch = grep {/^$prefix(?:[a-z]+\/)?(\w+_)?$jira_re(?:\D|$)/i} $workflow->branches($type);
 
     if (@branch) {
         my $branch = which_branch(@branch);
