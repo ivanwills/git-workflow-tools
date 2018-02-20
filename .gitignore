@@ -20,3 +20,4 @@ tmp*
 errors.err
 fatlib/
 out/
+.vtide/*

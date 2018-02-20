@@ -99,5 +99,5 @@ testing/
 cmds
 .travis.yml
 .editorconfig
-.vtide.yml
+.vtide.*
 vrc.yml
