@@ -16,7 +16,7 @@ use FindBin qw/$Bin/;
 use Path::Tiny;
 use File::chdir;
 
-our $VERSION = 1.0.3;
+our $VERSION = 1.0.4;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
