@@ -18,6 +18,29 @@ terminals:
   3:
     edit: utils
 editor:
+  helper: |
+    sub {
+        my ($self, $group) = @_;
+        return () if $group !~ /^cmd-/;
+
+        my ($cmd) = $group =~ /cmd-(.*)/;
+        my $lib = join '', map {ucfirst $_} split /-/, $cmd;
+        return (
+            "bin/git-$cmd",
+            "lib/App/Git/Workflow/Command/$lib.pm",
+            "t/$group.t",
+        );
+    }
+  helper_autocomplete: |
+    sub {
+      my ($pos, $args) = @_;
+      my $arg = $args->[$pos] || '';
+      my $argument = $arg && $arg ne 'edit' ? qr/^$arg/ : qr/./;
+
+      my @list = map {/^t\/cmd-(.*).t$/; $1} glob "t/cmd-*.t";
+
+      return @list;
+    }
   files:
     base:
       - lib/App/Git/Workflow.pm
