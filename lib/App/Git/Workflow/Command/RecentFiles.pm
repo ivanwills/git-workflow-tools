@@ -22,17 +22,19 @@ sub run {
     get_options(
         \%option,
         'colour|color|c',
+        'remote|r',
+        'all|a',
         'insensitive|i',
     );
 
-    $ARGV[0] ||= '';
+    $ARGV[0] ||= '.';
+    my @options;
+    push @options, '-r' if $option{remote};
+    push @options, '-a' if $option{all};
     my $grep = $option{insensitive} ? "(?i:$ARGV[0])" : $ARGV[0];
 
-    for my $tag ( sort {_sorter()} grep {/$grep/} $workflow->git->tag ) {
-        if ( $option{colour} ) {
-            $tag =~ s/($grep)/colored ['red'], $1 /egxms;
-        }
-        print "$tag\n";
+    for my $tag ( grep {/$grep/} $workflow->git->branch(@options) ) {
+        # need to log shoing files and times
     }
 }
 
