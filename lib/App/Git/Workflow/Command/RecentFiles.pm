@@ -1,4 +1,4 @@
-package App::Git::Workflow::Command::TagGrep;
+package App::Git::Workflow::Command::RecentFiles;
 
 # Created on: 2014-03-11 20:58:59
 # Create by:  Ivan Wills
@@ -51,15 +51,15 @@ __DATA__
 
 =head1 NAME
 
-git-tag-grep - grep tags
+git-recent-files - grep tags
 
 =head1 VERSION
 
-This documentation refers to git-tag-grep version 1.0.3
+This documentation refers to git-recent-files version 1.0.3
 
 =head1 SYNOPSIS
 
-   git-tag-grep [option] regex
+   git-recent-files [option] regex
 
  OPTIONS:
   regex         grep's perl (-P) regular expression
@@ -67,7 +67,7 @@ This documentation refers to git-tag-grep version 1.0.3
   -v --verbose  Show more detailed option
      --version  Prints the version information
      --help     Prints this help information
-     --man      Prints the full documentation for git-tag-grep
+     --man      Prints the full documentation for git-recent-files
 
 =head1 DESCRIPTION
 
