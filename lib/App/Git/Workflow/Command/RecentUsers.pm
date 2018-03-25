@@ -8,42 +8,50 @@ package App::Git::Workflow::Command::RecentUsers;
 
 use strict;
 use warnings;
+use Getopt::Long;
+use Pod::Usage ();
 use English qw/ -no_match_vars /;
-use Term::ANSIColor qw/colored/;
 use App::Git::Workflow;
 use App::Git::Workflow::Command qw/get_options/;
+use base qw/App::Git::Workflow::Command::Recent/;
 
-our $VERSION  = 1.0.3;
+our $VERSION  = 1.0.4;
 our $workflow = App::Git::Workflow->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
 
 sub run {
+    my $self = shift;
+
     get_options(
         \%option,
-        'colour|color|c',
+        'all|a',
+        'day|d',
         'insensitive|i',
+        'month|m',
+        'out|o=s',
+        'quiet|q',
+        'remote|r',
+        'since|s=s',
+        'week|w',
     );
 
-    $ARGV[0] ||= '';
-    my $grep = $option{insensitive} ? "(?i:$ARGV[0])" : $ARGV[0];
+    # get a list of recent commits
+    my @commits = $self->recent_commits(\%option);
 
-    for my $tag ( sort {_sorter()} grep {/$grep/} $workflow->git->tag ) {
-        if ( $option{colour} ) {
-            $tag =~ s/($grep)/colored ['red'], $1 /egxms;
-        }
-        print "$tag\n";
+    # find the files in each commit
+    my %changed = $self->changed_from_shas(@commits);
+
+    # display results
+    my $out = 'out_' . ($option{out} || 'text');
+
+    if ($self->can($out)) {
+        $self->$out(\%changed);
     }
+
+    return;
 }
 
-sub _sorter {
-    no warnings;
-    my $A = $a;
-    my $B = $b;
-    $A =~ s/(\d+)/sprintf "%06d", $1/egxms;
-    $B =~ s/(\d+)/sprintf "%06d", $1/egxms;
-    $A cmp $B;
-}
 
 1;
 

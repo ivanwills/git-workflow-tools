@@ -25,11 +25,15 @@ sub run {
 
     get_options(
         \%option,
+        'all|a',
+        'branches|b',
         'day|d',
         'month|m',
         'out|o=s',
         'quiet|q',
+        'remotes|r',
         'since|s=s',
+        'tags|t',
         'week|w',
     );
 
@@ -75,7 +79,16 @@ sub out_json {
     my ($self, $changed) = @_;
 
     require JSON;
-    print JSON::encode_json($changed);
+    print JSON::encode_json($changed), "\n";
+
+    return;
+}
+
+sub out_yaml {
+    my ($self, $changed) = @_;
+
+    require YAML;
+    print YAML::Dump($changed);
 
     return;
 }
@@ -95,7 +108,12 @@ sub recent_commits {
             :                     ('--since', sprintf "%04d-%02d-%02d", $year, $month, $day - 1 );
     }
 
-    return $workflow->git->rev_list('--all', @args);
+    unshift @args, $option{branches} ? '--branches'
+        : $option{tags}              ? '--tags'
+        : $option{remotes}           ? '--remotes'
+        :                              '--all';
+
+    return $workflow->git->rev_list(@args);
 }
 
 sub changed_from_shas {
@@ -114,7 +132,7 @@ sub changed_from_shas {
         }
     }
 
-    for my $file (sort keys %changed) {
+    for my $file (keys %changed) {
         $changed{$file}{users}    = [ sort keys %{ $changed{$file}{users   } } ];
         $changed{$file}{branches} = [ sort keys %{ $changed{$file}{branches} } ];
     }
