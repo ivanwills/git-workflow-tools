@@ -25,12 +25,12 @@ sub run {
 
     get_options(
         \%option,
-        'since|s=s',
         'day|d',
-        'week|w',
         'month|m',
         'out|o=s',
         'quiet|q',
+        'since|s=s',
+        'week|w',
     );
 
     # get a list of recent commits
