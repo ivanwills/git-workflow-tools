@@ -27,14 +27,16 @@ sub run {
     get_options(
         \%option,
         'all|a',
-        'branches|b',
+        'branch|b',
+        'branches|B',
         'day|d',
+        'files|f',
         'month|m',
         'out|o=s',
         'quiet|q',
-        'remotes|r',
+        'remote|r',
         'since|s=s',
-        'tags|t',
+        'tag|t',
         'users|u',
         'week|w',
     );
@@ -59,6 +61,21 @@ sub run {
             }
         }
         %changed = %users;
+    }
+    elsif ( $option{branches} ) {
+        my %branches;
+        for my $file (keys %changed) {
+            for my $branch (@{ $changed{$file}{branches} }) {
+                $branches{$branch} ||= {};
+                @{ $branches{$branch}{files} } = (
+                    uniq sort @{ $branches{$branch}{files} || [] }, @{ $changed{$file}{files} || [] }
+                );
+                @{ $branches{$branch}{users} } = (
+                    uniq sort @{ $branches{$branch}{users} || [] }, @{ $changed{$file}{users} || [] }
+                );
+            }
+        }
+        %changed = %branches;
     }
     else {
         for my $file (keys %changed) {
@@ -131,10 +148,10 @@ sub recent_commits {
             :                     ('--since', sprintf "%04d-%02d-%02d", $year, $month, $day - 1 );
     }
 
-    unshift @args, $option{branches} ? '--branches'
-        : $option{tags}              ? '--tags'
-        : $option{remotes}           ? '--remotes'
-        :                              '--all';
+    unshift @args, $option{tag} ? '--tags'
+        : $option{branch}       ? '--branches'
+        : $option{remote}       ? '--remotes'
+        :                         '--all';
 
     return $workflow->git->rev_list(@args);
 }
@@ -192,6 +209,15 @@ This documentation refers to git-recent version 1.0.4
   -d --day      Show changed files from the last day (Default action)
   -w --week     Show changed files from the last week
   -m --month    Show changed files from the last month
+  -a --all      Show recent based on everything
+  -b --branch   Show recent based on branches only
+  -r --remote   Show recent based on remotes only
+  -t --tag      Show recent based on tags only
+
+ OUTPUT:
+  -B --branches Show the output by what's changed in each branch
+  -u --users    Show the output by who has made the changes
+  -f --files    Show the output the files changed (Default)
   -o --out[=](text|json|perl)
                 Specify how to display the results
                     - text : Nice human readable format (Default)
