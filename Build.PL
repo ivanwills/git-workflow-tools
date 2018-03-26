@@ -17,6 +17,7 @@ my $builder = Module::Build->new(
         'List::MoreUtils' => 0,
         'XML::Tiny'       => 0,
         'Time::Piece'     => 0,
+        'YAML'            => 0,
     },
     recommends => {
         'JSON'          => '2.0',
