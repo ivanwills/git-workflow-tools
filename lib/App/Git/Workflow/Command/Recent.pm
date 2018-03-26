@@ -263,6 +263,10 @@ Displays changed files in a Perl format
 
 Displays changed files in a JSON format
 
+=head2 C<out_yaml ($changed)>
+
+Displays changed files in a YAML format
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
