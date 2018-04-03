@@ -159,6 +159,8 @@ sub recent_commits {
 sub changed_from_shas {
     my ($self, @commits) = @_;
     my %changed;
+    my $count = 0;
+    print {*STDERR} '.' if $option{verbose};
 
     for my $sha (@commits) {
         my $changed = $workflow->commit_details($sha, branches => 1, files => 1, user => 1);
@@ -173,6 +175,8 @@ sub changed_from_shas {
                 %{ $changed->{branches} },
             };
         }
+
+        print {*STDERR} '.' if $option{verbose} && ++$count % 10 == 0;
     }
 
     for my $type (keys %changed) {
