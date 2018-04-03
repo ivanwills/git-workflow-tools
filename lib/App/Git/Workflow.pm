@@ -171,18 +171,27 @@ sub releases {
 
 sub commit_details {
     my ($self, $name, %options) = @_;
-    my ($log) = $self->git->rev_list(qw/-1 --timestamp/, $name);
-    chomp $log;
-    my ($time, $sha) = split /\s+/, $log;
+    my $split = "\1";
+    my $fmt = $options{user} ? "%ct$split%H$split%an$split%ae$split" : "%ct$split%H$split$split$split";
+    my ($time, $sha, $user, $email, $files)
+        = split /$split/, $self->git->log(
+            "--format=format:$fmt",
+            -1,
+            ($options{files} ? '--name-only' : ()),
+            $name
+        );
+    my $out = {
+        name  => $name,
+        sha   => $sha,
+        time  => $time,
+        user  => $user,
+        email => $email,
+        files => { map {$_ => 1} grep {$_} split "\n", $files }
+    };
 
     return {
-        name     => $name,
-        sha      => $sha,
-        time     => $time,
+        %$out,
         branches => $options{branches} ? { map { $_ => 1 } $self->branches('both', $sha) } : {},
-        files    => $options{files}    ? $self->files_from_sha($sha) : {},
-        user     => $options{user}     ? $self->git->log(qw/--format=format:%an -1/, $name) : '',
-        email    => $options{user}     ? $self->git->log(qw/--format=format:%ae -1/, $name) : '',
     };
 }
 
