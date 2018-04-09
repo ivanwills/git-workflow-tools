@@ -39,6 +39,7 @@ sub mock_add {
     confess "Data not Hashes!\n" . Dumper(\@_) if @_ && ref $_[0] ne 'HASH';
     push @{ $self->{data} }, @_;
 }
+
 sub mock_reset {
     my $self = shift;
     @{ $self->{data} } = ();
