@@ -180,17 +180,14 @@ sub commit_details {
             ($options{files} ? '--name-only' : ()),
             $name
         );
-    my $out = {
-        name  => $name,
-        sha   => $sha,
-        time  => $time,
-        user  => $user,
-        email => $email,
-        files => { map {$_ => 1} grep {$_} split "\n", $files }
-    };
 
     return {
-        %$out,
+        name     => $name,
+        sha      => $sha,
+        time     => $time,
+        user     => $user,
+        email    => $email,
+        files    => { map {$_ => 1} grep {$_} split "\n", $files || '' },
         branches => $options{branches} ? { map { $_ => 1 } $self->branches('both', $sha) } : {},
     };
 }
