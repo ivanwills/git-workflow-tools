@@ -139,13 +139,16 @@ sub recent_commits {
     my @args = ('--since', $option->{since} );
 
     if ( !$option->{since} ) {
-        my (undef,undef,undef,$day,$month,$year) = localtime;
+        my (undef,undef,undef,$day,$month,$year) = localtime(
+            time -
+            $option->{month} ? 60 * 60 * 24 * 30
+            : $option{week}  ? 60 * 60 * 24 * 7
+            :                  60 * 60 * 24
+        );
         $year += 1900;
         $month++;
 
-        @args = $option->{week} ? ('--since', sprintf "%04d-%02d-%02d", $year - 1, $month, $day )
-            : $option->{month}  ? ('--since', sprintf "%04d-%02d-%02d", $year, $month - 1, $day )
-            :                     ('--since', sprintf "%04d-%02d-%02d", $year, $month, $day - 1 );
+        @args = ('--since', sprintf "%04d-%02d-%02d", $year, $month, $day );
     }
 
     unshift @args, $option{tag} ? '--tags'
