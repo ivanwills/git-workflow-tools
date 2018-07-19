@@ -42,6 +42,9 @@ This documentation refers to git-recent version 1.0.6
 
  OUTPUT:
   -B --branches Show the output by what's changed in each branch
+  -D --depth[=]int
+                Truncate files to this number of directories (allows showing
+                areas that have changed)
   -u --users    Show the output by who has made the changes
   -f --files    Show the output the files changed (Default)
   -o --out[=](text|json|perl)
