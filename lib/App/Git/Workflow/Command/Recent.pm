@@ -30,6 +30,7 @@ sub run {
         'branch|b',
         'branches|B',
         'day|d',
+        'depth|D=i',
         'files|f',
         'month|m',
         'out|o=s',
@@ -167,6 +168,9 @@ sub changed_from_shas {
     for my $sha (@commits) {
         my $changed = $workflow->commit_details($sha, branches => 1, files => 1, user => 1);
         for my $type (keys %{ $changed->{files} }) {
+            if ( defined $option{depth} ) {
+                $type = join '/', grep {defined $_} (split m{/}, $type)[0 .. $option{depth} - 1];
+            }
             $changed{$type}{users}{$changed->{user}}++;
             $changed{$type}{files} = {
                 %{ $changed{$type}{files} || {} },
