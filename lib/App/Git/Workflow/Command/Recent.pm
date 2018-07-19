@@ -139,12 +139,11 @@ sub recent_commits {
     my @args = ('--since', $option->{since} );
 
     if ( !$option->{since} ) {
-        my (undef,undef,undef,$day,$month,$year) = localtime(
-            time -
-            $option->{month} ? 60 * 60 * 24 * 30
-            : $option{week}  ? 60 * 60 * 24 * 7
-            :                  60 * 60 * 24
-        );
+        my $sec_ago = $option->{month} ? 60 * 60 * 24 * 30
+            : $option->{week} ? 60 * 60 * 24 * 7
+            :                   60 * 60 * 24;
+
+        my (undef,undef,undef,$day,$month,$year) = localtime( time - $sec_ago );
         $year += 1900;
         $month++;
 
