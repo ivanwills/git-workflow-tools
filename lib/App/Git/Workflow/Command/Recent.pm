@@ -101,8 +101,15 @@ sub out_text {
 
     for my $file (sort keys %$changed) {
         print "$file\n";
-        print "  Changed by : " . ( join ', ', @{ $changed->{$file}{users} || [] } ), "\n";
-        print "  In branches: " . ( join ', ', @{ $changed->{$file}{branches} || [] } ), "\n";
+        if ( ! $option{users} ) {
+            print "  Changed by : " . ( join ', ', @{ $changed->{$file}{users} || [] } ), "\n";
+        }
+        if ( ! $option{branches} ) {
+            print "  In branches: " . ( join ', ', @{ $changed->{$file}{branches} || [] } ), "\n";
+        }
+        if ( ! $option{files} && ! $option{branches} ) {
+            print "  Files: " . ( join ', ', @{ $changed->{$file}{files} || [] } ), "\n";
+        }
     }
 
     return;
