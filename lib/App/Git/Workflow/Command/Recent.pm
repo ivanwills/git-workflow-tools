@@ -32,6 +32,8 @@ sub run {
         'day|d',
         'depth|D=i',
         'files|f',
+        'ignore_user|ignore-users=s@',
+        'ignore_branch|ignore-branches=s@',
         'month|m',
         'out|o=s',
         'quiet|q',
@@ -151,10 +153,10 @@ sub recent_commits {
         @args = ('--since', sprintf "%04d-%02d-%02d", $year, $month, $day );
     }
 
-    unshift @args, $option{tag} ? '--tags'
-        : $option{branch}       ? '--branches'
-        : $option{remote}       ? '--remotes'
-        :                         '--all';
+    unshift @args, $option->{tag} ? '--tags'
+        : $option->{branch}       ? '--branches'
+        : $option->{remote}       ? '--remotes'
+        :                           '--all';
 
     return $workflow->git->rev_list(@args);
 }
@@ -167,6 +169,8 @@ sub changed_from_shas {
 
     for my $sha (@commits) {
         my $changed = $workflow->commit_details($sha, branches => 1, files => 1, user => 1);
+        next if $self->ignore($changed);
+
         for my $type (keys %{ $changed->{files} }) {
             if ( defined $option{depth} ) {
                 $type = join '/', grep {defined $_} (split m{/}, $type)[0 .. $option{depth} - 1];
@@ -192,6 +196,22 @@ sub changed_from_shas {
     }
 
     return %changed;
+}
+
+sub ignore {
+    my ($self, $commit) = @_;
+
+    if ($option{ignore_user}
+        && grep {$commit->{user} =~ /$_/} @{ $option{ignore_user} } ) {
+        return 1;
+    }
+
+    if ($option{ignore_branch}
+        && grep {$commit->{branches} =~ /$_/} @{ $option{ignore_branch} } ) {
+        return 1;
+    }
+
+    return 0;
 }
 
 1;
@@ -231,6 +251,12 @@ This documentation refers to git-recent version 1.0.7
                 areas that have changed)
   -u --users    Show the output by who has made the changes
   -f --files    Show the output the files changed (Default)
+     --ignore-user[=]regexp
+     --ignore-users[=]regexp
+                Ignore any user(s) matching regexp (can be specified more than once)
+     --ignore-branch[=]regexp
+     --ignore-branches[=]regexp
+                Ignore any branch(s) matching regexp (can be specified more than once)
   -o --out[=](text|json|perl)
                 Specify how to display the results
                     - text : Nice human readable format (Default)
