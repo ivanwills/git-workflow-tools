@@ -107,7 +107,7 @@ sub out_text {
         if ( ! $option{branches} ) {
             print "  In branches: " . ( join ', ', @{ $changed->{$file}{branches} || [] } ), "\n";
         }
-        if ( ! $option{files} && ! $option{branches} ) {
+        if ( $option{users} || $option{branches} ) {
             print "  Files: " . ( join ', ', @{ $changed->{$file}{files} || [] } ), "\n";
         }
     }
