@@ -313,6 +313,10 @@ Displays changed files in a JSON format
 
 Displays changed files in a YAML format
 
+=head2 C<ignore ($commit)>
+
+Determine if a commit should be ignored or not
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
