@@ -37,7 +37,7 @@ editor:
       my $arg = $args->[$pos] || '';
       my $argument = $arg && $arg ne 'edit' ? qr/^$arg/ : qr/./;
 
-      my @list = map {/^t\/cmd-(.*).t$/; $1} glob "t/cmd-*.t";
+      my @list = map {/^t\/(cmd-.*).t$/; $1} glob "t/cmd-*.t";
 
       return @list;
     }
@@ -50,57 +50,9 @@ editor:
       - lib/App/Git/Workflow/Pom.pm
       - lib/Mock/App/Git/Workflow/Repository.pm
       - lib/Test/Git/Workflow/Command.pm
-    branch-clean:
-      - bin/git-branch-clean
-      - lib/App/Git/Workflow/Command/BranchClean.pm
-      - t/cmd-branch-clean.t
-    branch-grep:
-      - bin/git-branch-grep
-      - lib/App/Git/Workflow/Command/BranchGrep.pm
-      - t/cmd-branch-grep.t
-    committers:
-      - bin/git-committers
-      - lib/App/Git/Workflow/Command/Committers.pm
-      - t/cmd-committers.t
-    cows:
-      - bin/git-cows
-      - lib/App/Git/Workflow/Command/Cows.pm
-      - t/cmd-cows.t
-    feature:
-      - bin/git-feature
-      - lib/App/Git/Workflow/Command/Feature.pm
-      - t/cmd-feature.t
-    files:
-      - bin/git-files
-      - lib/App/Git/Workflow/Command/Files.pm
-      - t/cmd-files.t
-    hook-setup:
-      - bin/git-hook-setup
-      - lib/App/Git/Workflow/Command/HookSetup.pm
-      - t/cmd-hook-setup.t
-    jira:
-      - bin/git-jira
-      - lib/App/Git/Workflow/Command/Jira.pm
-      - t/cmd-jira.t
     pom:
       - bin/git-pom
       - lib/App/Git/Workflow/Command/Pom.pm
       - t/cmd-pom.t
       - lib/App/Git/Workflow/Pom.pm
       - t/pom.t
-    recent:
-      - bin/git-recent
-      - lib/App/Git/Workflow/Command/Recent.pm
-      - t/cmd-recent.t
-    tag-grep:
-      - bin/git-tag-grep
-      - lib/App/Git/Workflow/Command/TagGrep.pm
-      - t/cmd-tag-grep.t
-    up-to-date:
-      - bin/git-up-to-date
-      - lib/App/Git/Workflow/Command/UpToDate.pm
-      - t/cmd-up-to-date.t
-    watch:
-      - bin/git-watch
-      - lib/App/Git/Workflow/Command/Watch.pm
-      - t/cmd-watch.t
