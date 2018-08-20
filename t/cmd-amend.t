@@ -17,10 +17,10 @@ sub run {
         {
             ARGV => ["1"],
             mock => [
-                { tag => [qw/0.1 1.0 2.0/] },
+                #{ tag => [qw/0.1 1.0 2.0/] },
             ],
             STD => {
-                OUT => "0.1\n1.0\n",
+                OUT => '',
                 ERR => '',
             },
             option => {},
@@ -29,7 +29,7 @@ sub run {
     );
 
     for my $data (@data) {
-        command_ok('App::Git::Workflow::Command::TagGrep', $data)
-            or return;
+        command_ok('App::Git::Workflow::Command::Amend', $data)
+            or last;
     }
 }
