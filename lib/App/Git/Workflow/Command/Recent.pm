@@ -176,6 +176,7 @@ sub changed_from_shas {
     print {*STDERR} '.' if $option{verbose};
 
     my $git_dir = $workflow->git->rev_parse("--show-toplevel");
+    chomp $git_dir;
     memoize('App::Git::Workflow::commit_details',
         driver     => 'File',
         root_dir   => "$git_dir/.git/gw-commit-detials",
