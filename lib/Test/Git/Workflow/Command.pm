@@ -104,7 +104,7 @@ sub command_ok ($$) {  ## no critic
         is_deeply \%{"${module}::option"}, $data->{option}, 'Options set correctly'
             or diag explain \%{"${module}::option"}, $data->{option};
         ok !@{ $git->{data} }, "All data setup is used"
-            or diag explain $git->{data};
+            or diag explain $git->{data}, [ map {keys %$_} @{ $data->{mock} } ];
     };
 }
 
