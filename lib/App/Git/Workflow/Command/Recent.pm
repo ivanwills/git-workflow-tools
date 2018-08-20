@@ -177,9 +177,10 @@ sub changed_from_shas {
 
     my $git_dir = $workflow->git->rev_parse("--show-toplevel");
     memoize('App::Git::Workflow::commit_details',
-        driver => 'File',
-        root_dir => "$git_dir/.git/gw-commit-detials",
+        driver     => 'File',
+        root_dir   => "$git_dir/.git/gw-commit-detials",
         expires_in => '1w',
+        key        => sub { shift @_; @_ },
     );
 
     for my $sha (@commits) {
