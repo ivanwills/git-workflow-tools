@@ -34,6 +34,7 @@ sub run {
         'day|d',
         'depth|D=i',
         'files|f',
+        'ignore_files|ignore-files=s@',
         'ignore_user|ignore-users=s@',
         'ignore_branch|ignore-branches=s@',
         'month|m',
@@ -96,6 +97,7 @@ sub run {
         %changed = %branches;
     }
     else {
+        my %files;
         for my $file (keys %changed) {
             delete $changed{$file}{files};
         }
@@ -222,6 +224,14 @@ sub changed_from_shas {
 
 sub ignore {
     my ($self, $commit) = @_;
+
+    if ($option{ignore_files}) {
+        for my $ignore (@{ $option{ignore_files} }) {
+            for my $file (keys %{ $commit->{files} }) {
+                return 1 if $file =~ /$ignore/;
+            }
+        }
+    }
 
     if ($option{ignore_user}
         && grep {$commit->{user} =~ /$_/} @{ $option{ignore_user} } ) {
