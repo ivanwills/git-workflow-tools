@@ -13,6 +13,7 @@ use Pod::Usage ();
 use List::MoreUtils qw/uniq/;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
+use CHI::Memoize qw(:all);
 use App::Git::Workflow;
 use App::Git::Workflow::Command qw/get_options/;
 
@@ -173,6 +174,13 @@ sub changed_from_shas {
     my %changed;
     my $count = 0;
     print {*STDERR} '.' if $option{verbose};
+
+    my $git_dir = $workflow->git->rev_parse("--show-toplevel");
+    memoize('App::Git::Workflow::commit_details',
+        driver => 'File',
+        root_dir => "$git_dir/.git/gw-commit-detials",
+        expires_in => '1w',
+    );
 
     for my $sha (@commits) {
         my $changed = $workflow->commit_details($sha, branches => 1, files => 1, user => 1);
