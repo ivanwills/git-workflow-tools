@@ -21,6 +21,7 @@ our $VERSION  = 1.0.8;
 our $workflow = App::Git::Workflow->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
+our $memoized = 0;
 
 sub run {
     my $self = shift;
@@ -44,6 +45,19 @@ sub run {
         'users|u',
         'week|w',
     );
+
+    if (!$memoized) {
+        my $git_dir = $workflow->git->rev_parse("--show-toplevel");
+        chomp $git_dir;
+        $git_dir =~ s{[/\\]$}{};
+        memoize('App::Git::Workflow::commit_details',
+            driver     => 'File',
+            root_dir   => "$git_dir/.git/gw-commit-detials",
+            expires_in => '1w',
+            key        => sub { shift @_; @_ },
+        );
+        $memoized = 1;
+    }
 
     # get a list of recent commits
     my @commits = $self->recent_commits(\%option);
@@ -174,15 +188,6 @@ sub changed_from_shas {
     my %changed;
     my $count = 0;
     print {*STDERR} '.' if $option{verbose};
-
-    my $git_dir = $workflow->git->rev_parse("--show-toplevel");
-    chomp $git_dir;
-    memoize('App::Git::Workflow::commit_details',
-        driver     => 'File',
-        root_dir   => "$git_dir/.git/gw-commit-detials",
-        expires_in => '1w',
-        key        => sub { shift @_; @_ },
-    );
 
     for my $sha (@commits) {
         my $changed = $workflow->commit_details($sha, branches => 1, files => 1, user => 1);
