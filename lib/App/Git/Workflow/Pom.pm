@@ -62,7 +62,7 @@ sub get_pom_versions {
             # skip branches marked as OLD
             next BRANCH if !$run && $saved->{old};
 
-            my $current = $self->commit_details($branch);
+            my $current = eval { $self->commit_details($branch) } or next;
 
             # Skip any branches that are over $MAX_AGE old
             if ( $current->{time} < time - $max_age ) {
@@ -79,7 +79,8 @@ sub get_pom_versions {
                 next BRANCH;
             }
 
-            my $xml = $self->git->show("$branch:$pom");
+            my $xml = eval { $self->git->show("$branch:$pom"); };
+
             chomp $xml;
             next if !$xml;
 
@@ -115,6 +116,12 @@ sub get_pom_versions {
 
 sub pom_version {
     my ($self, $xml) = @_;
+
+    if ( $xml =~ /[.]json$/ ) {
+        require YAML;
+        my $json = -f $xml ? YAML::LoadFile($xml) : YAML::Load($xml);
+        return $json->{version};
+    }
 
     my $doc = XML::Tiny::parsefile( $xml !~ /\n/ && -f $xml ? $xml : '_TINY_XML_STRING_' . $xml);
 
