@@ -81,12 +81,13 @@ sub get_pom_versions {
 
             my $xml = eval { $self->git->show("$branch:$pom"); };
 
+            next if !$xml;
             chomp $xml;
             next if !$xml;
 
             $branch =~ s{^origin/}{}xms;
 
-            my $numerical = my $version = eval { $self->pom_version($xml) };
+            my $numerical = my $version = eval { $self->pom_version($xml, $pom) };
 
             # make sure we get a valid version
             if ( $@ || !defined $numerical ) {
@@ -115,11 +116,11 @@ sub get_pom_versions {
 }
 
 sub pom_version {
-    my ($self, $xml) = @_;
+    my ($self, $xml, $pom) = @_;
 
-    if ( $xml =~ /[.]json$/ ) {
-        require YAML;
-        my $json = -f $xml ? YAML::LoadFile($xml) : YAML::Load($xml);
+    if ( $pom =~ /[.]json$/ ) {
+        require JSON;
+        my $json = JSON::decode_json($xml);
         return $json->{version};
     }
 
