@@ -118,7 +118,7 @@ sub get_pom_versions {
 sub pom_version {
     my ($self, $xml, $pom) = @_;
 
-    if ( $pom =~ /[.]json$/ ) {
+    if ( $pom && $pom =~ /[.]json$/ ) {
         require JSON;
         my $json = JSON::decode_json($xml);
         return $json->{version};
