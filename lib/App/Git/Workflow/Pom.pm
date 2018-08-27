@@ -123,6 +123,11 @@ sub pom_version {
         my $json = JSON::decode_json($xml);
         return $json->{version};
     }
+    if ( $pom && $pom =~ /[.]ya?ml$/ ) {
+        require YAML;
+        my $json = YAML::Load($xml);
+        return $json->{version};
+    }
 
     my $doc = XML::Tiny::parsefile( $xml !~ /\n/ && -f $xml ? $xml : '_TINY_XML_STRING_' . $xml);
 
