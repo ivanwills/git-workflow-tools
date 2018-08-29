@@ -33,6 +33,7 @@ sub run {
         'branches|B',
         'day|d',
         'depth|D=i',
+        'path_depth|path-depth|p=i%',
         'files|f',
         'ignore_files|ignore-files=s@',
         'ignore_user|ignore-users=s@',
@@ -198,6 +199,13 @@ sub changed_from_shas {
         for my $type (keys %{ $changed->{files} }) {
             if ( defined $option{depth} ) {
                 $type = join '/', grep {defined $_} (split m{/}, $type)[0 .. $option{depth} - 1];
+            }
+            if ( defined $option{path_depth} ) {
+                for my $path (keys %{ $option{path_depth} }) {
+                    if ( $type =~ /^$path/ ) {
+                        $type = join '/', grep {defined $_} (split m{/}, $type)[0 .. $option{path_depth}{$path} - 1];
+                    }
+                }
             }
             $changed{$type}{users}{$changed->{user}}++;
             $changed{$type}{files} = {
