@@ -179,9 +179,9 @@ sub recent_commits {
     }
 
     unshift @args, $option->{tag} ? '--tags'
-        : $option->{branch}       ? '--branches'
+        : $option->{all}          ? '--all'
         : $option->{remote}       ? '--remotes'
-        :                           '--all';
+        :                           '--branches';
 
     return $workflow->git->rev_list(@args);
 }
@@ -207,6 +207,18 @@ sub changed_from_shas {
                     }
                 }
             }
+            my %branches;
+            if ( $option{remote} ) {
+                %branches = map { $_ => 1 } grep {/^origin/} keys %{ $changed->{branches} };
+            }
+            elsif ( $option{all} ) {
+                %branches = %{ $changed->{branches} };
+            }
+            else {
+                %branches = map { $_ => 1 } grep {!/^origin/} keys %{ $changed->{branches} };
+            }
+            next if !%branches;
+
             $changed{$type}{users}{$changed->{user}}++;
             $changed{$type}{files} = {
                 %{ $changed{$type}{files} || {} },
@@ -214,7 +226,7 @@ sub changed_from_shas {
             };
             $changed{$type}{branches} = {
                 %{ $changed{$type}{branches} || {} },
-                %{ $changed->{branches} },
+                %branches,
             };
         }
 
