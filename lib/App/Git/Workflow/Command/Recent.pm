@@ -30,7 +30,6 @@ sub run {
         \%option,
         'all|a',
         'branch|b',
-        'branches|B',
         'day|d',
         'depth|D=i',
         'path_depth|path-depth|p=i%',
@@ -291,13 +290,12 @@ This documentation refers to git-recent version 1.0.9
   -d --day      Show changed files from the last day (Default action)
   -w --week     Show changed files from the last week
   -m --month    Show changed files from the last month
-  -a --all      Show recent based on everything
-  -b --branch   Show recent based on branches only
+  -a --all      Show recent based on local and remote branches
   -r --remote   Show recent based on remotes only
   -t --tag      Show recent based on tags only
 
  OUTPUT:
-  -B --branches Show the output by what's changed in each branch
+  -b --branch   Show the output by what's changed in each branch
   -D --depth[=]int
                 Truncate files to this number of directories (allows showing
                 areas that have changed)
