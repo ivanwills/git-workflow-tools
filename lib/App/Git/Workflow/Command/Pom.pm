@@ -143,7 +143,7 @@ __DATA__
 
 =head1 NAME
 
-git-pom - Manage pom.xml file versions
+git-pom - Manage pom.xml (or package.json) file versions
 
 =head1 VERSION
 
