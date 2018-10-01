@@ -54,7 +54,7 @@ sub run {
         memoize('App::Git::Workflow::commit_details',
             driver     => 'File',
             root_dir   => "$git_dir/.git/gw-commit-detials",
-            expires_in => '1w',
+            expires_in => '1M',
             key        => sub { shift @_; @_ },
         );
         $memoized = 1;
