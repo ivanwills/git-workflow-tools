@@ -40,7 +40,6 @@ sub new {
     $self->{GIT_DIR}  = '.git';
     $self->{branches} = undef;
     $self->{tags}     = undef;
-    $self->{settings} = {};
     $self->{settings_dir} = ($ENV{HOME} || "/tmp/") . '/.git-workflow';
     mkdir $self->{settings_dir} if !-d $self->{settings_dir};
 
@@ -252,7 +251,8 @@ sub save_settings {
     return if !$self->{settings_file};
     local $Data::Dumper::Indent   = 1;
     local $Data::Dumper::Sortkeys = 1;
-    $self->{settings}->{version} =$App::Git::Workflow::VERSION;
+    $self->{settings}->{version} = $App::Git::Workflow::VERSION;
+    $self->{settings}->{date} = time;
     $self->spew($self->{settings_file}, 'my ' . Dumper $self->{settings});
 }
 
