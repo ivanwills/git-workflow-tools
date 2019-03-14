@@ -81,9 +81,9 @@ sub get_pom_versions {
 
             my $xml = eval { $self->git->show("$branch:$pom"); };
 
-            next if !$xml;
+            next BRANCH if !$xml;
             chomp $xml;
-            next if !$xml;
+            next BRANCH if !$xml;
 
             $branch =~ s{^origin/}{}xms;
 
@@ -105,12 +105,12 @@ sub get_pom_versions {
                 version   => $version,
                 time      => $current->{time},
             };
-            $self->save_settings() if $count++ % 20 == 0;
+            $self->save_settings() if $count++ % 50 == 0;
         }
-        $max_age *= 2;
         $run++;
     }
-    $settings->{max_age} = $max_age;
+
+    $self->save_settings();
 
     return \%versions;
 }
