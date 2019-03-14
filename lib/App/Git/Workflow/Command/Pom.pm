@@ -11,6 +11,7 @@ use warnings;
 use English qw/ -no_match_vars /;
 use App::Git::Workflow::Pom;
 use App::Git::Workflow::Command qw/get_options/;
+use Path::Tiny;
 
 our $VERSION = 1.1.1;
 our $workflow = App::Git::Workflow::Pom->new;
@@ -55,8 +56,8 @@ sub run {
 
 sub do_uniq {
     my (undef, $pom) = @_;
-    my $versions  = $workflow->get_pom_versions($option{pom});
-    my $numerical = my $version = $workflow->pom_version($pom);
+    my $versions  = $workflow->get_pom_versions($pom);
+    my $numerical = my $version = $workflow->pom_version((scalar path($pom)->slurp), $pom, 1);
     $numerical =~ s/-SNAPSHOT$//xms;
 
     if ( !$versions->{$numerical} || keys %{ $versions->{$numerical} } <= 1 ) {
@@ -74,7 +75,7 @@ sub do_uniq {
 sub do_next {
     my (undef, $pom) = @_;
 
-    my $version = $workflow->next_pom_version($option{pom});
+    my $version = $workflow->next_pom_version($pom);
     print "$version\n";
 
     if ($option{update}) {
@@ -95,7 +96,7 @@ sub do_whos {
 
     $version =~ s/-SNAPSHOT$//;
 
-    my $versions = $workflow->get_pom_versions($option{pom});
+    my $versions = $workflow->get_pom_versions($pom);
 
     my $version_re = $version =~ /^\d+[.]\d+[.]\d+/ ? qr/^$version$/ : qr/$version/;
     my %versions = map {%{ $versions->{$_} }} grep {/$version_re/} keys %{ $versions };
