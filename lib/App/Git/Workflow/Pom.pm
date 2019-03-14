@@ -120,7 +120,8 @@ sub pom_version {
 
     if ( $pom && $pom =~ /[.]json$/ ) {
         require JSON;
-        my $json = JSON::decode_json($xml);
+        my $json = eval { JSON::decode_json($xml) }
+            or do { warn "Could not read $xml as json : $@\n"; };
         return $json->{version};
     }
     if ( $pom && $pom =~ /[.]ya?ml$/ ) {
