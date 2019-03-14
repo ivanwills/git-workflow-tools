@@ -8,6 +8,7 @@ package App::Git::Workflow;
 
 use strict;
 use warnings;
+use version;
 use autodie;
 use Carp qw/carp croak cluck confess longmess/;
 use Data::Dumper qw/Dumper/;
@@ -15,7 +16,7 @@ use English qw/ -no_match_vars /;
 use App::Git::Workflow::Repository qw//;
 use base qw/Exporter/;
 
-our $VERSION   = 1.1.1;
+our $VERSION   = version->new(1.1.1);
 
 sub _alphanum_sort {
     no warnings qw/once/;
@@ -239,7 +240,7 @@ sub settings {
         ? do $self->{settings_file}
         : {};
 
-    if ( $self->{settings}->{version} && $self->{settings}->{version} > $App::Git::Workflow::VERSION ) {
+    if ( $self->{settings}->{version} && version->new($self->{settings}->{version}) > $App::Git::Workflow::VERSION ) {
         die "Current settings created with newer version than this program!\n";
     }
 
