@@ -8,6 +8,7 @@ package App::Git::Workflow::Pom;
 
 use strict;
 use warnings;
+use version;
 use Carp qw/carp croak cluck confess longmess/;
 use Data::Dumper qw/Dumper/;
 use English qw/ -no_match_vars /;
@@ -16,7 +17,7 @@ use App::Git::Workflow::Repository qw//;
 use App::Git::Workflow;
 use base qw/App::Git::Workflow/;
 
-our $VERSION = 1.1.1;
+our $VERSION = version->new(1.1.1);
 
 sub new {
     my $class = shift;

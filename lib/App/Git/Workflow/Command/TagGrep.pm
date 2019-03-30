@@ -8,12 +8,13 @@ package App::Git::Workflow::Command::TagGrep;
 
 use strict;
 use warnings;
+use version;
 use English qw/ -no_match_vars /;
 use Term::ANSIColor qw/colored/;
 use App::Git::Workflow;
 use App::Git::Workflow::Command qw/get_options/;
 
-our $VERSION  = 1.1.1;
+our $VERSION  = version->new(1.1.1);
 our $workflow = App::Git::Workflow->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;

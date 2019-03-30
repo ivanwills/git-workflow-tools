@@ -8,13 +8,14 @@ package App::Git::Workflow::Command::Committers;
 
 use strict;
 use warnings;
+use version;
 use English qw/ -no_match_vars /;
 use Time::Piece;
 use App::Git::Workflow;
 use App::Git::Workflow::Command qw/get_options/;
 use utf8;
 
-our $VERSION  = 1.1.1;
+our $VERSION  = version->new(1.1.1);
 our $workflow = App::Git::Workflow->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
