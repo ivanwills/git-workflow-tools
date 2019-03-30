@@ -101,3 +101,5 @@ cmds
 .editorconfig
 .vtide.*
 vrc.yml
+MANIFEST.SKIP
+MYMETA.json.lock
