@@ -14,7 +14,7 @@ use App::Git::Workflow::Pom;
 use App::Git::Workflow::Command qw/get_options/;
 use Path::Tiny;
 
-our $VERSION = version->new(1.1.1);
+our $VERSION = version->new(1.1.2);
 our $workflow = App::Git::Workflow::Pom->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
@@ -149,7 +149,7 @@ git-pom - Manage pom.xml (or package.json) file versions
 
 =head1 VERSION
 
-This documentation refers to git-pom version 1.1.1
+This documentation refers to git-pom version 1.1.2
 
 =head1 SYNOPSIS
 
