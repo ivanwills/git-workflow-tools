@@ -225,7 +225,7 @@ sub settings {
     return $self->{settings} if $self->{settings};
 
     my $key = $self->git->config('remote.origin.url');
-    chomp $key;
+    chomp $key if $key;
     if ( !$key ) {
         $key = $self->git->rev_parse("--show-toplevel");
         chomp $key;
