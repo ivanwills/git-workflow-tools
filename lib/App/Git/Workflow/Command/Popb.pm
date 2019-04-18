@@ -35,8 +35,14 @@ sub run {
 
     open my $fh, '<', $brs or die "Could not open '$brs': $!\n";
     my @lines = map {/^(.*?)\n\Z/; $1} <$fh>;
+    close $fh;
 
-    shift @lines;
+    my $new_branch = pop @lines;
+    $workflow->git->checkout($new_branch);
+    open $fh, '>', $brs or die "Could not open '$brs' for writing: $!\n";
+    print {$fh} map {"$_\n"} @lines;
+
+    print join ' ', @lines, "\n";
 }
 
 1;
