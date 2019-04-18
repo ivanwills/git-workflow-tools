@@ -40,7 +40,7 @@ sub run {
         @lines = ($current);
     }
 
-    push @lines, "$new_branch";
+    unshift @lines, "$new_branch";
     $workflow->git->checkout($new_branch);
     open my $fh, '>', $brs or die "Could not open '$brs' for writing: $!\n";
     print {$fh} map {"$_\n"} @lines;
