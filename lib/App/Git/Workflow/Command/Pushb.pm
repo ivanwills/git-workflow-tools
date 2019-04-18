@@ -22,10 +22,30 @@ our %option;
 sub run {
     get_options(
         \%option,
-        'colour|color|c',
-        'insensitive|i',
+        'n',
     );
 
+    my $new_branch = shift @ARGV;
+    my $git_dir = $workflow->git->rev_parse("--show-toplevel");
+    chomp $git_dir;
+    my $brs = "$git_dir/$workflow->{GIT_DIR}/brs";
+    my ($sha, $current) = $workflow->current();
+    my @lines;
+
+    if ( -f $brs ) {
+        open my $fh, '<', $brs or die "Could not open '$brs': $!\n";
+        @lines = map {/^(.*?)\n\Z/; $1} <$fh>
+    }
+    else {
+        @lines = ($current);
+    }
+
+    push @lines, "$new_branch";
+    $workflow->git->checkout($new_branch);
+    open my $fh, '>', $brs or die "Could not open '$brs' for writing: $!\n";
+    print {$fh} map {"$_\n"} @lines;
+
+    print join ' ', @lines, "\n";
 }
 
 1;
