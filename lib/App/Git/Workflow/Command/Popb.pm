@@ -22,10 +22,21 @@ our %option;
 sub run {
     get_options(
         \%option,
-        'colour|color|c',
-        'insensitive|i',
+        'n',
     );
 
+    my $git_dir = $workflow->git->rev_parse("--show-toplevel");
+    chomp $git_dir;
+    my $brs = "$git_dir/$workflow->{GIT_DIR}/brs";
+
+    if ( ! -f $brs ) {
+        die "popb: branch stack empty\n";
+    }
+
+    open my $fh, '<', $brs or die "Could not open '$brs': $!\n";
+    my @lines = map {/^(.*?)\n\Z/; $1} <$fh>;
+
+    shift @lines;
 }
 
 1;
