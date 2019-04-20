@@ -26,6 +26,10 @@ sub run {
     );
 
     my $new_branch = shift @ARGV;
+    if ( ! $new_branch ) {
+        die "git pushb: no other branch\n";
+    }
+
     my @lines = $workflow->get_brs();
     my ($sha, $current) = $workflow->current();
 
