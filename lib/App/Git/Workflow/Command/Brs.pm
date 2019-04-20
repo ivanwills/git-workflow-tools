@@ -11,11 +11,11 @@ use warnings;
 use version;
 use English qw/ -no_match_vars /;
 use Term::ANSIColor qw/colored/;
-use App::Git::Workflow;
+use App::Git::Workflow::Brs;
 use App::Git::Workflow::Command qw/get_options/;
 
 our $VERSION  = version->new(1.1.2);
-our $workflow = App::Git::Workflow->new;
+our $workflow = App::Git::Workflow::Brs->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
 
@@ -25,17 +25,11 @@ sub run {
         'n',
     );
 
-    my $git_dir = $workflow->git->rev_parse("--show-toplevel");
-    chomp $git_dir;
-    my $brs = "$git_dir/$workflow->{GIT_DIR}/brs";
+    my @lines = $workflow->get_brs();
 
-    if ( ! -f $brs ) {
+    if ( ! @lines ) {
         die "popb: branch stack empty\n";
     }
-
-    open my $fh, '<', $brs or die "Could not open '$brs': $!\n";
-    my @lines = map {/^(.*?)\n\Z/; $1} <$fh>;
-    close $fh;
 
     my $count = 0;
     for my $branch (reverse @lines) {

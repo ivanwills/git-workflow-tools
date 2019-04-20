@@ -11,11 +11,11 @@ use warnings;
 use version;
 use English qw/ -no_match_vars /;
 use Term::ANSIColor qw/colored/;
-use App::Git::Workflow;
+use App::Git::Workflow::Brs;
 use App::Git::Workflow::Command qw/get_options/;
 
 our $VERSION  = version->new(1.1.2);
-our $workflow = App::Git::Workflow->new;
+our $workflow = App::Git::Workflow::Brs->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option;
 
@@ -26,24 +26,13 @@ sub run {
     );
 
     my $new_branch = shift @ARGV;
-    my $git_dir = $workflow->git->rev_parse("--show-toplevel");
-    chomp $git_dir;
-    my $brs = "$git_dir/$workflow->{GIT_DIR}/brs";
+    my @lines = $workflow->get_brs();
     my ($sha, $current) = $workflow->current();
-    my @lines;
 
-    if ( -f $brs ) {
-        open my $fh, '<', $brs or die "Could not open '$brs': $!\n";
-        @lines = map {/^(.*?)\n\Z/; $1} <$fh>
-    }
-    else {
-        @lines = ($current);
-    }
-
-    unshift @lines, "$new_branch";
+    unshift @lines, "$current";
     $workflow->git->checkout($new_branch);
-    open my $fh, '>', $brs or die "Could not open '$brs' for writing: $!\n";
-    print {$fh} map {"$_\n"} @lines;
+
+    $workflow->set_brs(@lines);
 
     print join ' ', @lines, "\n";
 }
