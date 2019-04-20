@@ -17,17 +17,19 @@ sub run {
         {
             ARGV => ["1"],
             mock => [
-                #{ tag => [qw/0.1 1.0 2.0/] },
+                { 'rev-parse' => [qw/.git/] },
             ],
             STD => {
                 OUT => '',
                 ERR => '',
             },
+            error  => "popb: branch stack empty\n",
             option => {},
             name   => 'Default 1',
         },
     );
 
+    local $Test::Git::Workflow::Command::workflow = 'App::Git::Workflow::Brs';
     for my $data (@data) {
         command_ok('App::Git::Workflow::Command::Brs', $data)
             or last;

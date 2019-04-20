@@ -15,19 +15,33 @@ done_testing();
 sub run {
     my @data = (
         {
-            ARGV => ["1"],
-            mock => [
-                #{ tag => [qw/0.1 1.0 2.0/] },
-            ],
+            ARGV => [""],
+            mock => [],
             STD => {
                 OUT => '',
                 ERR => '',
             },
+            error => "git pushb: no other branch\n",
             option => {},
-            name   => 'Default 1',
+            name   => 'No inputs',
         },
+        #{
+        #    ARGV => [""],
+        #    mock => [
+        #        { 'rev-parse' => [qw/.git/] },
+        #        { 'rev-parse' => [qw/.git/] },
+        #        { checkout    => [qw//] },
+        #    ],
+        #    STD => {
+        #        OUT => '',
+        #        ERR => "git pushb: no other branch\n",
+        #    },
+        #    option => {},
+        #    name   => 'Default 1',
+        #},
     );
 
+    local $Test::Git::Workflow::Command::workflow = 'App::Git::Workflow::Brs';
     for my $data (@data) {
         command_ok('App::Git::Workflow::Command::Pushb', $data)
             or last;
