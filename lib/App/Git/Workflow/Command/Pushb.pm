@@ -66,11 +66,8 @@ This documentation refers to git-pushb version 1.1.2
 
 =head1 DESCRIPTION
 
-Short hand for running
-
-C<git commit --pushb>
-
-Over more than one commit in the history
+Change to branch saving the current branch / commit so you can switch back
+at a point
 
 =head1 SUBROUTINES/METHODS
 
