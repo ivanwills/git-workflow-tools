@@ -26,20 +26,20 @@ sub get_brs {
     }
 
     open my $fh, '<', $brs or die "Could not open '$brs': $!\n";
-    my @lines = map {/^(.*?)\n\Z/; $1} <$fh>;
+    my @branches = map {/^(.*?)\n\Z/; $1} <$fh>;
     close $fh;
 
-    return @lines;
+    return @branches;
 }
 
 sub set_brs {
-    my ($self, @lines) = @_;
+    my ($self, @branches) = @_;
 
     my $git_dir = $self->git->rev_parse("--show-toplevel");
     chomp $git_dir;
     my $brs = "$git_dir/$self->{GIT_DIR}/brs";
     open my $fh, '>', $brs or die "Could not open '$brs' for writing: $!\n";
-    print {$fh} map {"$_\n"} @lines;
+    print {$fh} map {"$_\n"} @branches;
 }
 
 1;
@@ -48,7 +48,7 @@ __END__
 
 =head1 NAME
 
-App::Git::Workflow::Brs - <One-line description of module's purpose>
+App::Git::Workflow::Brs - Common methods for branch stack opperations
 
 =head1 VERSION
 
@@ -66,36 +66,15 @@ This documentation refers to App::Git::Workflow::Brs version 0.0.1
 
 =head1 DESCRIPTION
 
-A full description of the module and its features.
-
-May include numerous subsections (i.e., =head2, =head3, etc.).
-
-
 =head1 SUBROUTINES/METHODS
 
-A separate section listing the public components of the module's interface.
+=head2 C<get_brs ()>
 
-These normally consist of either subroutines that may be exported, or methods
-that may be called on objects belonging to the classes that the module
-provides.
+Gets the current branch stack
 
-Name the section accordingly.
+=head2 C<set_brs ( @branches )>
 
-In an object-oriented module, this section should begin with a sentence (of the
-form "An object of this class represents ...") to give the reader a high-level
-context to help them understand the methods that are subsequently described.
-
-
-=head3 C<new ( $search, )>
-
-Param: C<$search> - type (detail) - description
-
-Return: App::Git::Workflow::Brs -
-
-Description:
-
-=cut
-
+Sets the new branch stack
 
 =head1 DIAGNOSTICS
 
