@@ -48,7 +48,7 @@ __END__
 
 =head1 NAME
 
-App::Git::Workflow::Brs - Common methods for branch stack opperations
+App::Git::Workflow::Brs - Common methods for branch stack operations
 
 =head1 VERSION
 
