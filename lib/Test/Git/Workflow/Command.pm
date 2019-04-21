@@ -133,7 +133,7 @@ Helper module to test L<Git::Worflow::Commands>s
 
 =head1 SUBROUTINES/METHODS
 
-=head3 C<command_ok ( $module, $data )>
+=head2 C<command_ok ( $module, $data )>
 
 Tests C<$module> with the supplied <C$data>
 
