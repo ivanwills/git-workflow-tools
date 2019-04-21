@@ -25,24 +25,32 @@ sub run {
             option => {},
             name   => 'No inputs',
         },
-        #{
-        #    ARGV => [""],
-        #    mock => [
-        #        { 'rev-parse' => [qw/.git/] },
-        #        { 'rev-parse' => [qw/.git/] },
-        #        { checkout    => [qw//] },
-        #    ],
-        #    STD => {
-        #        OUT => '',
-        #        ERR => "git pushb: no other branch\n",
-        #    },
-        #    option => {},
-        #    name   => 'Default 1',
-        #},
+        {
+            ARGV => ["test"],
+            mock => [
+                { 'rev-parse' => 't/data/git-pushb' },
+                { 'rev-parse' => 't/data/git-pushb' },
+                { checkout    => [qw//] },
+                { 'rev-parse' => 't/data/git-pushb' },
+            ],
+            STD => {
+                OUT => "origin/master \n",
+                ERR => '',
+            },
+            option => {},
+            name   => 'Push one new directory',
+            workflow => {
+                GIT_DIR => 'stack-0',
+            },
+            clean_before => [qw{t/data/git-pushb/stack-0/brs}],
+        },
     );
 
     local $Test::Git::Workflow::Command::workflow = 'App::Git::Workflow::Brs';
     for my $data (@data) {
+        for my $file (@{ $data->{clean_before} }) {
+            unlink $file;
+        }
         command_ok('App::Git::Workflow::Command::Pushb', $data)
             or last;
     }
