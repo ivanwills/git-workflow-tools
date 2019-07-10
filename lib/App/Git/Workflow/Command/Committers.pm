@@ -84,7 +84,7 @@ sub run {
         for my $branch ($workflow->git->branch(@options)) {
             next if $branch =~ / -> /;
             $branch =~ s/^[*]?\s*//;
-            for my $log ( $workflow->git->log( @log, @dates, $branch, ) ) {
+            for my $log ( $workflow->git->log( @log, @dates, $branch, '--' ) ) {
                 my ($hash, $name) = split /\s/, $log, 2;
                 $users{$name}{$hash} = 1;
                 $commits++;
