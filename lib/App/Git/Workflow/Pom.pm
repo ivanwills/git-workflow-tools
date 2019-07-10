@@ -46,7 +46,7 @@ sub _max_age {
 }
 
 sub get_pom_versions {
-    my ($self, $pom) = @_;
+    my ($self, $pom, $match, $skip) = @_;
     my @branches = $self->branches('both');
     my $settings = $self->settings();
     my %versions;
@@ -62,6 +62,8 @@ sub get_pom_versions {
 
             # skip branches marked as OLD
             next BRANCH if !$run && $saved->{old};
+            next BRANCH if $match && $branch !~ /$match/;
+            next BRANCH if $skip && $skip =~ /$skip/;
 
             my $current = eval { $self->commit_details($branch) } or next;
 

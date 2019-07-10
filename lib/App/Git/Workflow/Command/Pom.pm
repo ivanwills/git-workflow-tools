@@ -30,6 +30,8 @@ sub run {
         \%option,
         'pom|P=s',
         'update|u!',
+        'skip|s=s',
+        'match|m=s',
         'fetch|f!',
         'tag|t=s',
         'branch|b=s',
@@ -57,7 +59,7 @@ sub run {
 
 sub do_uniq {
     my (undef, $pom) = @_;
-    my $versions  = $workflow->get_pom_versions($pom);
+    my $versions  = $workflow->get_pom_versions($pom, $option{match}, $option{skip});
     my $numerical = my $version = $workflow->pom_version((scalar path($pom)->slurp), $pom, 1);
     $numerical =~ s/-SNAPSHOT$//xms;
 
@@ -97,7 +99,7 @@ sub do_whos {
 
     $version =~ s/-SNAPSHOT$//;
 
-    my $versions = $workflow->get_pom_versions($pom);
+    my $versions = $workflow->get_pom_versions($pom, $option{match}, $option{skip});
 
     my $version_re = $version =~ /^\d+[.]\d+[.]\d+/ ? qr/^$version$/ : qr/$version/;
     my %versions = map {%{ $versions->{$_} }} grep {/$version_re/} keys %{ $versions };
