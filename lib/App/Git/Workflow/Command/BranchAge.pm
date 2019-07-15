@@ -24,8 +24,9 @@ our %option;
 sub run {
     get_options(
         \%option,
+        'all|a',
         'remote|r',
-        'insensitive|i',
+        'reverse|R',
     );
     my $fmt = join "-%09-%09-", qw/
         %(authordate)
