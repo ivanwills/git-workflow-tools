@@ -1,5 +1,12 @@
 Revision history for git-workflow-tools
 
+1.1.5   2019-07-21
+        Updating for release of version 1.1.5
+        Adding new commands to boilerplate (Ivan Wills)
+        Fixing 00-load test (Ivan Wills)
+        New command to simplify resetting branches to somewhere in the past (Ivan Wills)
+        Fixing branch-age parameters (Ivan Wills)
+
 1.1.4   2019-07-13
         Updating for release of version 1.1.4
         Adding new files to manifest (Ivan Wills)
