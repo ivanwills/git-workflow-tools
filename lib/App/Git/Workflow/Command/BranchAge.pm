@@ -19,7 +19,9 @@ use DateTime::Format::HTTP;
 our $VERSION  = version->new(1.1.5);
 our $workflow = App::Git::Workflow->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
-our %option;
+our %option = (
+    master => 'origin/master',
+);
 
 sub run {
     get_options(
@@ -27,6 +29,8 @@ sub run {
         'all|a',
         'remote|r',
         'reverse|R',
+        'unmerged|u!',
+        'master|m=s',
     );
     my $fmt = join "-%09-%09-", qw/
         %(authordate)
@@ -73,10 +77,14 @@ sub run {
         if (@cols < @headings) {
             next;
         }
+
         $last = '';
         $branch = { zip @headings, @cols };
         warn 'bad head' if !$branch->{HEAD};
         next if !$branch->{HEAD};
+        if ( defined $option{unmerged} ) {
+            next if unmerged($branch->{short}, $option{master});
+        }
 
         my ($date, $tz) = $branch->{authordate} =~ /^(.*)\s+([+-]\d{4})$/;
         if ($date && $tz) {
@@ -99,6 +107,21 @@ sub run {
     }
 }
 
+my @master;
+sub unmerged {
+    my ($branch, $master) = @_;
+
+    if ( ! @master ) {
+        @master = map {/^(.*)\n/; $1} `git log --format=format:%H $master`;
+        die "No master" if !@master;
+    }
+
+    my $source_sha = `git log --format=format:%H -n 1 $branch`;
+    chomp $source_sha;
+
+    return scalar grep {$_ && $_ eq $source_sha} @master;
+}
+
 1;
 
 __DATA__
@@ -117,6 +140,16 @@ This documentation refers to git-branch-age version 1.1.5
 
  OPTIONS:
   regex         grep's perl (-P) regular expression
+  -a --all      All branches (remote and local
+  -r --remote   Remote branches only
+  -R --reverse  Reverse the branch sort order
+  -u --unmerged
+                Only show branches not merged to --master
+     --no-unmerged
+                Only show branches merged to master
+  -m --master[=]str
+                Branch to checkagainst for --unmerged and --no-unmerged
+                (Default origin/master)
 
   -v --verbose  Show more detailed option
      --version  Prints the version information
