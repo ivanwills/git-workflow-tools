@@ -31,6 +31,7 @@ sub run {
         'reverse|R',
         'unmerged|u!',
         'master|m=s',
+        'limit|n=i',
     );
     my $fmt = join "-%09-%09-", qw/
         %(authordate)
@@ -102,7 +103,10 @@ sub run {
     if ($option{reverse}) {
         @data = reverse @data;
     }
+
+    my $count = 1;
     for my $branch (@data) {
+        last if $option{limit} && $count++ > $option{limit};
         printf "%s\t%s\n", $branch->{age}, $branch->{short};
     }
 }
@@ -150,6 +154,8 @@ This documentation refers to git-branch-age version 1.1.5
   -m --master[=]str
                 Branch to checkagainst for --unmerged and --no-unmerged
                 (Default origin/master)
+  -n --limit[=]int
+                Limit the out put to this number
 
   -v --verbose  Show more detailed option
      --version  Prints the version information
