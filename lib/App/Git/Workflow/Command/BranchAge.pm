@@ -152,7 +152,7 @@ This documentation refers to git-branch-age version 1.1.5
      --no-unmerged
                 Only show branches merged to master
   -m --master[=]str
-                Branch to checkagainst for --unmerged and --no-unmerged
+                Branch to check against for --unmerged and --no-unmerged
                 (Default origin/master)
   -n --limit[=]int
                 Limit the out put to this number

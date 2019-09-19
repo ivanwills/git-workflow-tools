@@ -114,7 +114,7 @@ __DATA__
 
 =head1 NAME
 
-git-branch-grep - grep for branch names
+git-branch-grep - grep for branch names (and optionally files with them)
 
 =head1 VERSION
 
@@ -123,7 +123,7 @@ This documentation refers to git-branch-grep version 1.1.5
 =head1 SYNOPSIS
 
    git-branch-grep [--remote|-r|--all|-a] regex
-   git-branch-grep [--remote|-r|--all|-a] regex -- file(s)
+   git-branch-grep ((-s|--search) regex) [--remote|-r|--all|-a] regex -- file(s)
 
  OPTIONS:
   regex         grep's perl (-P) regular expression
@@ -132,6 +132,17 @@ This documentation refers to git-branch-grep version 1.1.5
   -r --remote   List all remote branches
   -a --all      List all branches
   -v            Find all branches that don't match regex
+  -u --unmerged
+                Only show branches not merged to --master
+     --no-unmerged
+                Only show branches merged to master
+  -m --master[=]str
+                Branch to check against for --unmerged and --no-unmerged
+                (Default origin/master)
+  -n --limit[=]int
+                Limit the out put to this number
+  -s --search[=]regex
+                Search term for looking within files
 
      --verbose  Show more detailed option
      --version  Prints the version information
