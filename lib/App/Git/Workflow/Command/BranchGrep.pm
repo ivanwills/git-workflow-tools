@@ -58,10 +58,11 @@ sub run {
             my $shown = 0;
             for my $file (@ARGV) {
                 my @contents = map {
+                        my $found = $_;
                         if ($option{colour}) {
-                            s/($grep)/colored ['red'], $1/egxms;
+                            $found =~ s/($grep)/colored ['red'], $1/egxms;
                         }
-                        $_
+                        $found
                     }
                     grep {/$option{search}/}
                     `git show $clean_branch:$file`;
