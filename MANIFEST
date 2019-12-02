@@ -43,6 +43,7 @@ lib/App/Git/Workflow/Command/Pom.pm
 lib/App/Git/Workflow/Command/Popb.pm
 lib/App/Git/Workflow/Command/Pushb.pm
 lib/App/Git/Workflow/Command/Recent.pm
+lib/App/Git/Workflow/Command/ResetTo.pm
 lib/App/Git/Workflow/Command/Search.pm
 lib/App/Git/Workflow/Command/TagGrep.pm
 lib/App/Git/Workflow/Command/UpToDate.pm
