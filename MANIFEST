@@ -89,7 +89,6 @@ t/data/git-files/file2
 t/data/git-files/file3
 t/data/git-files/git/FETCH_HEAD
 t/data/git-files/git/HEAD
-t/data/git-pushb/stack-0/brs
 t/data/git-pushb/stack-0/FETCH_HEAD
 t/data/git-pushb/stack-0/HEAD
 t/data/git-pushb/stack-1/FETCH_HEAD
