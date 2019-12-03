@@ -94,19 +94,19 @@ sub _sorter {
     $A cmp $B;
 }
 
-my @master;
+my %dest;
 sub unmerged {
-    my ($branch, $master) = @_;
+    my ($source, $dest) = @_;
 
-    if ( ! @master ) {
-        @master = map {/^(.*)\n/; $1} `git log --format=format:%H $master`;
-        die "No master" if !@master;
+    if ( ! $dest{$dest} ) {
+        @{$dest{$dest}} = map {/^(.*)\n/; $1} `git log --format=format:%H $dest`;
+        die "No destination branch commits for '$dest'" if !@{$dest{$dest}};
     }
 
-    my $source_sha = `git log --format=format:%H -n 1 $branch`;
+    my $source_sha = `git log --format=format:%H -n 1 $source`;
     chomp $source_sha;
 
-    return scalar grep {$_ && $_ eq $source_sha} @master;
+    return scalar grep {$_ && $_ eq $source_sha} @{$dest{$dest}};
 }
 
 1;
@@ -164,6 +164,10 @@ C<git branch (-r|-a)? | grep -P 'regex'>
 =head2 C<run ()>
 
 Executes the git workflow command
+
+=head2 C<unmerged ($source, $dest)>
+
+Check if there are any commits in C<$source> that are not in C<$dest>
 
 =head1 DIAGNOSTICS
 
