@@ -15,6 +15,7 @@ bin/git-pom
 bin/git-popb
 bin/git-pushb
 bin/git-recent
+bin/git-reset-to
 bin/git-search
 bin/git-tag-grep
 bin/git-up-to-date
