@@ -108,7 +108,9 @@ sub do_delete {
 
         if ( !$option{test} ) {
             if ($remote) {
-                $workflow->git->push($remote, ":refs/heads/$name");
+                eval {
+                    $workflow->git->push($remote, ":refs/heads/$name");
+                };
             }
             else {
                 $workflow->git->branch('-D', "$name");
