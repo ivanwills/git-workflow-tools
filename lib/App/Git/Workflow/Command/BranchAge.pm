@@ -63,6 +63,7 @@ sub run {
     if ( $option{remote} ) {
         $arg .= ' -r';
     }
+    my $match = @ARGV ? shift @ARGV : '';
 
     my @branches = `git branch $arg --format='$fmt'`;
     my $i = 0;
@@ -82,6 +83,7 @@ sub run {
 
         $last = '';
         $branch = { zip @headings, @cols };
+        next if $match && $branch->{short} !~ /$match/;
         warn 'bad head' if !$branch->{HEAD};
         next if !$branch->{HEAD};
         if ( defined $option{unmerged} ) {
