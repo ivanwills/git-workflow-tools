@@ -110,7 +110,10 @@ sub do_delete {
             if ($remote) {
                 eval {
                     $workflow->git->push($remote, ":refs/heads/$name");
-                };
+                    1;
+                } or do {
+                    return 0;
+                }
             }
             else {
                 $workflow->git->branch('-D', "$name");
