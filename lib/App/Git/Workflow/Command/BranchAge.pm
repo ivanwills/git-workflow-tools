@@ -17,7 +17,7 @@ use App::Git::Workflow::Command qw/get_options/;
 use DateTime::Format::HTTP;
 use Data::Dumper qw/Dumper/;
 
-our $VERSION  = version->new(1.1.13);
+our $VERSION  = version->new(1.1.14);
 our $workflow = App::Git::Workflow->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option = (
@@ -188,7 +188,7 @@ git-branch-age - grep tags
 
 =head1 VERSION
 
-This documentation refers to git-branch-age version 1.1.13
+This documentation refers to git-branch-age version 1.1.14
 
 =head1 SYNOPSIS
 
