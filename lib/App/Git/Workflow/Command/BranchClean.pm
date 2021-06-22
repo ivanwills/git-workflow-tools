@@ -109,7 +109,7 @@ sub do_delete {
         if ( !$option{test} ) {
             if ($remote) {
                 eval {
-                    $workflow->git->push($remote, ":refs/heads/$name");
+                    $workflow->git->push($remote, '--no-verify', ":refs/heads/$name");
                     1;
                 } or do {
                     return 0;
