@@ -38,7 +38,10 @@ sub run {
     }
 
     for my $branch (@{ $option{branches} }) {
-        warn "git push ".($option{no_verify} ? '--no-verify' : ()). "--delete $option{remote} $branch\n";
+        if ($option{verbose}) {
+            warn "git push ".($option{no_verify} ? '--no-verify' : ()). " --delete $option{remote} $branch\n";
+        }
+
         $workflow->git->push(($option{no_verify} ? '--no-verify' : ()), '--delete', $option{remote}, $branch);
 
         if ( $option{local} ) {
