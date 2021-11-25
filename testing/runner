@@ -16,7 +16,7 @@ use FindBin qw/$Bin/;
 use Path::Tiny;
 use File::chdir;
 
-our $VERSION = 1.1.16;
+our $VERSION = 1.1.17;
 my ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 
 my %option = (
@@ -145,7 +145,7 @@ runner - <One-line description of commands purpose>
 
 =head1 VERSION
 
-This documentation refers to runner version 1.1.16
+This documentation refers to runner version 1.1.17
 
 =head1 SYNOPSIS
 
