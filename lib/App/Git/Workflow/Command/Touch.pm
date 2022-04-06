@@ -38,6 +38,9 @@ sub git_touch {
     if ( -d $file ) {
         my $max_time = 0;
 
+        if ( !$option{recurse} ) {
+            return 0;
+        }
         my @children = path($file)->children;
         for my $child (@children) {
             my $time = git_touch($child);
@@ -65,7 +68,7 @@ __DATA__
 
 =head1 NAME
 
-git-touch - Help touch many commits
+git-touch - Touch files to match the git change times
 
 =head1 VERSION
 
@@ -73,9 +76,12 @@ This documentation refers to git-touch version 1.1.17
 
 =head1 SYNOPSIS
 
-   git-touch [option]
+   git-touch [-r|--recurse] [(-c|--commitish) ref] file_or_dir
 
  OPTIONS:
+  -r --recurse
+  -c --commitish=[commitish]
+                Reference commit to get dates from (Default is current commit)
 
   -v --verbose  Show more detailed option
      --version  Prints the version information
@@ -84,11 +90,12 @@ This documentation refers to git-touch version 1.1.17
 
 =head1 DESCRIPTION
 
-Short hand for running
+This will get the last changed time in the git history for a file and set
+that time on the file.
 
-C<git commit --touch>
-
-Over more than one commit in the history
+If the file is a directory and --recurse is specified then the directories
+time will be set to the most rectent changed time for files with in it as
+well as changing the times of those files.
 
 =head1 SUBROUTINES/METHODS
 
