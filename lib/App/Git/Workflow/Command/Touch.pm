@@ -54,6 +54,11 @@ sub git_touch {
     }
 
     my ($log) = $workflow->git->log( '-n1', '--format=format:%ai', $file );
+
+    if ( !$log ) {
+        return 0;
+    }
+
     my ( $date, $tz ) = $log =~ /^(.*)\s+([+-]\d{4})$/;
     my $time = DateTime::Format::HTTP->parse_datetime( $date, $tz )->epoch;
 
