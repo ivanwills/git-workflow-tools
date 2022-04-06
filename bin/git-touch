@@ -20,7 +20,7 @@ git-touch - Touch files to match the git change times
 
 =head1 VERSION
 
-This documentation refers to git-touch version 1.1.17
+This documentation refers to git-touch version 1.1.18
 
 =head1 SYNOPSIS
 

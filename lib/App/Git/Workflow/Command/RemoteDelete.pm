@@ -14,7 +14,7 @@ use Term::ANSIColor qw/colored/;
 use App::Git::Workflow;
 use App::Git::Workflow::Command qw/get_options/;
 
-our $VERSION  = version->new(1.1.17);
+our $VERSION  = version->new(1.1.18);
 our $workflow = App::Git::Workflow->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %option = (
@@ -60,7 +60,7 @@ git-remote-delete - Delete remote branches
 
 =head1 VERSION
 
-This documentation refers to git-remote-delete version 1.1.17
+This documentation refers to git-remote-delete version 1.1.18
 
 =head1 SYNOPSIS
 
