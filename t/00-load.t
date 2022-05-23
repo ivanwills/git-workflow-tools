@@ -47,6 +47,7 @@ ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-feature"     ), "bi
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-files"       ), "bin/git-files compiles"       );
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-hook-setup"  ), "bin/git-hook-setup compiles"  );
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-jira"        ), "bin/git-jira compiles"        );
+ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-package"     ), "bin/git-package compiles"     );
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-pom"         ), "bin/git-pom compiles"         );
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-tag-grep"    ), "bin/git-tag-grep compiles"    );
 ok( !(system $perl, "-I $Bin/../lib", '-c', "$Bin/../bin/git-touch"       ), "bin/git-touch compiles"       );
