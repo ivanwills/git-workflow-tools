@@ -17,18 +17,18 @@ use Path::Tiny;
 our $VERSION = version->new(1.1.18);
 our $workflow = App::Git::Workflow::Pom->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
-our %option;
+our %option = {
+    fetch => 1,
+};
 our %p2u_extra;
 
 sub run {
     my ($self) = @_;
-    %option = (
-        pom   => $workflow->config('workflow.pom', 'pom.xml'),
-        fetch => 1,
-    );
+    $option{pom} ||= $workflow->config('workflow.pom', 'pom.xml'),
+
     get_options(
         \%option,
-        'pom|P=s',
+        'pom|package|P=s',
         'update|u!',
         'skip|s=s',
         'match|m=s',
