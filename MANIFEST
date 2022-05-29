@@ -11,6 +11,7 @@ bin/git-feature
 bin/git-files
 bin/git-hook-setup
 bin/git-jira
+bin/git-memo
 bin/git-package
 bin/git-pom
 bin/git-popb
@@ -43,6 +44,7 @@ lib/App/Git/Workflow/Command/Cows.pm
 lib/App/Git/Workflow/Command/Feature.pm
 lib/App/Git/Workflow/Command/Files.pm
 lib/App/Git/Workflow/Command/Jira.pm
+lib/App/Git/Workflow/Command/Memo.pm
 lib/App/Git/Workflow/Command/Pom.pm
 lib/App/Git/Workflow/Command/Popb.pm
 lib/App/Git/Workflow/Command/Pushb.pm
@@ -76,6 +78,7 @@ t/cmd-cows.t
 t/cmd-feature.t
 t/cmd-files.t
 t/cmd-jira.t
+t/cmd-memo.t
 t/cmd-pom.t
 t/cmd-popb.t
 t/cmd-pushb.t
