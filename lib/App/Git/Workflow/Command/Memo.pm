@@ -60,31 +60,51 @@ sub do_add {
     $self->set_memos($memo);
 }
 
-sub do_delete {
-    my ($self) = @_;
-    my $memo = $self->get_memos();
+sub commit_name {
+    my ( $self, $memo ) = @_;
+    my $name;
+    $option{number} ||= pop @ARGV;
 
-    if ( $option{commitish} ) {
-        delete $memo->{ $option{commitish} };
+    if ( $option{commitish} && $memo->{ $option{commitish} } ) {
+        $name = $option{commitish};
     }
     elsif ( $option{number} ) {
         my $i = 0;
         for my $memo_item ( sort keys %$memo ) {
             if ( $i++ == $option{number} ) {
-                delete $memo->{$memo_item};
-                $i = -1;
+                $name = $memo_item;
                 last;
             }
         }
-        if ( $i >= 0 ) {
-            die "Couldn't find $option{number}!\n";
-        }
-    }
-    else {
-        die "Nothing to delete\n";
     }
 
+    die "No branch/tag/commit found matching "
+        . ( $option{number} || $option{commitish} ) . "!\n"
+        if !$name;
+
+    return $name;
+}
+
+sub do_delete {
+    my ($self) = @_;
+    my $memo = $self->get_memos();
+
+    my $name = $self->commit_name($memo);
+    delete $memo->{$name};
+
     $self->set_memos($memo);
+}
+
+sub do_switch {
+    my ($self) = @_;
+    my $memo = $self->get_memos();
+
+    my $name = $self->commit_name($memo);
+    $workflow->git->checkout($name);
+
+    $self->set_memos($memo);
+
+    $self->do_list();
 }
 
 sub do_list {
