@@ -52,7 +52,7 @@ sub do_add {
         || $workflow->git->rev_parse( '--abbrev-ref', 'HEAD' );
     chomp $commitish;
 
-    $memo->{$commitish} = {
+    $memo->{names}{$commitish} = {
         date => time,
         sha => $workflow->git->log( '-n1', '--format=format:%H', $commitish ),
     };
@@ -65,12 +65,12 @@ sub commit_name {
     my $name;
     $option{number} ||= pop @ARGV;
 
-    if ( $option{commitish} && $memo->{ $option{commitish} } ) {
+    if ( $option{commitish} && $memo->{names}{ $option{commitish} } ) {
         $name = $option{commitish};
     }
     elsif ( $option{number} ) {
         my $i = 0;
-        for my $memo_item ( sort keys %$memo ) {
+        for my $memo_item ( sort keys %{ $memo->{names} } ) {
             if ( $i++ == $option{number} ) {
                 $name = $memo_item;
                 last;
@@ -90,7 +90,7 @@ sub do_delete {
     my $memo = $self->get_memos();
 
     my $name = $self->commit_name($memo);
-    delete $memo->{$name};
+    delete $memo->{names}{$name};
 
     $self->set_memos($memo);
 }
@@ -102,6 +102,7 @@ sub do_switch {
     my $name = $self->commit_name($memo);
     $workflow->git->checkout($name);
 
+    $memo->{last} = $name;
     $self->set_memos($memo);
 
     $self->do_list();
@@ -111,20 +112,21 @@ sub do_list {
     my ($self)  = @_;
     my $memo    = $self->get_memos();
     my $i       = 0;
-    my $max     = int( log( keys %$memo ) / log(10) ) + 1;
+    my $max     = int( log( keys %{ $memo->{names} } ) / log(10) ) + 1;
     my $current = $workflow->git->rev_parse( '--abbrev-ref', 'HEAD' );
     chomp $current;
     my $sha = $workflow->git->log( '-n1', '--format=format:%H', $current );
 
-    for my $memo_item ( sort keys %$memo ) {
+    for my $memo_item ( sort keys %{ $memo->{names} } ) {
         my $marker
-            = $memo_item eq $current           ? '*'
-            : $memo->{$memo_item}{sha} eq $sha ? '-'
-            :                                    ' ';
+            = $memo_item eq $current                  ? '*'
+            : $memo_item eq $memo->{last}             ? '#'
+            : $memo->{names}{$memo_item}{sha} eq $sha ? '-'
+            :                                           ' ';
         my $date = '';
         if ( $option{verbose} ) {
             my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst )
-                = localtime( $memo->{$memo_item}{date} );
+                = localtime( $memo->{names}{$memo_item}{date} );
             $mon++;
             $year += 1900;
             $date = sprintf "%04i-%02i-%02i %02i:%02i:%02i ", $year,
@@ -153,7 +155,7 @@ sub get_memos {
     my $memo = "$git_dir/.git/memo.json";
 
     if ( !-f $memo ) {
-        return {};
+        return { last => '', names => {} };
     }
 
     open my $fh, '<', $memo or die "Can't open $memo: $!";
@@ -161,6 +163,7 @@ sub get_memos {
 
     my $json = decode_json($json_text);
 
+    $json->{last} ||= '';
     return $json;
 }
 
