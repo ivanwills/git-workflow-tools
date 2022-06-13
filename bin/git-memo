@@ -24,9 +24,24 @@ This documentation refers to git-memo version 1.1.19
 
 =head1 SYNOPSIS
 
-   git-memo [option]
+   git-memo
+   git-memo [(-c|--commitish)[=]sha|branch|tag]
+   git-memo add [(-c|--commitish)[=]sha|branch|tag]
+   git-memo (list|ls)
+   git-memo (switch|sw) (-n|--number) number
+   git-memo (delete|rm) (-n|--number) number [--force|-f]
+
+ SUB-COMMAND:
+  add           Add either the current branch/commit/etc or a specified commitish to the memo list
+  list          List all memoed commitishes
+  switch        Switch to a saved memoed commitish
+  delete        Delete a saved memoed commitish
 
  OPTIONS:
+  -c --commitish[=]sha|branch|tag
+                The specified commit to add to the memo list
+  -n --number[=]int
+                A memoed commitish to switch to
 
   -v --verbose  Show more detailed option
      --version  Prints the version information
