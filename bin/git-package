@@ -11,8 +11,8 @@ use warnings;
 use App::Git::Workflow::Command::Pom;
 
 # set default package file
-$App::Git::Workflow::Pom::option{pom}
-    = $App::Git::Workflow::Pom::workflow->config( 'workflow.package',
+$App::Git::Workflow::Command::Pom::option{pom}
+    = $App::Git::Workflow::Command::Pom::workflow->config( 'workflow.package',
     'package.json' );
 
 App::Git::Workflow::Command::Pom->run();
