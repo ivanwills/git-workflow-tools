@@ -48,7 +48,9 @@ sub do_add {
     my ($self) = @_;
     my $memo = $self->get_memos();
 
-    my $commitish = $option{commitish}
+    my $commitish
+        = $option{commitish}
+        || $ARGV[-1]
         || $workflow->git->rev_parse( '--abbrev-ref', 'HEAD' );
     chomp $commitish;
 
