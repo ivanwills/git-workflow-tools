@@ -16,7 +16,7 @@ use JSON qw/decode_json encode_json/;
 use App::Git::Workflow;
 use App::Git::Workflow::Command qw/get_options/;
 
-our $VERSION  = version->new(1.1.19);
+our $VERSION  = version->new(1.1.20);
 our $workflow = App::Git::Workflow->new;
 our ($name)   = $PROGRAM_NAME =~ m{^.*/(.*?)$}mxs;
 our %p2u_extra;
@@ -187,7 +187,7 @@ git-memo - Help Memo many commits
 
 =head1 VERSION
 
-This documentation refers to git-memo version 1.1.19
+This documentation refers to git-memo version 1.1.20
 
 =head1 SYNOPSIS
 
