@@ -10,6 +10,7 @@ use strict;
 use warnings;
 use version;
 use English qw/ -no_match_vars /;
+use Pod::Usage;
 use Term::ANSIColor qw/colored/;
 use JSON qw/decode_json encode_json/;
 use App::Git::Workflow;
@@ -33,7 +34,7 @@ sub run {
     get_options( \%option, 'commitish|c=s', 'number|n=i', 'force|f!',
         'verbose|v+' );
 
-    my $action = 'do_' . $cmd_map{ $ARGV[0] || 'add' };
+    my $action = 'do_' . ( $cmd_map{ $ARGV[0] || 'add' } || '' );
 
     if ( !$self->can($action) ) {
         warn "Unknown action $ARGV[0]!\n";
@@ -63,14 +64,19 @@ sub do_add {
 }
 
 sub commit_name {
-    my ( $self, $memo ) = @_;
+    my ( $self, $memo, $type ) = @_;
     my $name;
-    $option{number} ||= pop @ARGV;
+    $option{number} //= pop @ARGV;
 
     if ( $option{commitish} && $memo->{names}{ $option{commitish} } ) {
         $name = $option{commitish};
     }
-    elsif ( $option{number} ) {
+    elsif ( $option{number} eq $type ) {
+        warn "git memo $type requires an argument!\n";
+        Pod::Usage::pod2usage( %p2u_extra, -verbose => 1 );
+        return;
+    }
+    elsif ( defined $option{number} ) {
         my $i = 0;
         for my $memo_item ( sort keys %{ $memo->{names} } ) {
             if ( $i++ == $option{number} ) {
@@ -91,7 +97,8 @@ sub do_delete {
     my ($self) = @_;
     my $memo = $self->get_memos();
 
-    my $name = $self->commit_name($memo);
+    my $name = $self->commit_name( $memo, 'delete' );
+    return if !$name;
     delete $memo->{names}{$name};
 
     $self->set_memos($memo);
@@ -101,7 +108,8 @@ sub do_switch {
     my ($self) = @_;
     my $memo = $self->get_memos();
 
-    my $name = $self->commit_name($memo);
+    my $name = $self->commit_name( $memo, 'switch' );
+    return if !$name;
     $workflow->git->checkout($name);
 
     $memo->{last} = $name;
@@ -183,9 +191,7 @@ This documentation refers to git-memo version 1.1.19
 
 =head1 SYNOPSIS
 
-   git-memo
-   git-memo [(-c|--commitish)[=]sha|branch|tag]
-   git-memo add [(-c|--commitish)[=]sha|branch|tag]
+   git-memo [add] [(-c|--commitish)[=]sha|branch|tag]
    git-memo (list|ls)
    git-memo (switch|sw) (-n|--number) number
    git-memo (delete|rm) (-n|--number) number [--force|-f]
