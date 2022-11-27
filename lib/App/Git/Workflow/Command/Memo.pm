@@ -12,7 +12,7 @@ use version;
 use English qw/ -no_match_vars /;
 use Pod::Usage;
 use Term::ANSIColor qw/colored/;
-use JSON qw/decode_json encode_json/;
+use JSON            qw/decode_json encode_json/;
 use App::Git::Workflow;
 use App::Git::Workflow::Command qw/get_options/;
 
@@ -49,15 +49,15 @@ sub do_add {
     my ($self) = @_;
     my $memo = $self->get_memos();
 
-    my $commitish
-        = $option{commitish}
-        || $ARGV[-1]
-        || $workflow->git->rev_parse( '--abbrev-ref', 'HEAD' );
+    my $commitish =
+         $option{commitish}
+      || $ARGV[-1]
+      || $workflow->git->rev_parse( '--abbrev-ref', 'HEAD' );
     chomp $commitish;
 
     $memo->{names}{$commitish} = {
         date => time,
-        sha => $workflow->git->log( '-n1', '--format=format:%H', $commitish ),
+        sha  => $workflow->git->log( '-n1', '--format=format:%H', $commitish ),
     };
 
     $self->set_memos($memo);
@@ -87,8 +87,8 @@ sub commit_name {
     }
 
     die "No branch/tag/commit found matching "
-        . ( $option{number} || $option{commitish} ) . "!\n"
-        if !$name;
+      . ( $option{number} || $option{commitish} ) . "!\n"
+      if !$name;
 
     return $name;
 }
@@ -108,6 +108,7 @@ sub do_switch {
     my ($self) = @_;
     my $memo = $self->get_memos();
 
+    $option{number} //= 0;
     my $name = $self->commit_name( $memo, 'switch' );
     return if !$name;
     $workflow->git->checkout($name);
@@ -128,19 +129,19 @@ sub do_list {
     my $sha = $workflow->git->log( '-n1', '--format=format:%H', $current );
 
     for my $memo_item ( sort keys %{ $memo->{names} } ) {
-        my $marker
-            = $memo_item eq $current                  ? '*'
-            : $memo_item eq $memo->{last}             ? '#'
-            : $memo->{names}{$memo_item}{sha} eq $sha ? '-'
-            :                                           ' ';
+        my $marker =
+            $memo_item eq $current                  ? '*'
+          : $memo_item eq $memo->{last}             ? '#'
+          : $memo->{names}{$memo_item}{sha} eq $sha ? '-'
+          :                                           ' ';
         my $date = '';
         if ( $option{verbose} ) {
             my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst )
-                = localtime( $memo->{names}{$memo_item}{date} );
+              = localtime( $memo->{names}{$memo_item}{date} );
             $mon++;
             $year += 1900;
             $date = sprintf "%04i-%02i-%02i %02i:%02i:%02i ", $year,
-                $mon, $mday, $hour, $min, $sec;
+              $mon, $mday, $hour, $min, $sec;
         }
 
         printf "[%${max}i] %s%s %s\n", $i++, $date, $marker, $memo_item;
