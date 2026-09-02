@@ -73,7 +73,7 @@ sub run {
             $files = join ' ', @ARGV;
         }
         else {
-            $match = @ARGV ? shift @ARGV : '';
+            $match = @ARGV ? join '|', @ARGV : '';
         }
     }
 
